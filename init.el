@@ -4,9 +4,14 @@
 (defun system-is-windows()
   (string-equal system-type "windows-nt"))
 
-;;подсветка lisp выражений
+;; подсветка lisp выражений
 (setq show-paren-style 'expression)
 (show-paren-mode 2)
+(setq auto-mode-alist
+      (append
+       '(
+         ( "\\.el$". lisp-mode))))
+(global-font-lock-mode 1)
 
 ;; Подключение репозиториев пакетов
 (require 'package)
@@ -23,7 +28,7 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
-;;Переносим переменные, созданные Custom в отдельный файл
+;; Переносим переменные, созданные Custom в отдельный файл
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
   (load custom-file))
@@ -47,14 +52,13 @@
 ;; Тема
 (use-package color-theme-modern
   :ensure t
-  :config)
-
+  :config
 (if
     (and
      (>= (string-to-number (format-time-string "%H")) 10)
      (< (string-to-number(format-time-string "%H")) 20))
     (load-theme 'railscast t)
-  (load-theme 'tango t))
+  (load-theme 'tango t)))
 
 ;; Размер окна
 (when (window-system)
@@ -72,11 +76,7 @@
 (setq ingibit-startup-message t) ;; экран приветствия можно вызвать комбинацией C-h C-a
 
 ;; Нумерация строк слева
-(use-package nlinum
-  :ensure t
-  :config
-  (setq linum-format " %d")
-  (global-linum-mode 1))
+  (global-linum-mode 1)
 
 ;; Измененый модлайн
 (use-package mood-line
@@ -90,6 +90,11 @@
 (setq make-backup-files         nil) ; Don't want any backup files
 (setq auto-save-list-file-name  nil) ; Don't want any .saves files
 (setq auto-save-default         nil) ; Don't want any auto saving
+
+;; Управление git-репозиторием
+(use-package magit
+  :ensure    t
+  :bind      (("C-x g" . #'magit-status)))
 
 ;; Автозаполнение при поиске в каталоге
 (use-package ido
@@ -133,7 +138,7 @@
 (electric-pair-mode t)
 (show-paren-mode 1)
 
-;;Работа emacs в русской раскладке
+;; Работа emacs в русской раскладке
 (use-package reverse-im
   :ensure t
   :custom
