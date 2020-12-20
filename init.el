@@ -165,3 +165,13 @@
   (reverse-im-input-methods '("russian-computer"))
   :config
   (reverse-im-mode t))
+
+;; Автокомплит
+(use-package company
+  :ensure    t)
+;; Чтобы использовать company-modeво всех буферах
+(add-hook 'after-init-hook 'global-company-mode)
+;; Иконки в буфере автокомплита
+(use-package company-box
+  :ensure    t
+  :hook      (company-mode . company-box-mode))
