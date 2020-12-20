@@ -50,15 +50,35 @@
 (setq frame-title-format "Egor Tolbaev")
 
 ;; Тема
-(use-package color-theme-modern
-  :ensure t
+(use-package dracula-theme
+  :ensure    t
   :config
 (if
-    (and
+   (and
      (>= (string-to-number (format-time-string "%H")) 10)
      (< (string-to-number(format-time-string "%H")) 20))
-    (load-theme 'railscast t)
+    (load-theme 'dracula t)
   (load-theme 'tango t)))
+
+;; Красивые иконки в дашборде, treemacs и т.д
+(use-package all-the-icons
+  :ensure    t)
+
+;; Стартовый экран
+(use-package dashboard
+  :ensure    t
+  :config
+  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*"))
+        dashboard-center-content t
+        dashboard-set-init-info nil
+        dashboard-set-heading-icons t
+        dashboard-set-file-icons t)
+  (dashboard-setup-startup-hook))
+
+;; Дерево каталогов
+(use-package treemacs
+  :ensure    t
+  :bind      ("M-n M-n" . #'treemacs))
 
 ;; Размер окна
 (when (window-system)
