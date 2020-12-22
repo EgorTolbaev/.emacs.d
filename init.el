@@ -135,6 +135,7 @@
   (setq ido-enable-flex-matching t))
 
 ;; Настройка org-mode
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (setq org-log-done 'time)
 
 ;; Показ буфера
