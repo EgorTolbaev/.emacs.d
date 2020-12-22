@@ -96,7 +96,15 @@
 (setq ingibit-startup-message t) ;; экран приветствия можно вызвать комбинацией C-h C-a
 
 ;; Нумерация строк слева
-  (global-linum-mode 1)
+(require 'linum) ;; вызвать Linum
+(line-number-mode   t) ;; показать номер строки в mode-line
+(global-linum-mode  t) ;; показывать номера строк во всех буферах
+(column-number-mode t) ;; показать номер столбца в mode-line
+(setq linum-format " %d") ;; задаем формат нумерации строк
+;; Установка фиксированной фасоты чтобы нумерация не меняла размер
+;; например в режиме org-mode
+(eval-after-load "linum"
+  '(set-face-attribute 'linum nil :height 100))
 
 ;; Измененый модлайн
 (use-package mood-line
