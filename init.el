@@ -4,7 +4,7 @@
 (defun system-is-windows()
   (string-equal system-type "windows-nt"))
 
-;; подсветка lisp выражений
+;; Подсветка lisp выражений
 (setq show-paren-style 'expression)
 (show-paren-mode 2)
 (setq auto-mode-alist
@@ -42,77 +42,101 @@
 (set-terminal-coding-system             'utf-8)
 (prefer-coding-system                   'utf-8)
 
-;;замена yes-or-on на y-or-n
+;; Замена yes-or-on на y-or-n
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; ######################## Настройка интерфейса #######################
+;; Размер окна
+(when (window-system)
+  (set-frame-size (selected-frame) 100 40))
 
-(setq frame-title-format "Egor Tolbaev")
+;; Работа с проектами
+(use-package projectile
+  :ensure t
+  :config
+  (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
+  (projectile-mode +1))
 
 ;; Тема
-(use-package dracula-theme
-  :ensure    t
+(use-package doom-themes
+  :ensure t
   :config
-(if
-   (and
-     (>= (string-to-number (format-time-string "%H")) 10)
-     (< (string-to-number(format-time-string "%H")) 20))
-    (load-theme 'dracula t)
-  (load-theme 'tango t)))
+  (load-theme 'doom-Iosvkem))
+
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode))
 
 ;; Красивые иконки в дашборде, treemacs и т.д
 (use-package all-the-icons
   :ensure    t)
 
+;; Пока так зато есть быстрое переключение тем
+(defun set-light-theme()
+  (interactive)
+  (load-theme 'doom-opera-light))
+  (global-set-key (kbd "<f8>") 'set-light-theme)
+
+(defun set-night-theme()
+  (interactive)
+  (load-theme 'doom-Iosvkem))
+  (global-set-key (kbd "<f9>") 'set-night-theme)
+
+;; Что бы работало первый раз нужно добавить шрифты,
+;; на винде нужно еще выбрать путь куда поставить и установить их в ручную
+;; Оставлю здесь чтобы не забыть:)
+;; (all-the-icons-install-fonts)
+
 ;; Стартовый экран
 (use-package dashboard
-  :ensure    t
+  :ensure t
+  :init
+  (progn
+    (setq dashboard-startup-banner 'logo)
+    (setq dashboard-items '((recents  . 5)
+			    (projects . 5)))
+    (setq dashboard-show-shortcuts nil)
+    (setq dashboard-center-content t)
+    (setq dashboard-set-file-icons t)
+    (setq dashboard-set-heading-icons t)
+    (setq dashboard-set-init-info t ))
   :config
-  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*"))
-        dashboard-center-content t
-        dashboard-set-init-info nil
-        dashboard-set-heading-icons t
-        dashboard-set-file-icons t)
   (dashboard-setup-startup-hook))
+
+;; Кнопки навигации
+(setq dashboard-set-navigator t)
+(setq dashboard-navigator-buttons
+      `(
+        ((,(all-the-icons-octicon "mark-github" :height 1.1 :v-adjust 0.0)
+         "Homepage"
+         "Browse homepage"
+         (lambda (&rest _) (browse-url "https://github.com/EgorTolbaev"))))))
 
 ;; Дерево каталогов
 (use-package treemacs
   :ensure    t
   :bind      ("M-n M-n" . #'treemacs))
 
-;; Размер окна
-(when (window-system)
-  (set-frame-size (selected-frame) 100 40))
-
-;;Отключение меню
+;; Отключение меню
 (menu-bar-mode -1)
 (tool-bar-mode -1)
-(scroll-bar-mode   -1) ;; отключаем полосу прокрутки
-(blink-cursor-mode -1) ;; курсор не мигает
+(scroll-bar-mode   -1) ; отключаем полосу прокрутки
+(blink-cursor-mode -1) ; курсор не мигает
 (setq ring-bell-function 'ignore) ;; отключить звуковой сигнал
 
 ;; Отключить  экран приветствия
 (setq inhibit-splash-screen   t)
-(setq ingibit-startup-message t) ;; экран приветствия можно вызвать комбинацией C-h C-a
+(setq ingibit-startup-message t) ; экран приветствия можно вызвать комбинацией C-h C-a
 
 ;; Нумерация строк слева
-(require 'linum) ;; вызвать Linum
-(line-number-mode   t) ;; показать номер строки в mode-line
-(global-linum-mode  t) ;; показывать номера строк во всех буферах
-(column-number-mode t) ;; показать номер столбца в mode-line
-(setq linum-format " %d") ;; задаем формат нумерации строк
-;; Установка фиксированной фасоты чтобы нумерация не меняла размер
+(require 'linum) ; вызвать Linum
+(setq line-number-mode   nil) ; показать номер строки в mode-line
+(global-linum-mode  t)        ; показывать номера строк во всех буферах
+(setq column-number-mode nil) ; показать номер столбца в mode-line
+(setq linum-format " %d")     ; задаем формат нумерации строк
+;; Установка фиксированной высоты чтобы нумерация не меняла размер
 ;; например в режиме org-mode
 (eval-after-load "linum"
   '(set-face-attribute 'linum nil :height 100))
-
-;; Измененый модлайн
-(use-package mood-line
-  :ensure t
-  :config
-  (mood-line-mode))
-
-;; #####################################################################
 
 ;; Отключить  сохранений
 (setq make-backup-files         nil) ; Don't want any backup files
@@ -156,11 +180,11 @@
 (add-hook 'before-save-hook '(lambda ()
 			       (delete-trailing-whitespace)))
 
-(setq display-time-24hr-format t) ;; 24-часовой временной формат в mode-line
-(display-time-mode             t) ;; показывать часы в mode-line
-(size-indication-mode          t) ;; размер файла в %-ах
+(setq display-time-24hr-format t) ; 24-часовой временной формат в mode-line
+(display-time-mode             t) ; показывать часы в mode-line
+(size-indication-mode          t) ; размер файла в %-ах
 
-(setq word-wrap          t) ;; переносить по словам
+(setq word-wrap          t) ; переносить по словам
 (global-visual-line-mode t)
 
 ;; При вводе парного элемента закрывать его и ставить курсор между ними
@@ -178,8 +202,10 @@
 ;; Автокомплит
 (use-package company
   :ensure    t)
-;; Чтобы использовать company-modeво всех буферах
+
+;; Чтобы использовать company-mode во всех буферах
 (add-hook 'after-init-hook 'global-company-mode)
+
 ;; Иконки в буфере автокомплита
 (use-package company-box
   :ensure    t
