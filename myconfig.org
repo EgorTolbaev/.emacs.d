@@ -1,0 +1,215 @@
+* General settings
+** Не показывать стартовое сообщение
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-splash-screen   t)
+(setq ingibit-startup-message t) ; экран приветствия можно вызвать комбинацией C-h C-a
+#+END_SRC
+** Не показывать меню
+#+BEGIN_SRC emacs-lisp
+(menu-bar-mode -1)
+#+END_SRC
+** Не показывать панель инструментов
+#+BEGIN_SRC emacs-lisp
+(tool-bar-mode -1)
+#+END_SRC
+** Не показывать полосу прокрутки
+#+BEGIN_SRC emacs-lisp
+(scroll-bar-mode   -1)
+#+END_SRC
+** Курсор не мигает
+#+BEGIN_SRC emacs-lisp
+(blink-cursor-mode -1)
+#+END_SRC
+** Отключить звуковой сигнал
+#+BEGIN_SRC emacs-lisp
+(setq ring-bell-function 'ignore)
+#+END_SRC
+** Кодировка
+#+BEGIN_SRC emacs-lisp
+(set-language-environment 'UTF-8)
+(setq default-buffer-file-coding-system 'utf-8)
+(setq-default coding-system-for-read    'utf-8)
+(setq file-name-coding-system           'utf-8)
+(set-keyboard-coding-system        'utf-8-unix)
+(set-terminal-coding-system             'utf-8)
+(prefer-coding-system                   'utf-8)
+#+END_SRC
+** Парные элементы
+#+BEGIN_SRC emacs-lisp
+(electric-pair-mode t)
+(show-paren-mode 1)
+#+END_SRC
+** Перенос по словам
+#+BEGIN_SRC emacs-lisp
+(setq word-wrap t)
+(global-visual-line-mode t)
+#+END_SRC
+** Чистим пробелы
+#+BEGIN_SRC emacs-lisp
+(add-hook 'before-save-hook '(lambda ()
+			       (delete-trailing-whitespace)))
+#+END_SRC
+** Отключить сохранений
+#+BEGIN_SRC emacs-lisp
+(setq make-backup-files         nil) ; Don't want any backup files
+(setq auto-save-list-file-name  nil) ; Don't want any .saves files
+(setq auto-save-default         nil) ; Don't want any auto saving
+#+END_SRC
+** Замена yes-or-on на y-or-n
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+* UI
+** Theme
+#+BEGIN_SRC emacs-lisp
+(use-package doom-themes
+  :ensure t
+  :config
+  (load-theme 'doom-Iosvkem))
+#+END_SRC
+** Переключение темы
+*** Светлая тема
+#+BEGIN_SRC emacs-lisp
+(defun set-light-theme()
+  (interactive)
+  (load-theme 'doom-opera-light))
+  (global-set-key (kbd "<f8>") 'set-light-theme)
+#+END_SRC
+*** Темная тема
+#+BEGIN_SRC emacs-lisp
+(defun set-night-theme()
+  (interactive)
+  (load-theme 'doom-Iosvkem))
+  (global-set-key (kbd "<f9>") 'set-night-theme)
+#+END_SRC
+** Modeline
+#+BEGIN_SRC emacs-lisp
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode))
+#+END_SRC
+** Icons
+#+BEGIN_SRC emacs-lisp
+(use-package all-the-icons
+  :ensure    t)
+#+END_SRC
+** Отображение времени
+#+BEGIN_SRC emacs-lisp
+(setq display-time-24hr-format t) ; 24-часовой временной формат в mode-line
+(display-time-mode             t) ; показывать часы в mode-line
+(size-indication-mode          t) ; размер файла в %-ах
+#+END_SRC
+** Размер окна
+#+BEGIN_SRC emacs-lisp
+(when (window-system)
+  (set-frame-size (selected-frame) 100 40))
+* Modes
+** IDO
+#+BEGIN_SRC emacs-lisp
+(use-package ido
+  :ensure t
+  :config
+  (ido-mode t)
+  (ido-everywhere t)
+  (icomplete-mode t)
+  (setq ido-virtual-buffers t)
+  (setq ido-enable-flex-matching t))
+#+END_SRC
+* General packages
+** BS
+#+BEGIN_SRC emacs-lisp
+(use-package bs
+  :ensure t)
+;; Добавим чтобы в буфере всегда был scratch
+(setq bs-configurations
+      '(("files" "^\\*scratch\\*" nil nil bs-visits-non-file bs-sort-buffer-interns-are-last)))
+(global-set-key (kbd "<f2>") 'bs-show)
+#+END_SRC
+** Projectile
+#+BEGIN_SRC emacs-lisp
+(use-package projectile
+  :ensure t
+  :config
+  (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
+  (projectile-mode +1))
+#+END_SRC
+** Dashboard
+#+BEGIN_SRC emacs-lisp
+(use-package dashboard
+  :ensure t
+  :init
+  (progn
+    (setq dashboard-startup-banner 'logo)
+    (setq dashboard-items '((recents  . 5)
+			    (projects . 5)))
+    (setq dashboard-show-shortcuts nil)
+    (setq dashboard-center-content t)
+    (setq dashboard-set-file-icons t)
+    (setq dashboard-set-heading-icons t)
+    (setq dashboard-set-init-info t ))
+  :config
+  (dashboard-setup-startup-hook))
+
+;; Кнопки навигации
+(setq dashboard-set-navigator t)
+(setq dashboard-navigator-buttons
+      `(
+        ((,(all-the-icons-octicon "mark-github" :height 1.1 :v-adjust 0.0)
+         "Homepage"
+         "Browse homepage"
+         (lambda (&rest _) (browse-url "https://github.com/EgorTolbaev"))))))
+#+END_SRC
+** Treemacs
+#+BEGIN_SRC emacs-lisp
+(use-package treemacs
+  :ensure    t
+  :bind      ("M-n M-n" . #'treemacs))
+#+END_SRC
+** Company
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :ensure t
+  :init
+  (add-hook 'after-init-hook 'global-company-mode))
+#+END_SRC
+** Company-box
+#+BEGIN_SRC emacs-lisp
+(use-package company-box
+  :ensure    t
+  :hook      (company-mode . company-box-mode))
+#+END_SRC
+** Reverse-im
+#+BEGIN_SRC emacs-lisp
+(use-package reverse-im
+  :ensure t
+  :custom
+  (reverse-im-input-methods '("russian-computer"))
+  :config
+  (reverse-im-mode t))
+#+END_SRC
+** Magit
+#+BEGIN_SRC emacs-lisp
+(use-package magit
+  :ensure    t
+  :bind      (("C-x g" . #'magit-status)))
+#+END_SRC
+** Sr-speedbar
+#+BEGIN_SRC emacs-lisp
+(use-package sr-speedbar
+  :ensure t
+  :config
+  (setq sr-speedbar-right-side nil))
+(global-set-key (kbd "<f12>") 'sr-speedbar-toggle)
+#+END_SRC
+** Linum
+#+BEGIN_SRC emacs-lisp
+(require 'linum) ; вызвать Linum
+(setq line-number-mode   nil) ; показать номер строки в mode-line
+(global-linum-mode  t)        ; показывать номера строк во всех буферах
+(setq column-number-mode nil) ; показать номер столбца в mode-line
+(setq linum-format " %d")     ; задаем формат нумерации строк
+;; Установка фиксированной высоты чтобы нумерация не меняла размер
+;; например в режиме org-mode
+(eval-after-load "linum"
+  '(set-face-attribute 'linum nil :height 100))
+#+END_SRC
