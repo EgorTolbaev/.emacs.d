@@ -103,6 +103,7 @@
 #+BEGIN_SRC emacs-lisp
 (when (window-system)
   (set-frame-size (selected-frame) 100 40))
+#+END_SRC
 * Modes
 ** IDO
 #+BEGIN_SRC emacs-lisp
