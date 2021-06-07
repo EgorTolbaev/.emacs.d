@@ -94,6 +94,9 @@
   :ensure    t)
 #+END_SRC
 ** Org mode
+#+BEGIN_SRC emacs-lisp
+(setq org-log-done 'time)
+#+END_SRC
 *** Org bullets
 #+BEGIN_SRC emacs-lisp
 (use-package org-bullets
@@ -222,3 +225,34 @@
 (eval-after-load "linum"
   '(set-face-attribute 'linum nil :height 100))
 #+END_SRC
+* Programming
+** Web mode
+#+BEGIN_SRC emacs-lisp
+(use-package web-mode
+  :ensure t
+  :mode (("\\.css$" .  web-mode)
+         ("\\.html$" .  web-mode)))
+#+END_SRC
+** Python
+*** Company jedi
+#+BEGIN_SRC emacs-lisp
+(use-package company-jedi
+  :ensure t
+  :config
+  (add-to-list 'company-backends 'company-jedi))
+#+END_SRC
+*** Pyvenv
+#+BEGIN_SRC emacs-lisp
+(use-package pyvenv
+  :ensure t
+  :hook ((python-mode . pyvenv-mode)))
+#+END_SRC
+** Flycheck
+ #+BEGIN_SRC emacs-lisp
+ (use-package flycheck
+   :ensure t
+   :config
+   (global-flycheck-mode)
+   (global-set-key (kbd "C-c n") 'flycheck-next-error)
+   (global-set-key (kbd "C-c e") 'list-flycheck-errors))
+ #+END_SRC

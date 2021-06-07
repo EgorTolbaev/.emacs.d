@@ -33,8 +33,10 @@
 (when (file-exists-p custom-file)
   (load custom-file))
 
-(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-(setq org-log-done 'time)
+(setq auto-mode-alist
+          (append '(("\\.org\\'" . org-mode)
+                    ("\\.py\\'" . python-mode))
+                  auto-mode-alist))
 
 (org-babel-load-file (expand-file-name "~/.emacs.d/myconfig.org"))
 
