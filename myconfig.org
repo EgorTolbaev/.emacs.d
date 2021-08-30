@@ -1,3 +1,6 @@
+#+AUTHOR: Egor Tolbaev
+#+TITLE: GNU Emacs Configuration
+
 * General settings
 ** Не показывать стартовое сообщение
 #+BEGIN_SRC emacs-lisp
@@ -61,6 +64,7 @@
 #+END_SRC
 * UI
 ** Theme
+Я использую темы [[https://github.com/hlissner/emacs-doom-themes][doom-themes]] в сочетании с [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#modeline][doom-modeline]]. Для отображения значков в doom-modeline использую [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#icons][all-the-icons]]
 #+BEGIN_SRC emacs-lisp
 (use-package doom-themes
   :ensure t
@@ -83,21 +87,27 @@
   (global-set-key (kbd "<f9>") 'set-night-theme)
 #+END_SRC
 ** Modeline
+GitHub: [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
 #+BEGIN_SRC emacs-lisp
 (use-package doom-modeline
   :ensure t
   :hook (after-init . doom-modeline-mode))
 #+END_SRC
 ** Icons
+GitHub: [[https://github.com/domtronn/all-the-icons.el][all-the-icons]]
 #+BEGIN_SRC emacs-lisp
 (use-package all-the-icons
   :ensure    t)
 #+END_SRC
 ** Org mode
+Заметки с отметкой времени
 #+BEGIN_SRC emacs-lisp
 (setq org-log-done 'time)
 #+END_SRC
 *** Org bullets
+Github: [[https://github.com/sabof/org-bullets][org-bullets]]
+
+Показывать маркеры режима организации как символы UTF-8.
 #+BEGIN_SRC emacs-lisp
 (use-package org-bullets
   :ensure t
@@ -105,11 +115,11 @@
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 #+END_SRC
 ** Markdown
- [[https://jblevins.org/projects/markdown-mode/][Markdown Mode for Emacs]]
+[[https://jblevins.org/projects/markdown-mode/][Markdown Mode for Emacs]]
 
- Прежде чем использовать этот пакет, нужно убедиться что установлен какой то процессор Markdown
+Прежде чем использовать этот пакет, нужно убедиться что установлен какой то процессор Markdown
 
- В моем конфиге это - pandoc
+В моем конфиге это - [[https://github.com/jgm/pandoc][pandoc]]
  #+BEGIN_SRC emacs-lisp
  (use-package markdown-mode
   :ensure t
@@ -132,6 +142,7 @@
 #+END_SRC
 * Modes
 ** IVY
+[[https://github.com/abo-abo/swiper/tree/7cdde66c95d5205287e88010bc7a3a978c931db0][Ivy]] - это общий механизм завершения для Emacs. Использую в месте с [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#ivy-rich][ivy-rich]] и [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#counsel][counsel]]
 #+BEGIN_SRC emacs-lisp
 (use-package ivy
   :diminish
@@ -167,6 +178,9 @@
          ("C-r" . 'counsel-minibuffer-history)))
 #+END_SRC
 ** Helpful
+GitHub: [[https://github.com/Wilfred/helpful][helpful]]
+
+Helpful - это альтернатива встроенной справке Emacs, которая предоставляет гораздо больше контекстной информации.
 #+BEGIN_SRC emacs-lisp
 (use-package helpful
   :custom
@@ -179,6 +193,9 @@
   ([remap describe-key] . helpful-key))
 #+END_SRC
 ** Which Key
+GitHub: [[https://github.com/justbur/emacs-which-key][which-key]]
+
+which-key- это второстепенный режим для Emacs, который отображает привязки клавиш после введенной вами неполной команды (префикса) во всплывающем окне.
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
   :init (which-key-mode)
@@ -188,6 +205,9 @@
 #+END_SRC
 * General packages
 ** BS
+GitHub: [[https://github.com/emacs-mirror/emacs/blob/master/lisp/bs.el][bs]]
+
+Меню для выбора и отображения буферов
 #+BEGIN_SRC emacs-lisp
 (use-package bs
   :ensure t)
@@ -197,6 +217,9 @@
 (global-set-key (kbd "<f2>") 'bs-show)
 #+END_SRC
 ** Projectile
+GitHub: [[https://github.com/bbatsov/projectile/tree/db5748ea4a6428136769e7e50c6d0a12aa7acd8f][projectile]]
+
+Projectile - это библиотека взаимодействия с проектом для Emacs.
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
   :ensure t
@@ -205,6 +228,9 @@
   (projectile-mode +1))
 #+END_SRC
 ** Dashboard
+GitHub: [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
+
+Расширяемый стартовый экран Emacs.
 #+BEGIN_SRC emacs-lisp
 (use-package dashboard
   :ensure t
@@ -231,12 +257,18 @@
          (lambda (&rest _) (browse-url "https://github.com/EgorTolbaev"))))))
 #+END_SRC
 ** Treemacs
+GitHub: [[https://github.com/Alexander-Miller/treemacs][treemacs]]
+
+Treemacs - файловый менеджер древовидной структуры для Emacs
 #+BEGIN_SRC emacs-lisp
 (use-package treemacs
   :ensure    t
   :bind      ("M-n M-n" . #'treemacs))
 #+END_SRC
 ** Company
+GitHub: [[https://github.com/company-mode/company-mode][company]]
+
+Company - это фреймворк для автозавершения текста для Emacs.
 #+BEGIN_SRC emacs-lisp
 (use-package company
   :ensure t
@@ -244,12 +276,18 @@
   (add-hook 'after-init-hook 'global-company-mode))
 #+END_SRC
 ** Company-box
+GitHub: [[https://github.com/sebastiencs/company-box][company-box]]
+
+Фирменный интерфейс с иконками.
 #+BEGIN_SRC emacs-lisp
 (use-package company-box
   :ensure    t
   :hook      (company-mode . company-box-mode))
 #+END_SRC
 ** Reverse-im
+GitHub: [[https://github.com/emacsmirror/reverse-im][reverse-im]]
+
+Переопределяет функциональную-клавишную-карту для предпочтительных методов ввода для перевода входных последовательностей на английский язык.
 #+BEGIN_SRC emacs-lisp
 (use-package reverse-im
   :ensure t
@@ -259,12 +297,16 @@
   (reverse-im-mode t))
 #+END_SRC
 ** Magit
+GitHub: [[https://github.com/magit/magit][magit]]
+
+Magit - это интерфейс системы контроля версий Git.
 #+BEGIN_SRC emacs-lisp
 (use-package magit
   :ensure    t
   :bind      (("C-x g" . #'magit-status)))
 #+END_SRC
 ** Sr-speedbar
+GitHub: [[https://github.com/emacsorphanage/sr-speedbar/tree/77a83fb50f763a465c021eca7343243f465b4a47][sr-speedbar]]
 #+BEGIN_SRC emacs-lisp
 (use-package sr-speedbar
   :ensure t
@@ -286,6 +328,9 @@
 #+END_SRC
 * Programming
 ** Web mode
+GitHub: [[https://github.com/fxbois/web-mode][web-mode]]
+
+web-mode - это режим emacs для редактирования веб-шаблонов.
 #+BEGIN_SRC emacs-lisp
 (use-package web-mode
   :ensure t
@@ -294,6 +339,9 @@
 #+END_SRC
 ** Python
 *** Company jedi
+Github: [[https://github.com/emacsorphanage/company-jedi][company-jedi]]
+
+Серверная часть завершения для Python JEDI.
 #+BEGIN_SRC emacs-lisp
 (use-package company-jedi
   :ensure t
@@ -307,6 +355,9 @@
   :hook ((python-mode . pyvenv-mode)))
 #+END_SRC
 ** Flycheck
+GitHub: [[https://github.com/flycheck/flycheck][flycheck]]
+
+Современное расширение для оперативной проверки синтаксиса для GNU Emacs
  #+BEGIN_SRC emacs-lisp
  (use-package flycheck
    :ensure t
