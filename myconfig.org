@@ -104,6 +104,21 @@
   :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 #+END_SRC
+** Markdown
+ [[https://jblevins.org/projects/markdown-mode/][Markdown Mode for Emacs]]
+
+ Прежде чем использовать этот пакет, нужно убедиться что установлен какой то процессор Markdown
+
+ В моем конфиге это - pandoc
+ #+BEGIN_SRC emacs-lisp
+ (use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "pandoc"))
+ #+END_SRC
 ** Отображение времени
 #+BEGIN_SRC emacs-lisp
 (setq display-time-24hr-format t) ; 24-часовой временной формат в mode-line
