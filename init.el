@@ -1,3 +1,13 @@
+;;; init.el --- GNU Emacs Configuration
+
+;; Author: Egor Tolbaev <egor05.09.97@gmail.com>
+;; Homepage: https://github.com/EgorTolbaev/.emacs.d
+
+;;; Code:
+
+;; Ускоряем запуск за счет уменьшения частоты мусора
+(setq gc-cons-threshold (* 50 1000 1000))
+
 ;; Определение ОС
 (defun system-is-linux()
   (string-equal system-type "gnu/linux"))
@@ -40,8 +50,6 @@
 
 (org-babel-load-file (expand-file-name "~/.emacs.d/myconfig.org"))
 
+(setq gc-cons-threshold (* 10 1000 1000))
 
-;; Что бы работало первый раз нужно добавить шрифты,
-;; на винде нужно еще выбрать путь куда поставить и установить их в ручную
-;; Оставлю здесь чтобы не забыть:)
-;; (all-the-icons-install-fonts)
+;;; init.el ends here

@@ -1,31 +1,82 @@
 #+AUTHOR: Egor Tolbaev
 #+TITLE: GNU Emacs Configuration
 
+* Table of Contents                                                     :TOC_3:
+- [[#about][About]]
+- [[#general-settings][General settings]]
+  - [[#defaults][Defaults]]
+  - [[#fonts][Fonts]]
+  - [[#remove-mouse-interface][Remove Mouse Interface]]
+  - [[#кодировка][Кодировка]]
+  - [[#парные-элементы][Парные элементы]]
+  - [[#перенос-по-словам][Перенос по словам]]
+  - [[#чистим-пробелы][Чистим пробелы]]
+  - [[#отключить-сохранений][Отключить сохранений]]
+- [[#ui][UI]]
+  - [[#theme][Theme]]
+  - [[#переключение-темы][Переключение темы]]
+    - [[#светлая-тема][Светлая тема]]
+    - [[#темная-тема][Темная тема]]
+  - [[#modeline][Modeline]]
+  - [[#icons][Icons]]
+  - [[#org-mode][Org mode]]
+    - [[#org-bullets][Org bullets]]
+    - [[#toc-org][Toc org]]
+  - [[#markdown][Markdown]]
+  - [[#отображение-времени][Отображение времени]]
+  - [[#размер-окна][Размер окна]]
+- [[#modes][Modes]]
+  - [[#ivy][IVY]]
+  - [[#ivy-rich][IVY-RICH]]
+  - [[#counsel][COUNSEL]]
+  - [[#helpful][Helpful]]
+  - [[#which-key][Which Key]]
+- [[#general-packages][General packages]]
+  - [[#bs][BS]]
+  - [[#projectile][Projectile]]
+  - [[#dashboard][Dashboard]]
+  - [[#treemacs][Treemacs]]
+  - [[#company][Company]]
+  - [[#company-box][Company-box]]
+  - [[#reverse-im][Reverse-im]]
+  - [[#magit][Magit]]
+  - [[#sr-speedbar][Sr-speedbar]]
+  - [[#linum][Linum]]
+- [[#programming][Programming]]
+  - [[#web-mode][Web mode]]
+  - [[#python][Python]]
+    - [[#company-jedi][Company jedi]]
+    - [[#pyvenv][Pyvenv]]
+  - [[#flycheck][Flycheck]]
+
+* About
+Я решил создать свою собственную конфигурацию GNU Emacs, что бы упростить мою повседневную жизнь, добавив сценарии и полезные функции.
+
+Для управления конфигурациями пакетов я использую пакет use-package от John Wiegley.
 * General settings
-** Не показывать стартовое сообщение
+** Defaults
+Для лучшего взаимодействия с GNU Emacs я использую следующие значения по умолчанию.
 #+BEGIN_SRC emacs-lisp
-(setq inhibit-splash-screen   t)
-(setq ingibit-startup-message t) ; экран приветствия можно вызвать комбинацией C-h C-a
+ (setq inhibit-splash-screen t)                    ; Не показывать стартовое сообщение
+ (setq ingibit-startup-message t)                  ; Экран приветствия можно вызвать комбинацией C-h C-a
+ (setq ring-bell-function 'ignore)                 ; Отключить звуковой сигнал
+ (setq user-full-name "Egor Tolbaev")              ; Имя пользователя
+ (setq user-mail-address "egor05.09.97@gmail.com") ; Email пользователя
+ (blink-cursor-mode -1)                            ; Курсор не мигает
+ (fset 'yes-or-no-p 'y-or-n-p)                     ; Замена yes-or-on на y-or-n
 #+END_SRC
-** Не показывать меню
+** Fonts
+Использую [[https://github.com/adobe-fonts/source-code-pro][Source Code Pro]] или Consolas еще не решил:)
 #+BEGIN_SRC emacs-lisp
-(menu-bar-mode -1)
+;;(set-face-attribute 'default nil :font "Consolas")
+(set-face-attribute 'default nil :font "Source Code Pro Medium")
+(set-fontset-font t 'latin "Noto Sans")
 #+END_SRC
-** Не показывать панель инструментов
+** Remove Mouse Interface
 #+BEGIN_SRC emacs-lisp
-(tool-bar-mode -1)
-#+END_SRC
-** Не показывать полосу прокрутки
-#+BEGIN_SRC emacs-lisp
-(scroll-bar-mode   -1)
-#+END_SRC
-** Курсор не мигает
-#+BEGIN_SRC emacs-lisp
-(blink-cursor-mode -1)
-#+END_SRC
-** Отключить звуковой сигнал
-#+BEGIN_SRC emacs-lisp
-(setq ring-bell-function 'ignore)
+(menu-bar-mode -1)   ; Не показывать меню
+(scroll-bar-mode -1) ; Не показывать полосу прокрутки
+(tool-bar-mode -1)   ; Не показывать панель инструментов
 #+END_SRC
 ** Кодировка
 #+BEGIN_SRC emacs-lisp
@@ -38,29 +89,28 @@
 (prefer-coding-system                   'utf-8)
 #+END_SRC
 ** Парные элементы
+Теперь при вводе парного элемента типа "(" они автоматически закрываються
 #+BEGIN_SRC emacs-lisp
 (electric-pair-mode t)
 (show-paren-mode 1)
 #+END_SRC
 ** Перенос по словам
+Слова которые не помещается по размеру фрейма переносится на другую сторку
 #+BEGIN_SRC emacs-lisp
 (setq word-wrap t)
 (global-visual-line-mode t)
 #+END_SRC
 ** Чистим пробелы
+При сохранение файла удаляются лишние пробелы в конце строки и файла.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'before-save-hook '(lambda ()
 			       (delete-trailing-whitespace)))
 #+END_SRC
 ** Отключить сохранений
 #+BEGIN_SRC emacs-lisp
-(setq make-backup-files         nil) ; Don't want any backup files
-(setq auto-save-list-file-name  nil) ; Don't want any .saves files
-(setq auto-save-default         nil) ; Don't want any auto saving
-#+END_SRC
-** Замена yes-or-on на y-or-n
-#+BEGIN_SRC emacs-lisp
-(fset 'yes-or-no-p 'y-or-n-p)
+(setq make-backup-files nil)        ; Не нужны файлы резервных копий
+(setq auto-save-list-file-name nil) ; Не нужны файлы .saves
+(setq auto-save-default nil)        ; Не хочу автосохранения
 #+END_SRC
 * UI
 ** Theme
@@ -95,9 +145,15 @@ GitHub: [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
 #+END_SRC
 ** Icons
 GitHub: [[https://github.com/domtronn/all-the-icons.el][all-the-icons]]
+
+Для того, чтобы значки работали, очень важно, чтобы вы установили шрифты ресурсов, включенные в этот пакет.
+
+M-x all-the-icons-install-fonts
+
+Для Windows эта функция предложит указать каталог для загрузки, чтобы вы могли установить их вручную.
 #+BEGIN_SRC emacs-lisp
 (use-package all-the-icons
-  :ensure    t)
+  :ensure t)
 #+END_SRC
 ** Org mode
 Заметки с отметкой времени
@@ -113,6 +169,15 @@ Github: [[https://github.com/sabof/org-bullets][org-bullets]]
   :ensure t
   :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+#+END_SRC
+*** Toc org
+GitHub: [[https://github.com/snosov1/toc-org][toc-org]]
+
+Удобный сбособ делать оглавления автоматически, просто в первом заголовке добавить тег :TOC:
+#+BEGIN_SRC emacs-lisp
+(use-package toc-org
+  :after org
+  :hook (org-mode . toc-org-enable))
 #+END_SRC
 ** Markdown
 [[https://jblevins.org/projects/markdown-mode/][Markdown Mode for Emacs]]
@@ -132,8 +197,8 @@ Github: [[https://github.com/sabof/org-bullets][org-bullets]]
 ** Отображение времени
 #+BEGIN_SRC emacs-lisp
 (setq display-time-24hr-format t) ; 24-часовой временной формат в mode-line
-(display-time-mode             t) ; показывать часы в mode-line
-(size-indication-mode          t) ; размер файла в %-ах
+(display-time-mode t)             ; показывать часы в mode-line
+(size-indication-mode t)          ; размер файла в %-ах
 #+END_SRC
 ** Размер окна
 #+BEGIN_SRC emacs-lisp
@@ -262,8 +327,8 @@ GitHub: [[https://github.com/Alexander-Miller/treemacs][treemacs]]
 Treemacs - файловый менеджер древовидной структуры для Emacs
 #+BEGIN_SRC emacs-lisp
 (use-package treemacs
-  :ensure    t
-  :bind      ("M-n M-n" . #'treemacs))
+  :ensure t
+  :bind   ("M-n M-n" . #'treemacs))
 #+END_SRC
 ** Company
 GitHub: [[https://github.com/company-mode/company-mode][company]]
@@ -281,8 +346,8 @@ GitHub: [[https://github.com/sebastiencs/company-box][company-box]]
 Фирменный интерфейс с иконками.
 #+BEGIN_SRC emacs-lisp
 (use-package company-box
-  :ensure    t
-  :hook      (company-mode . company-box-mode))
+  :ensure t
+  :hook   (company-mode . company-box-mode))
 #+END_SRC
 ** Reverse-im
 GitHub: [[https://github.com/emacsmirror/reverse-im][reverse-im]]
@@ -302,8 +367,8 @@ GitHub: [[https://github.com/magit/magit][magit]]
 Magit - это интерфейс системы контроля версий Git.
 #+BEGIN_SRC emacs-lisp
 (use-package magit
-  :ensure    t
-  :bind      (("C-x g" . #'magit-status)))
+  :ensure t
+  :bind   (("C-x g" . #'magit-status)))
 #+END_SRC
 ** Sr-speedbar
 GitHub: [[https://github.com/emacsorphanage/sr-speedbar/tree/77a83fb50f763a465c021eca7343243f465b4a47][sr-speedbar]]
@@ -316,9 +381,9 @@ GitHub: [[https://github.com/emacsorphanage/sr-speedbar/tree/77a83fb50f763a465c0
 #+END_SRC
 ** Linum
 #+BEGIN_SRC emacs-lisp
-(require 'linum) ; вызвать Linum
-(setq line-number-mode   nil) ; показать номер строки в mode-line
-(global-linum-mode  t)        ; показывать номера строк во всех буферах
+(require 'linum)              ; вызвать Linum
+(setq line-number-mode nil)   ; показать номер строки в mode-line
+(global-linum-mode t)         ; показывать номера строк во всех буферах
 (setq column-number-mode nil) ; показать номер столбца в mode-line
 (setq linum-format " %d")     ; задаем формат нумерации строк
 ;; Установка фиксированной высоты чтобы нумерация не меняла размер
@@ -334,8 +399,8 @@ web-mode - это режим emacs для редактирования веб-ш
 #+BEGIN_SRC emacs-lisp
 (use-package web-mode
   :ensure t
-  :mode (("\\.css$" .  web-mode)
-         ("\\.html$" .  web-mode)))
+  :mode (("\\.css$"  . web-mode)
+         ("\\.html$" . web-mode)))
 #+END_SRC
 ** Python
 *** Company jedi
