@@ -42,6 +42,8 @@
   - [[#magit][Magit]]
   - [[#sr-speedbar][Sr-speedbar]]
   - [[#linum][Linum]]
+  - [[#browser][Browser]]
+    - [[#engine-mode][Engine-mode]]
 - [[#programming][Programming]]
   - [[#web-mode][Web mode]]
   - [[#python][Python]]
@@ -95,7 +97,7 @@
 (show-paren-mode 1)
 #+END_SRC
 ** Перенос по словам
-Слова которые не помещается по размеру фрейма переносится на другую сторку
+Слова которые не помещаются по размеру фрейма переносится на другую сторку
 #+BEGIN_SRC emacs-lisp
 (setq word-wrap t)
 (global-visual-line-mode t)
@@ -173,7 +175,7 @@ Github: [[https://github.com/sabof/org-bullets][org-bullets]]
 *** Toc org
 GitHub: [[https://github.com/snosov1/toc-org][toc-org]]
 
-Удобный сбособ делать оглавления автоматически, просто в первом заголовке добавить тег :TOC:
+Удобный способ делать оглавления автоматически, просто в первом заголовке добавить тег :TOC:
 #+BEGIN_SRC emacs-lisp
 (use-package toc-org
   :after org
@@ -390,6 +392,42 @@ GitHub: [[https://github.com/emacsorphanage/sr-speedbar/tree/77a83fb50f763a465c0
 ;; например в режиме org-mode
 (eval-after-load "linum"
   '(set-face-attribute 'linum nil :height 100))
+#+END_SRC
+** Browser
+Я решил использовать в связке с Emacs браузер, ориентированный на клавиатуру, с минимальным графическим интерфейсом [[https://github.com/qutebrowser/qutebrowser][Qutebrowser]]
+
+При установки qutebrowser на Windows возможно потребуеться вручную добавить путь в переменную $path = C:\Program Files\qutebrowser
+#+BEGIN_SRC emacs-lisp
+(use-package browse-url
+  :ensure nil
+  :custom
+  (browse-url-browser-function 'browse-url-generic)
+  (browse-url-generic-program "qutebrowser"))
+#+END_SRC
+*** Engine-mode
+Github: [[https://github.com/hrs/engine-mode/tree/e0910f141f2d37c28936c51c3c8bb8a9ca0c01d1][engine-mode]]
+
+Удобный способ совершать поиск не выходя из Emacs
+#+BEGIN_SRC emacs-lisp
+(use-package engine-mode
+  :defer 3
+  :config
+  (defengine duckduckgo
+    "https://duckduckgo.com/?q=%s"
+    :keybinding "d")
+
+  (defengine github
+    "https://github.com/search?ref=simplesearch&q=%s"
+    :keybinding "g")
+
+  (defengine google-images
+    "http://www.google.com/images?hl=en&source=hp&biw=1440&bih=795&gbv=2&aq=f&aqi=&aql=&oq=&q=%s"
+    :keybinding "i")
+
+  (defengine youtube
+    "http://www.youtube.com/results?aq=f&oq=&search_query=%s"
+    :keybinding "y")
+  (engine-mode t))
 #+END_SRC
 * Programming
 ** Web mode
