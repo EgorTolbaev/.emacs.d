@@ -19,14 +19,15 @@
     - [[#темная-тема][Темная тема]]
   - [[#modeline][Modeline]]
   - [[#icons][Icons]]
+  - [[#отображение-времени][Отображение времени]]
+  - [[#размер-окна][Размер окна]]
+- [[#office][Office]]
   - [[#org-mode][Org mode]]
     - [[#agenda][Agenda]]
     - [[#capture][Capture]]
     - [[#org-bullets][Org bullets]]
     - [[#toc-org][Toc org]]
   - [[#markdown][Markdown]]
-  - [[#отображение-времени][Отображение времени]]
-  - [[#размер-окна][Размер окна]]
 - [[#modes][Modes]]
   - [[#ivy][IVY]]
   - [[#ivy-rich][IVY-RICH]]
@@ -159,6 +160,18 @@ M-x all-the-icons-install-fonts
 (use-package all-the-icons
   :ensure t)
 #+END_SRC
+** Отображение времени
+#+BEGIN_SRC emacs-lisp
+(setq display-time-24hr-format t) ; 24-часовой временной формат в mode-line
+(display-time-mode t)             ; показывать часы в mode-line
+(size-indication-mode t)          ; размер файла в %-ах
+#+END_SRC
+** Размер окна
+#+BEGIN_SRC emacs-lisp
+(when (window-system)
+  (set-frame-size (selected-frame) 100 40))
+#+END_SRC
+* Office
 ** Org mode
 [[https://orgmode.org/][Org mode]] предназначен для ведения заметок, списков дел, планирования проектов и многого другого.
 
@@ -250,17 +263,6 @@ GitHub: [[https://github.com/snosov1/toc-org][toc-org]]
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "pandoc"))
  #+END_SRC
-** Отображение времени
-#+BEGIN_SRC emacs-lisp
-(setq display-time-24hr-format t) ; 24-часовой временной формат в mode-line
-(display-time-mode t)             ; показывать часы в mode-line
-(size-indication-mode t)          ; размер файла в %-ах
-#+END_SRC
-** Размер окна
-#+BEGIN_SRC emacs-lisp
-(when (window-system)
-  (set-frame-size (selected-frame) 100 40))
-#+END_SRC
 * Modes
 ** IVY
 [[https://github.com/abo-abo/swiper/tree/7cdde66c95d5205287e88010bc7a3a978c931db0][Ivy]] - это общий механизм завершения для Emacs. Использую в месте с [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#ivy-rich][ivy-rich]] и [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#counsel][counsel]]
