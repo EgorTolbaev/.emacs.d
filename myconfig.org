@@ -20,6 +20,8 @@
   - [[#modeline][Modeline]]
   - [[#icons][Icons]]
   - [[#org-mode][Org mode]]
+    - [[#agenda][Agenda]]
+    - [[#capture][Capture]]
     - [[#org-bullets][Org bullets]]
     - [[#toc-org][Toc org]]
   - [[#markdown][Markdown]]
@@ -158,9 +160,61 @@ M-x all-the-icons-install-fonts
   :ensure t)
 #+END_SRC
 ** Org mode
-Заметки с отметкой времени
+[[https://orgmode.org/][Org mode]] предназначен для ведения заметок, списков дел, планирования проектов и многого другого.
+
+Описание: [[https://orgmode.org/manual/Handling-Links.html][org-store-link]], [[https://orgmode.org/manual/Capture.html][org-capture]], [[https://orgmode.org/manual/Agenda-Commands.html][org-agenda]]
 #+BEGIN_SRC emacs-lisp
-(setq org-log-done 'time)
+(setq org-log-done 'time)                      ; Заметки с отметкой времени
+(global-set-key (kbd "C-c l") 'org-store-link) ; Создать ссылку
+(global-set-key (kbd "C-c c") 'org-capture)    ; Создать заметку
+#+END_SRC
+Кастомные статусы
+
+/Статус с маркером "!" означает что нужна отметка времени/
+
+/Статус с маркером "@" означает что нужно указать заметку/
+#+BEGIN_SRC emacs-lisp
+(setq org-todo-keywords '((sequence "TODO(t)"
+                                    "IN-PROGRESS(s)"
+				    "PAUSE(p)"
+                                    "NEXT(n)"
+                                    "WAITING(w@/!)""|" "DONE(x!)" "CANCEL(c@)")))
+#+END_SRC
+*** Agenda
+Для планирования задач я использую =org-agenda=
+
+Я помещаю свои =org= файлы в [[https://www.dropbox.com/?_hp=c][Dropbox]] чтобы иметь возможность проверять свою повестку дня и обновлять ее с нескольких компьютеров и смартфонов.
+
+Для смартфона использую [[https://github.com/orgzly/orgzly-android][Orgzly]]
+
+/Открыть org-agenda:/ =C-c a=
+
+/Закрыть org-agenda:/ =q=
+
+/Отобразить за нужный период времени:/ =v=
+
+/Grid Log:/ =l=
+
+Также Вы можете добавить =agenda= в [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#dashboard][dashboard]] указав в dashboard-items: (agenda)
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-c a") 'org-agenda)
+(when (system-is-windows)
+     (setq org-agenda-files '("c:/Users/user/Dropbox/org/tasks")))
+(when (system-is-linux)
+     (setq org-agenda-files '("~/Dropbox/org/tasks")))
+#+END_SRC
+*** Capture
+Я использую  =capture= для быстрых заметок, разделяя их по категориям при помощи тегов.
+#+BEGIN_SRC emacs-lisp
+(when (system-is-windows)
+     (set 'path_note "c:/Users/user/Dropbox/org/notes.org"))
+(when (system-is-linux)
+     (set 'path_note "~/Dropbox/org/notes.org"))
+
+(setq org-capture-templates
+      '(("n" "Notes" entry (file+headline path_note "Notes")
+         "* TODO %? %^g \nCreated %U\n  %i\n")))
+
 #+END_SRC
 *** Org bullets
 Github: [[https://github.com/sabof/org-bullets][org-bullets]]
