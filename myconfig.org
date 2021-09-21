@@ -28,6 +28,11 @@
     - [[#org-bullets][Org bullets]]
     - [[#toc-org][Toc org]]
   - [[#markdown][Markdown]]
+- [[#file-management][File Management]]
+  - [[#dired][Dired]]
+  - [[#treemacs][Treemacs]]
+    - [[#treemacs-1][Treemacs]]
+    - [[#treemacs-icons][Treemacs Icons]]
 - [[#modes][Modes]]
   - [[#ivy][IVY]]
   - [[#ivy-rich][IVY-RICH]]
@@ -38,7 +43,6 @@
   - [[#bs][BS]]
   - [[#projectile][Projectile]]
   - [[#dashboard][Dashboard]]
-  - [[#treemacs][Treemacs]]
   - [[#company][Company]]
   - [[#company-box][Company-box]]
   - [[#reverse-im][Reverse-im]]
@@ -263,6 +267,89 @@ GitHub: [[https://github.com/snosov1/toc-org][toc-org]]
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "pandoc"))
  #+END_SRC
+* File Management
+** Dired
+Dired - это встроенный файловый менеджер для Emacs.
+
+[[https://gist.github.com/EgorTolbaev/fda9fb22de6b97e7587542597a963240][Тут несколько ключевых привязок.]]
+
+/В OS Windows может быть не корректная сортировка файлов и дополнительная информация, это неприятно, на работе не мешает./
+
+Для отображения icons в =Dired= использую [[#treemacs-icons][Treemacs Icons]].
+#+BEGIN_SRC emacs-lisp
+(use-package dired
+  :ensure nil
+  :commands (dired dired-jump)
+  :bind (("C-x C-j" . dired-jump))
+  :custom ((dired-listing-switches "-agho --group-directories-first")))
+
+(use-package dired-single)
+
+;(use-package all-the-icons-dired
+;  :hook (dired-mode . all-the-icons-dired-mode))
+#+END_SRC
+** Treemacs
+GitHub: [[https://github.com/Alexander-Miller/treemacs][treemacs]]
+
+Treemacs - файловый менеджер древовидной структуры для Emacs.
+*** Treemacs
+ #+BEGIN_SRC emacs-lisp
+ (use-package treemacs
+   :init
+   (with-eval-after-load 'winum
+     (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+   :custom
+   (treemacs-collapse-dirs 3)
+   (treemacs-deferred-git-apply-delay 0.5)
+   (treemacs-display-in-side-window t)
+   (treemacs-file-event-delay 5000)
+   (treemacs-file-follow-delay 0.2)
+   (treemacs-follow-after-init t)
+   (treemacs-follow-recenter-distance 0.1)
+   (treemacs-git-command-pipe "")
+   (treemacs-goto-tag-strategy 'refetch-index)
+   (treemacs-indentation 2)
+   (treemacs-indentation-string " ")
+   (treemacs-is-never-other-window nil)
+   (treemacs-max-git-entries 5000)
+   (treemacs-no-png-images nil)
+   (treemacs-no-delete-other-windows t)
+   (treemacs-project-follow-cleanup nil)
+   (treemacs-persist-file (expand-file-name ".cache/treemacs-persist" user-emacs-directory))
+   (treemacs-recenter-after-file-follow nil)
+   (treemacs-recenter-after-tag-follow nil)
+   (treemacs-show-cursor nil)
+   (treemacs-show-hidden-files t)
+   (treemacs-silent-filewatch nil)
+   (treemacs-silent-refresh nil)
+   (treemacs-sorting 'alphabetic-desc)
+   (treemacs-space-between-root-nodes t)
+   (treemacs-tag-follow-cleanup t)
+   (treemacs-tag-follow-delay 1.5)
+   (treemacs-width 35)
+   :config
+   ;; The default width and height of the icons is 22 pixels. If you are
+   ;; using a Hi-DPI display, uncomment this to double the icon size.
+   ;;(treemacs-resize-icons 44)
+   (treemacs-follow-mode t)
+   (treemacs-filewatch-mode t)
+   (treemacs-fringe-indicator-mode t)
+   :bind
+   (("M-0"       . treemacs-select-window)
+    ("C-x t 1"   . treemacs-delete-other-windows)
+    ("C-x t t"   . treemacs)
+    ("C-x t B"   . treemacs-bookmark)
+    ("C-x t C-t" . treemacs-find-file)
+    ("C-x t M-t" . treemacs-find-tag)))
+ #+END_SRC
+*** Treemacs Icons
+Позволяет использовать значки treemacs в dired буферах.
+ #+BEGIN_SRC emacs-lisp
+(use-package treemacs-icons-dired
+  ;:after (treemacs dired)
+  :ensure t
+  :config (treemacs-icons-dired-mode))
+ #+END_SRC
 * Modes
 ** IVY
 [[https://github.com/abo-abo/swiper/tree/7cdde66c95d5205287e88010bc7a3a978c931db0][Ivy]] - это общий механизм завершения для Emacs. Использую в месте с [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#ivy-rich][ivy-rich]] и [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#counsel][counsel]]
@@ -378,15 +465,6 @@ GitHub: [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
          "Homepage"
          "Browse homepage"
          (lambda (&rest _) (browse-url "https://github.com/EgorTolbaev"))))))
-#+END_SRC
-** Treemacs
-GitHub: [[https://github.com/Alexander-Miller/treemacs][treemacs]]
-
-Treemacs - файловый менеджер древовидной структуры для Emacs
-#+BEGIN_SRC emacs-lisp
-(use-package treemacs
-  :ensure t
-  :bind   ("M-n M-n" . #'treemacs))
 #+END_SRC
 ** Company
 GitHub: [[https://github.com/company-mode/company-mode][company]]
