@@ -35,6 +35,7 @@
   (message "Emacs will install use-package.el")
   (package-refresh-contents)
   (package-install 'use-package))
+
 (require 'use-package)
 (setq use-package-always-ensure t)
 
