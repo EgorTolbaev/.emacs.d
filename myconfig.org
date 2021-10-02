@@ -6,7 +6,6 @@
 - [[#general-settings][General settings]]
   - [[#defaults][Defaults]]
   - [[#fonts][Fonts]]
-  - [[#remove-mouse-interface][Remove Mouse Interface]]
   - [[#кодировка][Кодировка]]
   - [[#парные-элементы][Парные элементы]]
   - [[#перенос-по-словам][Перенос по словам]]
@@ -48,7 +47,6 @@
   - [[#reverse-im][Reverse-im]]
   - [[#magit][Magit]]
   - [[#sr-speedbar][Sr-speedbar]]
-  - [[#linum][Linum]]
   - [[#browser][Browser]]
     - [[#engine-mode][Engine-mode]]
 - [[#programming][Programming]]
@@ -66,13 +64,33 @@
 ** Defaults
 Для лучшего взаимодействия с GNU Emacs я использую следующие значения по умолчанию.
 #+BEGIN_SRC emacs-lisp
- (setq inhibit-splash-screen t)                    ; Не показывать стартовое сообщение
- (setq ingibit-startup-message t)                  ; Экран приветствия можно вызвать комбинацией C-h C-a
- (setq ring-bell-function 'ignore)                 ; Отключить звуковой сигнал
- (setq user-full-name "Egor Tolbaev")              ; Имя пользователя
- (setq user-mail-address "egor05.09.97@gmail.com") ; Email пользователя
+ (setq inhibit-startup-message t)
+
+ ;(setq ring-bell-function 'ignore)                ; Отключить звуковой сигнал
  (blink-cursor-mode -1)                            ; Курсор не мигает
  (fset 'yes-or-no-p 'y-or-n-p)                     ; Замена yes-or-on на y-or-n
+
+ (menu-bar-mode -1)    ; Не показывать меню
+ (scroll-bar-mode -1)  ; Не показывать полосу прокрутки
+ (tool-bar-mode -1)    ; Не показывать панель инструментов
+
+ (setq visible-bell t) ; Установите видимый звонок
+
+ (setq user-full-name "Egor Tolbaev")              ; Имя пользователя
+ (setq user-mail-address "egor05.09.97@gmail.com") ; Email пользователя
+
+ ;; Показ номера строки стандартными средствами
+ (column-number-mode)
+ (global-display-line-numbers-mode t)
+
+ ;; Отключить номера строк где они не нужны
+ (dolist (mode '(org-mode-hook
+                 term-mode-hook
+                 shell-mode-hook
+                 eshell-mode-hook
+                 org-agenda-mode-hook
+                 eww-mode-hook))
+   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+END_SRC
 ** Fonts
 Использую [[https://github.com/adobe-fonts/source-code-pro][Source Code Pro]] или Consolas еще не решил:)
@@ -80,12 +98,6 @@
 ;;(set-face-attribute 'default nil :font "Consolas")
 (set-face-attribute 'default nil :font "Source Code Pro Medium")
 (set-fontset-font t 'latin "Noto Sans")
-#+END_SRC
-** Remove Mouse Interface
-#+BEGIN_SRC emacs-lisp
-(menu-bar-mode -1)   ; Не показывать меню
-(scroll-bar-mode -1) ; Не показывать полосу прокрутки
-(tool-bar-mode -1)   ; Не показывать панель инструментов
 #+END_SRC
 ** Кодировка
 #+BEGIN_SRC emacs-lisp
@@ -514,18 +526,6 @@ GitHub: [[https://github.com/emacsorphanage/sr-speedbar/tree/77a83fb50f763a465c0
   :config
   (setq sr-speedbar-right-side nil))
 (global-set-key (kbd "<f12>") 'sr-speedbar-toggle)
-#+END_SRC
-** Linum
-#+BEGIN_SRC emacs-lisp
-(require 'linum)              ; вызвать Linum
-(setq line-number-mode nil)   ; показать номер строки в mode-line
-(global-linum-mode t)         ; показывать номера строк во всех буферах
-(setq column-number-mode nil) ; показать номер столбца в mode-line
-(setq linum-format " %d")     ; задаем формат нумерации строк
-;; Установка фиксированной высоты чтобы нумерация не меняла размер
-;; например в режиме org-mode
-(eval-after-load "linum"
-  '(set-face-attribute 'linum nil :height 100))
 #+END_SRC
 ** Browser
 Я решил использовать в связке с Emacs браузер, ориентированный на клавиатуру, с минимальным графическим интерфейсом [[https://github.com/qutebrowser/qutebrowser][Qutebrowser]]
