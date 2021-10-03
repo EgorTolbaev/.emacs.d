@@ -19,7 +19,7 @@
   - [[#modeline][Modeline]]
   - [[#icons][Icons]]
   - [[#отображение-времени][Отображение времени]]
-  - [[#размер-окна][Размер окна]]
+  - [[#настройка-фрейма][Настройка фрейма]]
 - [[#office][Office]]
   - [[#org-mode][Org mode]]
     - [[#basic-config][Basic Config]]
@@ -247,12 +247,18 @@ M-x all-the-icons-install-fonts
 
 #+end_src
 
-** Размер окна
+** Настройка фрейма
+
+Устанавливаю прозрачность фрейма и разворачиваю окно по умолчанию.
+
+/Что бы это было красиво следите за свои рабочим столом и окнами по зади фрейма Emacs/
 
 #+begin_src emacs-lisp
 
-  (when (window-system)
-    (set-frame-size (selected-frame) 100 40))
+  (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
+  (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
+  (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 #+end_src
 
