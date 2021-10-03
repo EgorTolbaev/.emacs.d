@@ -22,10 +22,12 @@
   - [[#размер-окна][Размер окна]]
 - [[#office][Office]]
   - [[#org-mode][Org mode]]
-    - [[#agenda][Agenda]]
+    - [[#basic-config][Basic Config]]
     - [[#capture][Capture]]
     - [[#org-bullets][Org bullets]]
+    - [[#center-org-buffers][Center Org Buffers]]
     - [[#toc-org][Toc org]]
+    - [[#block-templates][Block Templates]]
   - [[#markdown][Markdown]]
 - [[#file-management][File Management]]
   - [[#dired][Dired]]
@@ -106,9 +108,11 @@
 
 #+begin_src emacs-lisp
 
+  (defvar et/default-font-size 110)
   ;;(set-face-attribute 'default nil :font "Consolas")
-  (set-face-attribute 'default nil :font "Source Code Pro Medium")
-  (set-fontset-font t 'latin "Noto Sans")
+  (set-face-attribute 'default nil :font "Source Code Pro Medium" :height et/default-font-size)
+  ;(set-fontset-font t 'latin "Noto Sans")
+  (set-fontset-font t 'latin "Cantarell")
 
 #+end_src
 
@@ -260,72 +264,95 @@ M-x all-the-icons-install-fonts
 
 Описание: [[https://orgmode.org/manual/Handling-Links.html][org-store-link]], [[https://orgmode.org/manual/Capture.html][org-capture]], [[https://orgmode.org/manual/Agenda-Commands.html][org-agenda]]
 
+*** Basic Config
+
+Этот раздел содержит базовую конфигурацию =org-mode=, а также конфигурацию для повестоки дня.
+
 #+begin_src emacs-lisp
 
-  (setq org-log-done 'time)                      ; Заметки с отметкой времени
+  (defun efs/org-mode-setup ()
+  (org-indent-mode)
+  ;;(variable-pitch-mode 1)
+  (visual-line-mode 1))
+
+  (use-package org
+    :hook (org-mode . efs/org-mode-setup)
+    :config
+    (setq org-ellipsis " ▾")
+
+    (setq org-agenda-start-with-log-mode t)
+    (setq org-log-done 'time)  ; Заметки с отметкой времени
+    (setq org-log-into-drawer t)
+
+    (when (system-is-windows)
+      (setq org-agenda-files '("c:/Users/user/Dropbox/OrgFiles/tasks/job.org"
+                               "c:/Users/user/Dropbox/OrgFiles/tasks/house.org"
+                               "c:/Users/user/Dropbox/OrgFiles/tasks/study.org"
+                               "c:/Users/user/Dropbox/OrgFiles/tasks/meet.org"
+                               "c:/Users/user/Dropbox/OrgFiles/holidays/Birthdays.org")))
+    (when (system-is-linux)
+      (setq org-agenda-files '("~/Dropbox/OrgFiles/tasks/job.org"
+                               "~/Dropbox/OrgFiles/house.org"
+                               "~/Dropbox/OrgFiles/study.org"
+                               "~/Dropbox/OrgFiles/Birthdays.org"
+                               )))
+
+    (setq org-todo-keywords '((sequence "TODO(t)"
+                                        "IN-PROGRESS(s)"
+                                        "PAUSE(p)"
+                                        "NEXT(n)"
+                                        "ACTIVE(a)"
+                                        "WAITING(w@/!)""|" "DONE(d!)" "CANCEL(c@)")))
+
+    (setq org-tag-alist
+    '((:startgroup)
+       (:endgroup)
+       ("@home" . ?H)
+       ("@work" . ?W)
+       ("agenda" . ?a)
+       ("meeting" .?m)
+       ("note" . ?n)
+       ("idea" . ?i)))
+
+
+    (setq org-agenda-custom-commands
+     '(("d" "Dashboard"
+       ((agenda "" ((org-deadline-warning-days 7)))
+          (tags-todo "meeting/ACTIVE" ((org-agenda-overriding-header "Meetings"))))))))
+
   (global-set-key (kbd "C-c l") 'org-store-link) ; Создать ссылку
   (global-set-key (kbd "C-c c") 'org-capture)    ; Создать заметку
-
-#+end_src
-
-Кастомные статусы
-
-/Статус с маркером "!" означает что нужна отметка времени/
-
-/Статус с маркером "@" означает что нужно указать заметку/
-
-#+begin_src emacs-lisp
-
-  (setq org-todo-keywords '((sequence "TODO(t)"
-                                      "IN-PROGRESS(s)"
-				      "PAUSE(p)"
-                                      "NEXT(n)"
-                                      "WAITING(w@/!)""|" "DONE(x!)" "CANCEL(c@)")))
-
-#+end_src
-
-*** Agenda
-
-Для планирования задач я использую =org-agenda=
-
-Я помещаю свои =org= файлы в [[https://www.dropbox.com/?_hp=c][Dropbox]] чтобы иметь возможность проверять свою повестку дня и обновлять ее с нескольких компьютеров и смартфонов.
-
-Для смартфона использую [[https://github.com/orgzly/orgzly-android][Orgzly]]
-
-/Открыть org-agenda:/ =C-c a=
-
-/Закрыть org-agenda:/ =q=
-
-/Отобразить за нужный период времени:/ =v=
-
-/Grid Log:/ =l=
-
-Также Вы можете добавить =agenda= в [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#dashboard][dashboard]] указав в dashboard-items: (agenda)
-
-#+begin_src emacs-lisp
-
-  (global-set-key (kbd "C-c a") 'org-agenda)
-  (when (system-is-windows)
-       (setq org-agenda-files '("c:/Users/user/Dropbox/org/tasks")))
-  (when (system-is-linux)
-       (setq org-agenda-files '("~/Dropbox/org/tasks")))
+  (global-set-key (kbd "C-c a") 'org-agenda)     ; Открыть agenda
 
 #+end_src
 
 *** Capture
 
-Я использую  =capture= для быстрых заметок, разделяя их по категориям при помощи тегов.
+Я использую  =capture= для быстрого создания задач, заметок и другой организации дел.
 
 #+begin_src emacs-lisp
 
   (when (system-is-windows)
-       (set 'path_note "c:/Users/user/Dropbox/org/notes.org"))
+       (set 'path_note    "c:/Users/user/Dropbox/OrgFiles/notes.org")
+       (set 'path_meeting "c:/Users/user/Dropbox/OrgFiles/tasks/meet.org")
+       (set 'path_task    "c:/Users/user/Dropbox/OrgFiles/tasks/job.org"))
   (when (system-is-linux)
-       (set 'path_note "~/Dropbox/org/notes.org"))
+       (set 'path_note    "~/Dropbox/OrgFiles/notes.org")
+       (set 'path_meeting "~/Dropbox/OrgFiles/tasks/meet.org")
+       (set 'path_task    "~/Dropbox/OrgFiles/tasks/job.org"))
 
   (setq org-capture-templates
         '(("n" "Notes" entry (file+headline path_note "Notes")
-           "* TODO %? %^g \nCreated %U\n  %i\n")))
+           "* TODO %? %^g \nCreated %U\n  %i\n")
+
+          ("m"  "Meeting work")
+          ("mn" "New meeting work" entry (file+olp path_meeting "New meetings")
+           "* ACTIVE %? :meeting:  %i" :empty-lines 1)
+
+          ("w"  "Work")
+          ("wn" "New task" entry (file+olp path_task "Tasks")
+           "* TODO %?\nDEADLINE:  %^t  %i" :empty-lines 1)))
+
 
 #+end_src
 
@@ -333,13 +360,33 @@ M-x all-the-icons-install-fonts
 
 Github: [[https://github.com/sabof/org-bullets][org-bullets]]
 
-Показывать маркеры режима организации как символы UTF-8.
+=org-bullets= заменяет звездочки заголовков в буферах режима организации более красивыми символами.
 
 #+begin_src emacs-lisp
 
   (use-package org-bullets
-    :config
-    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+    :after org
+    :hook (org-mode . org-bullets-mode)
+    :custom
+    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+#+end_src
+
+*** Center Org Buffers
+
+Github: [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]]
+
+Мне нравится когда файл в режим =org-mode= центрируется в буфере.
+
+#+begin_src emacs-lisp
+
+  (defun et/org-mode-visual-fill ()
+    (setq visual-fill-column-width 100
+          visual-fill-column-center-text t)
+    (visual-fill-column-mode 1))
+
+  (use-package visual-fill-column
+    :hook (org-mode . et/org-mode-visual-fill))
 
 #+end_src
 
@@ -355,6 +402,20 @@ GitHub: [[https://github.com/snosov1/toc-org][toc-org]]
   (use-package toc-org
     :after org
     :hook (org-mode . toc-org-enable))
+
+#+end_src
+
+*** Block Templates
+
+Шаблоны позволяют вводить что-то вроде, =<el=, затем при нажатии =Tab= разворачиваеться шаблон.
+
+#+begin_src emacs-lisp
+
+  (require 'org-tempo)
+
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("py" . "src python"))
 
 #+end_src
 
