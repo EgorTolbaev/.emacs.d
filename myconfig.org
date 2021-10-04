@@ -57,6 +57,7 @@
     - [[#company-jedi][Company jedi]]
     - [[#pyvenv][Pyvenv]]
   - [[#flycheck][Flycheck]]
+  - [[#rainbow-delimiters][Rainbow Delimiters]]
 
 * About
 
@@ -276,13 +277,13 @@ M-x all-the-icons-install-fonts
 
 #+begin_src emacs-lisp
 
-  (defun efs/org-mode-setup ()
+  (defun et/org-mode-setup ()
   (org-indent-mode)
   ;;(variable-pitch-mode 1)
   (visual-line-mode 1))
 
   (use-package org
-    :hook (org-mode . efs/org-mode-setup)
+    :hook (org-mode . et/org-mode-setup)
     :config
     (setq org-ellipsis " ▾")
 
@@ -866,5 +867,18 @@ GitHub: [[https://github.com/flycheck/flycheck][flycheck]]
       (global-flycheck-mode)
       (global-set-key (kbd "C-c n") 'flycheck-next-error)
       (global-set-key (kbd "C-c e") 'list-flycheck-errors))
+
+#+end_src
+
+** Rainbow Delimiters
+
+GitHub: [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]]
+
+Полезно в режимах программирования, потому что раскрашивают вложенные круглые скобки в соответствии с их глубиной вложенности.
+
+#+begin_src emacs-lisp
+
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
 
 #+end_src
