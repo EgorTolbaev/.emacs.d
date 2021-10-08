@@ -301,31 +301,28 @@ M-x all-the-icons-install-fonts
       (setq org-agenda-files '("~/Dropbox/OrgFiles/tasks/job.org"
                                "~/Dropbox/OrgFiles/house.org"
                                "~/Dropbox/OrgFiles/study.org"
-                               "~/Dropbox/OrgFiles/Birthdays.org"
-                               )))
+                               "~/Dropbox/OrgFiles/Birthdays.org")))
 
     (setq org-todo-keywords '((sequence "TODO(t)"
                                         "IN-PROGRESS(s)"
-                                        "PAUSE(p)"
+                                        "PAUSE(p@/!)"
                                         "NEXT(n)"
                                         "ACTIVE(a)"
                                         "WAITING(w@/!)""|" "DONE(d!)" "CANCEL(c@)")))
 
     (setq org-tag-alist
-    '((:startgroup)
-       (:endgroup)
-       ("@home" . ?H)
-       ("@work" . ?W)
-       ("agenda" . ?a)
-       ("meeting" .?m)
-       ("note" . ?n)
-       ("idea" . ?i)))
-
+     '((:startgroup)
+        (:endgroup)
+        ("@home" . ?H)
+        ("@work" . ?W)
+        ("agenda" . ?a)
+        ("meeting" .?m)
+        ("note" . ?n)
+        ("idea" . ?i)))
 
     (setq org-agenda-custom-commands
-     '(("d" "Dashboard"
-       ((agenda "" ((org-deadline-warning-days 7)))
-          (tags-todo "meeting/ACTIVE" ((org-agenda-overriding-header "Meetings"))))))))
+      '(("d" "Meetings today" tags-todo "+SCHEDULED>=\"<today>\"+SCHEDULED<\"<tomorrow>\"+meeting/ACTIVE"))))
+
 
   (global-set-key (kbd "C-c l") 'org-store-link) ; Создать ссылку
   (global-set-key (kbd "C-c c") 'org-capture)    ; Создать заметку
@@ -354,11 +351,11 @@ M-x all-the-icons-install-fonts
 
           ("m"  "Meeting work")
           ("mn" "New meeting work" entry (file+olp path_meeting "New meetings")
-           "* ACTIVE %? :meeting:  %i" :empty-lines 1)
+           "* ACTIVE %? :meeting: \nSCHEDULED: %^t  %i" :empty-lines 1)
 
           ("w"  "Work")
           ("wn" "New task" entry (file+olp path_task "Tasks")
-           "* TODO %?\nDEADLINE:  %^t  %i" :empty-lines 1)))
+           "* TODO %?\nSCHEDULED:  %^t \nDEADLINE: %^t  %i" :empty-lines 1)))
 
 
 #+end_src
@@ -677,7 +674,7 @@ GitHub: [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
   (use-package dashboard
     :init
      (progn
-       (setq dashboard-startup-banner "~/.emacs.d/logo.png")
+       (setq dashboard-startup-banner "~/.emacs.d/images/ET_Light_Small.png")
        (setq dashboard-items '((recents  . 5)
                                (projects . 5)))
        (setq dashboard-show-shortcuts nil)
