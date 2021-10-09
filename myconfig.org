@@ -1,8 +1,13 @@
 #+AUTHOR: Egor Tolbaev
 #+TITLE: GNU Emacs Configuration
+#+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 
 * Table of Contents                                                     :TOC_3:
 - [[#about][About]]
+- [[#startup-performance][Startup Performance]]
+- [[#переменные-ос][Переменные ОС]]
+- [[#package-system-setup][Package System Setup]]
+- [[#keep-emacsd-clean][Keep .emacs.d Clean]]
 - [[#general-settings][General settings]]
   - [[#defaults][Defaults]]
   - [[#fonts][Fonts]]
@@ -11,6 +16,7 @@
   - [[#перенос-по-словам][Перенос по словам]]
   - [[#чистим-пробелы][Чистим пробелы]]
   - [[#отключить-сохранений][Отключить сохранений]]
+  - [[#auto-mode-alist][Auto mode alist]]
 - [[#ui][UI]]
   - [[#theme][Theme]]
   - [[#переключение-темы][Переключение темы]]
@@ -28,6 +34,7 @@
     - [[#center-org-buffers][Center Org Buffers]]
     - [[#toc-org][Toc org]]
     - [[#block-templates][Block Templates]]
+    - [[#auto-tangle-configuration-files][Auto-tangle Configuration Files]]
   - [[#markdown][Markdown]]
 - [[#file-management][File Management]]
   - [[#dired][Dired]]
@@ -48,7 +55,6 @@
   - [[#company-box][Company-box]]
   - [[#reverse-im][Reverse-im]]
   - [[#magit][Magit]]
-  - [[#sr-speedbar][Sr-speedbar]]
   - [[#browser][Browser]]
     - [[#engine-mode][Engine-mode]]
 - [[#programming][Programming]]
@@ -64,6 +70,66 @@
 Я решил создать свою собственную конфигурацию GNU Emacs, что бы упростить мою повседневную жизнь, добавив сценарии и полезные функции.
 
 Для управления конфигурациями пакетов я использую пакет use-package от John Wiegley.
+
+Этот файл генерирует [[https://github.com/EgorTolbaev/.emacs.d/blob/master/init.el][init.el]] который будет загружен Emacs при запуске.
+
+* Startup Performance
+
+Ускорьте запуск, уменьшив частоту сборки мусора.
+
+#+begin_src emacs-lisp
+
+  (setq gc-cons-threshold (* 50 1000 1000))
+
+#+end_src
+
+* Переменные ОС
+
+Некоторые части конфигурации отличаются в зависимости от системы, поэтому я определил переменные для дальнейшего использовани.
+
+#+begin_src emacs-lisp
+
+  (defun system-is-linux()
+    (string-equal system-type "gnu/linux"))
+  (defun system-is-windows()
+    (string-equal system-type "windows-nt"))
+
+#+end_src
+
+* Package System Setup
+
+[[https://github.com/jwiegley/use-package][use-package]] - упрощает установку пакетов.
+
+#+begin_src emacs-lisp
+
+  (require 'package)
+
+  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                           ("elpa" . "https://elpa.gnu.org/packages/")))
+
+  (package-initialize)
+  (unless package-archive-contents
+    (package-refresh-contents))
+
+  (unless (package-installed-p 'use-package)
+      (package-install 'use-package))
+
+  (require 'use-package)
+  (setq use-package-always-ensure t)
+
+#+end_src
+
+* Keep .emacs.d Clean
+
+Переносим переменные, созданные Custom в отдельный файл.
+
+#+begin_src emacs-lisp
+
+  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (when (file-exists-p custom-file)
+    (load custom-file))
+
+#+end_src
 
 * General settings
 
@@ -98,6 +164,7 @@
                  shell-mode-hook
                  eshell-mode-hook
                  org-agenda-mode-hook
+                 treemacs-mode-hook
                  eww-mode-hook))
       (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
@@ -170,6 +237,18 @@
   (setq make-backup-files nil)        ; Не нужны файлы резервных копий
   (setq auto-save-list-file-name nil) ; Не нужны файлы .saves
   (setq auto-save-default nil)        ; Не хочу автосохранения
+
+#+end_src
+
+** Auto mode alist
+
+#+begin_src emacs-lisp
+
+  (setq auto-mode-alist
+      (append
+       '(
+         ("\\.el$"  . lisp-mode)
+         ("\\.org$" . org-mode))))
 
 #+end_src
 
@@ -299,9 +378,9 @@ M-x all-the-icons-install-fonts
                                "c:/Users/user/Dropbox/OrgFiles/holidays/Birthdays.org")))
     (when (system-is-linux)
       (setq org-agenda-files '("~/Dropbox/OrgFiles/tasks/job.org"
-                               "~/Dropbox/OrgFiles/house.org"
-                               "~/Dropbox/OrgFiles/study.org"
-                               "~/Dropbox/OrgFiles/Birthdays.org")))
+                               "~/Dropbox/OrgFiles/tasks/house.org"
+                               "~/Dropbox/OrgFiles/tasks/study.org"
+                               "~/Dropbox/OrgFiles/holidays/Birthdays.org")))
 
     (setq org-todo-keywords '((sequence "TODO(t)"
                                         "IN-PROGRESS(s)"
@@ -420,6 +499,27 @@ GitHub: [[https://github.com/snosov1/toc-org][toc-org]]
   (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("py" . "src python"))
+
+#+end_src
+
+*** Auto-tangle Configuration Files
+
+Каждый раз при сохранении =myconfig.org= экспортирует конфигурацию в =init.el=
+
+#+begin_src emacs-lisp
+
+  (when (system-is-windows)
+    (defvar et/path-expand "./myconfig.org"))
+  (when (system-is-linux)
+    (defvar et/path-expand "~/.emacs.d/myconfig.org"))
+
+  (defun et/org-babel-tangle-config ()
+      (when (string-equal (buffer-file-name)
+                        (expand-file-name et/path-expand))
+      (let ((org-confirm-babel-evaluate nil))
+        (org-babel-tangle))))
+
+  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'et/org-babel-tangle-config)))
 
 #+end_src
 
@@ -749,19 +849,6 @@ Magit - это интерфейс системы контроля версий G
 
   (use-package magit
     :bind   (("C-x g" . #'magit-status)))
-
-#+end_src
-
-** Sr-speedbar
-
-GitHub: [[https://github.com/emacsorphanage/sr-speedbar/tree/77a83fb50f763a465c021eca7343243f465b4a47][sr-speedbar]]
-
-#+begin_src emacs-lisp
-  (use-package sr-speedbar
-    :config
-      (setq sr-speedbar-right-side nil))
-
-  (global-set-key (kbd "<f12>") 'sr-speedbar-toggle)
 
 #+end_src
 
