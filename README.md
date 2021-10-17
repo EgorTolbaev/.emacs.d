@@ -9,18 +9,18 @@
 
 ---
 
-<p align="center"><img src="assets/screenshots/emacs-preview.png"/></p>
+<p align="center"><img src="assets/screenshots/emacs-preview.PNG"/></p>
 
 <details> 
   <summary>Screenshots</summary>
   Dashboard
-  <p align="center"><img src="assets/screenshots/dashboard.png"/></p>
+  <p align="center"><img src="assets/screenshots/dashboard.PNG"/></p>
   Org-mode
-  <p align="center"><img src="assets/screenshots/org-mode.png"/></p>
+  <p align="center"><img src="assets/screenshots/org-mode.PNG"/></p>
   Dired
-  <p align="center"><img src="assets/screenshots/dired.png"/></p>
+  <p align="center"><img src="assets/screenshots/dired.PNG"/></p>
   Treemacs
-  <p align="center"><img src="assets/screenshots/treemacs.png"/></p>
+  <p align="center"><img src="assets/screenshots/treemacs.PNG"/></p>
 </details>
 
 <br/>
