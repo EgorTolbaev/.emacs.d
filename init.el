@@ -45,12 +45,13 @@
 
 ;; Отключить номера строк где они не нужны
 (dolist (mode '(org-mode-hook
-               term-mode-hook
-               shell-mode-hook
-               eshell-mode-hook
-               org-agenda-mode-hook
-               treemacs-mode-hook
-               eww-mode-hook))
+                term-mode-hook
+                shell-mode-hook
+                eshell-mode-hook
+                org-agenda-mode-hook
+                treemacs-mode-hook
+                eww-mode-hook
+                calendar-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 (defvar et/default-font-size 110)
@@ -165,13 +166,15 @@
 (global-set-key (kbd "C-c a") 'org-agenda)     ; Открыть agenda
 
 (when (system-is-windows)
-     (set 'path_note    "c:/Users/user/Dropbox/OrgFiles/notes.org")
-     (set 'path_meeting "c:/Users/user/Dropbox/OrgFiles/tasks/meet.org")
-     (set 'path_task    "c:/Users/user/Dropbox/OrgFiles/tasks/job.org"))
+  (set 'path_note    "c:/Users/user/Dropbox/OrgFiles/notes.org")
+  (set 'path_journal "c:/Users/user/Dropbox/OrgFiles/Journal.org")
+  (set 'path_meeting "c:/Users/user/Dropbox/OrgFiles/tasks/meet.org")
+  (set 'path_task    "c:/Users/user/Dropbox/OrgFiles/tasks/job.org"))
 (when (system-is-linux)
-     (set 'path_note    "~/Dropbox/OrgFiles/notes.org")
-     (set 'path_meeting "~/Dropbox/OrgFiles/tasks/meet.org")
-     (set 'path_task    "~/Dropbox/OrgFiles/tasks/job.org"))
+  (set 'path_note    "~/Dropbox/OrgFiles/notes.org")
+  (set 'path_journal "~/Dropbox/OrgFiles/Journal.org")
+  (set 'path_meeting "~/Dropbox/OrgFiles/tasks/meet.org")
+  (set 'path_task    "~/Dropbox/OrgFiles/tasks/job.org"))
 
 (setq org-capture-templates
       '(("n" "Notes" entry (file+headline path_note "Notes")
@@ -183,7 +186,14 @@
 
         ("w"  "Work")
         ("wn" "New task" entry (file+olp path_task "Tasks")
-         "* TODO %?\nSCHEDULED:  %^t \nDEADLINE: %^t  %i" :empty-lines 1)))
+         "* TODO %?\nSCHEDULED:  %^t \nDEADLINE: %^t  %i" :empty-lines 1)
+
+        ("j" "Journal Entries")
+        ("jj" "Journal" entry
+         (file+olp+datetree path_journal)
+         "\n* %<%I:%M %p> - %? :journal:\n\nNote:\n\n"
+         :clock-in :clock-resume
+         :empty-lines 1)))
 
 (use-package org-bullets
   :after org

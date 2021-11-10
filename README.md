@@ -46,13 +46,7 @@ List of files:
 
 ## Usage Instructions
 
----
-
-<br/>
-
 ### Linux и macOS
-
-<br/>
 
 On Linux, Emacs can be found in every major Linux distribution’s package manager. On macOS you can install Emacs using Homebrew via brew install emacs.
 
@@ -67,11 +61,7 @@ git clone https://github.com/EgorTolbaev/.emacs.d
 2. Back up any existing Emacs configuration you may already have in your home directory in the `.emacs.d` folder
 3. Start Emacs!
 
-<br/>
-
 ### Windows
-
-<br/>
 
 You can download the latest Emacs version for Windows by heading to the [GNU FTP site](https://ftp.gnu.org/gnu/emacs/windows/). You can also [install Emacs via Chocolatey](https://community.chocolatey.org/packages/Emacs) if you prefer a more automated approach.
 
@@ -90,11 +80,7 @@ git clone https://github.com/EgorTolbaev/.emacs.d
 
 ## Additional settings
 
-<br/>
-
 ### Installing fonts
-
----
 
 This configuration uses the [Source Code Pro](https://github.com/adobe-fonts/source-code-pro) font by [@adobe-fonts](https://github.com/adobe-fonts) and installation instructions can be found on [this wiki page](https://github.com/adobe-fonts/source-code-pro/releases/tag/2.038R-ro%2F1.058R-it%2F1.018R-VAR).
 
@@ -104,21 +90,13 @@ In this configuration, one more font is used that will need to be installed for 
 
 However, since this is meant to be your configuration, feel free to choose your own font!
 
-<br/>
-
 ### Markdown
-
----
 
 For markdown to work, you need to install its processor. In this configuration, I use [pandoc](https://pandoc.org/), instructions on how to install it can be found [here](https://pandoc.org/installing.html).
 
 You can also use whichever markdown processor you like, just install it and make changes to the [configuration](https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#markdown).
 
-<br/>
-
 ### Qutebrowser
-
----
 
 In place with Emacs, I use [Qutebrowser](https://qutebrowser.org/), use it in place with browse-url and engine-mode, to install it read the [instructions](https://qutebrowser.org/doc/install.html).
 
