@@ -114,6 +114,10 @@
 (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
+(use-package golden-ratio
+  :config
+  (golden-ratio-mode 1))
+
 (defun et/org-mode-setup ()
 (org-indent-mode)
 ;;(variable-pitch-mode 1)

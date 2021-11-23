@@ -26,6 +26,7 @@
   - [[#icons][Icons]]
   - [[#отображение-времени][Отображение времени]]
   - [[#настройка-фрейма][Настройка фрейма]]
+  - [[#golden-ratio][Golden ratio]]
 - [[#office][Office]]
   - [[#org-mode][Org mode]]
     - [[#basic-config][Basic Config]]
@@ -341,6 +342,19 @@ M-x all-the-icons-install-fonts
 
 #+end_src
 
+** Golden ratio
+
+GitHub: [[https://github.com/roman/golden-ratio.el][golden-ratio]]
+
+Удобный способ работать с окнами, при перключении =golden-ratio= изменяет размер окна с которым работаете.
+
+#+begin_src emacs-lisp
+
+  (use-package golden-ratio
+    :config
+    (golden-ratio-mode 1))
+
+#+end_src
 * Office
 
 ** Org mode
