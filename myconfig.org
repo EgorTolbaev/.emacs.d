@@ -38,9 +38,6 @@
   - [[#markdown][Markdown]]
 - [[#file-management][File Management]]
   - [[#dired][Dired]]
-  - [[#treemacs][Treemacs]]
-    - [[#treemacs-1][Treemacs]]
-    - [[#treemacs-icons][Treemacs Icons]]
 - [[#modes][Modes]]
   - [[#ivy][IVY]]
   - [[#ivy-rich][IVY-RICH]]
@@ -49,20 +46,20 @@
   - [[#which-key][Which Key]]
 - [[#general-packages][General packages]]
   - [[#bs][BS]]
-  - [[#projectile][Projectile]]
   - [[#dashboard][Dashboard]]
-  - [[#company][Company]]
-  - [[#company-box][Company-box]]
   - [[#reverse-im][Reverse-im]]
-  - [[#magit][Magit]]
   - [[#browser][Browser]]
     - [[#engine-mode][Engine-mode]]
-- [[#programming][Programming]]
-  - [[#web-mode][Web mode]]
-  - [[#python][Python]]
-    - [[#company-jedi][Company jedi]]
-    - [[#pyvenv][Pyvenv]]
-  - [[#flycheck][Flycheck]]
+- [[#development][Development]]
+  - [[#languages][Languages]]
+    - [[#ide-features-with-lsp-mode][IDE Features with lsp-mode]]
+    - [[#debugging-with-dap-mode][Debugging with dap-mode]]
+    - [[#typescript][TypeScript]]
+    - [[#python][Python]]
+    - [[#company-mode][Company Mode]]
+    - [[#web-mode][Web mode]]
+  - [[#projectile][Projectile]]
+  - [[#magit][Magit]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
 
 * About
@@ -579,78 +576,6 @@ Dired - это встроенный файловый менеджер для Ema
 
 #+end_src
 
-** Treemacs
-
-GitHub: [[https://github.com/Alexander-Miller/treemacs][treemacs]]
-
-Treemacs - файловый менеджер древовидной структуры для Emacs.
-
-*** Treemacs
-
-#+begin_src emacs-lisp
-
-  (use-package treemacs
-    :init
-      (with-eval-after-load 'winum
-        (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-    :custom
-      (treemacs-collapse-dirs 3)
-      (treemacs-deferred-git-apply-delay 0.5)
-      (treemacs-display-in-side-window t)
-      (treemacs-file-event-delay 5000)
-      (treemacs-file-follow-delay 0.2)
-      (treemacs-follow-after-init t)
-      (treemacs-follow-recenter-distance 0.1)
-      (treemacs-git-command-pipe "")
-      (treemacs-goto-tag-strategy 'refetch-index)
-      (treemacs-indentation 2)
-      (treemacs-indentation-string " ")
-      (treemacs-is-never-other-window nil)
-      (treemacs-max-git-entries 5000)
-      (treemacs-no-png-images nil)
-      (treemacs-no-delete-other-windows t)
-      (treemacs-project-follow-cleanup nil)
-      (treemacs-persist-file (expand-file-name ".cache/treemacs-persist" user-emacs-directory))
-      (treemacs-recenter-after-file-follow nil)
-      (treemacs-recenter-after-tag-follow nil)
-      (treemacs-show-cursor nil)
-      (treemacs-show-hidden-files t)
-      (treemacs-silent-filewatch nil)
-      (treemacs-silent-refresh nil)
-      (treemacs-sorting 'alphabetic-desc)
-      (treemacs-space-between-root-nodes t)
-      (treemacs-tag-follow-cleanup t)
-      (treemacs-tag-follow-delay 1.5)
-      (treemacs-width 35)
-    :config
-      ;; The default width and height of the icons is 22 pixels. If you are
-      ;; using a Hi-DPI display, uncomment this to double the icon size.
-      ;;(treemacs-resize-icons 44)
-      (treemacs-follow-mode t)
-      (treemacs-filewatch-mode t)
-      (treemacs-fringe-indicator-mode t)
-    :bind
-      (("M-0"       . treemacs-select-window)
-       ("C-x t 1"   . treemacs-delete-other-windows)
-       ("C-x t t"   . treemacs)
-       ("C-x t B"   . treemacs-bookmark)
-       ("C-x t C-t" . treemacs-find-file)
-       ("C-x t M-t" . treemacs-find-tag)))
-
-#+end_src
-
-*** Treemacs Icons
-
-Позволяет использовать значки treemacs в dired буферах.
-
-#+begin_src emacs-lisp
-
-  (use-package treemacs-icons-dired
-    ;:after (treemacs dired)
-    :config (treemacs-icons-dired-mode))
-
-#+end_src
-
 * Modes
 ** IVY
 
@@ -758,21 +683,6 @@ GitHub: [[https://github.com/emacs-mirror/emacs/blob/master/lisp/bs.el][bs]]
 
 #+end_src
 
-** Projectile
-
-GitHub: [[https://github.com/bbatsov/projectile/tree/db5748ea4a6428136769e7e50c6d0a12aa7acd8f][projectile]]
-
-Projectile - это библиотека взаимодействия с проектом для Emacs.
-
-#+begin_src emacs-lisp
-
-  (use-package projectile
-    :config
-      (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
-      (projectile-mode +1))
-
-#+end_src
-
 ** Dashboard
 
 GitHub: [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
@@ -807,32 +717,6 @@ GitHub: [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
 
 #+end_src
 
-** Company
-
-GitHub: [[https://github.com/company-mode/company-mode][company]]
-
-Company - это фреймворк для автозавершения текста для Emacs.
-
-#+begin_src emacs-lisp
-
-  (use-package company
-    :init
-      (add-hook 'after-init-hook 'global-company-mode))
-
-#+end_src
-** Company-box
-
-GitHub: [[https://github.com/sebastiencs/company-box][company-box]]
-
-Фирменный интерфейс с иконками.
-
-#+begin_src emacs-lisp
-
-  (use-package company-box
-    :hook   (company-mode . company-box-mode))
-
-#+end_src
-
 ** Reverse-im
 
 GitHub: [[https://github.com/emacsmirror/reverse-im][reverse-im]]
@@ -846,19 +730,6 @@ GitHub: [[https://github.com/emacsmirror/reverse-im][reverse-im]]
       (reverse-im-input-methods '("russian-computer"))
     :config
       (reverse-im-mode t))
-
-#+end_src
-
-** Magit
-
-GitHub: [[https://github.com/magit/magit][magit]]
-
-Magit - это интерфейс системы контроля версий Git.
-
-#+begin_src emacs-lisp
-
-  (use-package magit
-    :bind   (("C-x g" . #'magit-status)))
 
 #+end_src
 
@@ -909,8 +780,209 @@ Github: [[https://github.com/hrs/engine-mode/tree/e0910f141f2d37c28936c51c3c8bb8
 
 #+end_src
 
-* Programming
-** Web mode
+* Development
+
+** Languages
+
+*** IDE Features with lsp-mode
+
+**** lsp-mode
+
+GitHub: [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
+
+Я ипользую =lsp-mode=, чтобы сделать IDE-подобную функциональность. Прежде чем настроить =lsp-mode=, ознакомьтесь c [[https://emacs-lsp.github.io/lsp-mode/page/languages/][документацией для своего языка]].
+
+#+begin_src emacs-lisp
+
+  (defun et/lsp-mode-setup ()
+    (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+    (lsp-headerline-breadcrumb-mode))
+
+  (use-package lsp-mode
+    :commands (lsp lsp-deferred)
+    :hook (lsp-mode . et/lsp-mode-setup)
+    :init
+    (setq lsp-keymap-prefix "C-c l")
+    :config
+    (lsp-enable-which-key-integration t))
+
+#+end_src
+
+**** lsp-ui
+
+[[https://emacs-lsp.github.io/lsp-ui/][lsp-ui]] - это набор улучшений пользовательского интерфейса, созданных на основе, =lsp-mode= которые делают Emacs еще более похожим на IDE.
+
+#+begin_src emacs-lisp
+
+  (use-package lsp-ui
+    :hook (lsp-mode . lsp-ui-mode)
+    :custom
+    (lsp-ui-doc-position 'bottom))
+
+#+end_src
+
+**** lsp-treemacs
+
+GitHub: [[https://github.com/emacs-lsp/lsp-treemacs][lsp-treemacs]]
+
+Treemacs - файловый менеджер древовидной структуры для Emacs.
+
+treemacs-icons-dired - позволяет использовать значки treemacs в dired буферах.
+
+=M-x=:
+ - =lsp-treemacs-symbols= - Показать дерево символов в текущем файле;
+ - =lsp-treemacs-references= - Показать древовидную структуру для ссылок символа под курсором;
+ - =lsp-treemacs-error-list= - Показать древовидную структуру диагностических сообщений в проекте.
+
+#+begin_src emacs-lisp
+
+  (use-package lsp-treemacs
+    :after lsp)
+
+  (global-set-key (kbd "C-x t t") 'treemacs)
+  (global-set-key (kbd "C-x t s") 'lsp-treemacs-symbols)
+
+  (use-package treemacs-icons-dired
+    :config (treemacs-icons-dired-mode))
+
+#+end_src
+
+**** lsp-ivy
+
+GitHub: [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
+
+Упрощает поиск в коде.
+
+=M-x=:
+- =lsp-ivy-workspace-symbol= - Поиск имени символа в рабочей области текущего проекта;
+- =lsp-ivy-global-workspace-symbol= - Поиск имени символа во всех активных рабочих областях проекта.
+
+#+begin_src emacs-lisp
+
+  (use-package lsp-ivy)
+
+#+end_src
+
+*** Debugging with dap-mode
+
+[[https://emacs-lsp.github.io/dap-mode/][dap-mode]] - это пакет для отладки в Emacs.
+
+Документацию по настройки языков можно посмотреть [[https://emacs-lsp.github.io/dap-mode/page/configuration/][тут]].
+
+=dap-breakpoint-toggle= - поставить точку остановы;
+=dap-breakpoint-delete= - удалить точку остановы;
+=dap-ui-breakpoint-list= - спосок всех точек остановы;
+=dap-debug= - запустить отладку;
+=dap-hydra= - посмотреть как управлять отладкой;
+
+#+begin_src emacs-lisp
+
+  (use-package dap-mode)
+
+#+end_src
+
+*** TypeScript
+
+На данный момент не использую, оставил как пример, для дальнейшей настройки JS
+
+#+begin_src emacs-lisp
+
+  ;(use-package typescript-mode
+  ;  :mode "\\.ts\\'"
+  ;  :hook (typescript-mode . lsp-deferred)
+  ;  :config
+  ;  (setq typescript-indent-level 2)
+  ;  (require 'dap-node)
+  ;  (dap-node-setup))
+
+#+end_src
+
+*Важная заметка!* Для =lsp-mode= работы с TypeScript (и JavaScript) вам необходимо установить языковой сервер на вашем компьютере. Если у вас установлен Node.js, самый простой способ сделать это - выполнить следующую команду:
+
+#+begin_src shell :tangle no
+
+  npm i -g typescript-language-server; npm i -g typescript
+
+#+end_src
+
+*** Python
+
+Для Python использую =lsp-mode= и =dap-mode=.
+
+В данной конфигурации используется [[https://emacs-lsp.github.io/lsp-mode/page/lsp-pyls/][pyls]], по этому убедитесь что у вас установлен языковой сервер
+
+#+begin_src sh :tangle no
+
+  pip install --user "python-language-server[all]"
+  pip install python-lsp-server
+
+#+end_src
+
+Также вам может понадобиться debugger и среда тестированияя pytest
+
+#+begin_src sh :tangle no
+
+  pip3 install --user debugpy
+  pip3 install --user pytest
+
+#+end_src
+
+*Важная заметка!* если при использование OS Windows возникли проблемы, с нормальной работы Python при открытии файлов, попробутей сначало запустить среду Python внутри Emacs при помощи =run-python=.
+
+#+begin_src emacs-lisp
+
+    (use-package python-mode
+      :ensure t
+      :hook (python-mode . lsp-deferred)
+      :custom
+      ;; NOTE: Set these if Python 3 is called "python3" on your system!
+      ;; (python-shell-interpreter "python3")
+      ;; (dap-python-executable "python3")
+      (dap-python-debugger 'debugpy)
+      :config
+      (require 'dap-python))
+
+#+end_src
+
+Для =virtualenv= можно использовать =pyvenv=. Чтобы запустить используйте =pyvenv-activate=.
+
+#+begin_src emacs-lisp
+
+  (use-package pyvenv
+    :config
+    (pyvenv-mode 1))
+
+#+end_src
+
+*** Company Mode
+
+GitHub: [[https://github.com/company-mode/company-mode][company]]
+
+Company - это фреймворк для автозавершения текста для Emacs.
+
+GitHub: [[https://github.com/sebastiencs/company-box][company-box]]
+
+Фирменный интерфейс с иконками.
+
+#+begin_src emacs-lisp
+
+  (use-package company
+    :after lsp-mode
+    :hook (lsp-mode . company-mode)
+    :bind (:map company-active-map
+           ("<tab>" . company-complete-selection))
+          (:map lsp-mode-map
+           ("<tab>" . company-indent-or-complete-common))
+    :custom
+    (company-minimum-prefix-length 1)
+    (company-idle-delay 0.0))
+
+  (use-package company-box
+    :hook (company-mode . company-box-mode))
+
+#+end_src
+
+*** Web mode
 
 GitHub: [[https://github.com/fxbois/web-mode][web-mode]]
 
@@ -924,43 +996,31 @@ web-mode - это режим emacs для редактирования веб-ш
 
 #+end_src
 
-** Python
-*** Company jedi
+** Projectile
 
-Github: [[https://github.com/emacsorphanage/company-jedi][company-jedi]]
+GitHub: [[https://github.com/bbatsov/projectile/tree/db5748ea4a6428136769e7e50c6d0a12aa7acd8f][projectile]]
 
-Серверная часть завершения для Python JEDI.
+Projectile - это библиотека взаимодействия с проектом для Emacs.
 
 #+begin_src emacs-lisp
 
-  (use-package company-jedi
+  (use-package projectile
     :config
-      (add-to-list 'company-backends 'company-jedi))
+      (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
+      (projectile-mode +1))
 
 #+end_src
 
-*** Pyvenv
+** Magit
+
+GitHub: [[https://github.com/magit/magit][magit]]
+
+Magit - это интерфейс системы контроля версий Git.
 
 #+begin_src emacs-lisp
 
-  (use-package pyvenv
-    :hook ((python-mode . pyvenv-mode)))
-
-#+end_src
-
-** Flycheck
-
-GitHub: [[https://github.com/flycheck/flycheck][flycheck]]
-
-Современное расширение для оперативной проверки синтаксиса для GNU Emacs
-
-#+begin_src emacs-lisp
-
-  (use-package flycheck
-    :config
-      (global-flycheck-mode)
-      (global-set-key (kbd "C-c n") 'flycheck-next-error)
-      (global-set-key (kbd "C-c e") 'list-flycheck-errors))
+  (use-package magit
+    :bind   (("C-x g" . #'magit-status)))
 
 #+end_src
 

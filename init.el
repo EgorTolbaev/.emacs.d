@@ -250,58 +250,6 @@
 ;; (use-package all-the-icons-dired
 ;;   :hook (dired-mode . all-the-icons-dired-mode))
 
-(use-package treemacs
-  :init
-    (with-eval-after-load 'winum
-      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-  :custom
-    (treemacs-collapse-dirs 3)
-    (treemacs-deferred-git-apply-delay 0.5)
-    (treemacs-display-in-side-window t)
-    (treemacs-file-event-delay 5000)
-    (treemacs-file-follow-delay 0.2)
-    (treemacs-follow-after-init t)
-    (treemacs-follow-recenter-distance 0.1)
-    (treemacs-git-command-pipe "")
-    (treemacs-goto-tag-strategy 'refetch-index)
-    (treemacs-indentation 2)
-    (treemacs-indentation-string " ")
-    (treemacs-is-never-other-window nil)
-    (treemacs-max-git-entries 5000)
-    (treemacs-no-png-images nil)
-    (treemacs-no-delete-other-windows t)
-    (treemacs-project-follow-cleanup nil)
-    (treemacs-persist-file (expand-file-name ".cache/treemacs-persist" user-emacs-directory))
-    (treemacs-recenter-after-file-follow nil)
-    (treemacs-recenter-after-tag-follow nil)
-    (treemacs-show-cursor nil)
-    (treemacs-show-hidden-files t)
-    (treemacs-silent-filewatch nil)
-    (treemacs-silent-refresh nil)
-    (treemacs-sorting 'alphabetic-desc)
-    (treemacs-space-between-root-nodes t)
-    (treemacs-tag-follow-cleanup t)
-    (treemacs-tag-follow-delay 1.5)
-    (treemacs-width 35)
-  :config
-    ;; The default width and height of the icons is 22 pixels. If you are
-    ;; using a Hi-DPI display, uncomment this to double the icon size.
-    ;;(treemacs-resize-icons 44)
-    (treemacs-follow-mode t)
-    (treemacs-filewatch-mode t)
-    (treemacs-fringe-indicator-mode t)
-  :bind
-    (("M-0"       . treemacs-select-window)
-     ("C-x t 1"   . treemacs-delete-other-windows)
-     ("C-x t t"   . treemacs)
-     ("C-x t B"   . treemacs-bookmark)
-     ("C-x t C-t" . treemacs-find-file)
-     ("C-x t M-t" . treemacs-find-tag)))
-
-(use-package treemacs-icons-dired
-  ;:after (treemacs dired)
-  :config (treemacs-icons-dired-mode))
-
 (use-package ivy
   :diminish
   :bind (("C-s" . swiper)
@@ -357,11 +305,6 @@
 
 (global-set-key (kbd "<f2>") 'bs-show)
 
-(use-package projectile
-  :config
-    (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
-    (projectile-mode +1))
-
 (use-package dashboard
   :init
    (progn
@@ -386,21 +329,11 @@
        "Browse homepage"
        (lambda (&rest _) (browse-url "https://github.com/EgorTolbaev"))))))
 
-(use-package company
-  :init
-    (add-hook 'after-init-hook 'global-company-mode))
-
-(use-package company-box
-  :hook   (company-mode . company-box-mode))
-
 (use-package reverse-im
   :custom
     (reverse-im-input-methods '("russian-computer"))
   :config
     (reverse-im-mode t))
-
-(use-package magit
-  :bind   (("C-x g" . #'magit-status)))
 
 (use-package browse-url
   :ensure nil
@@ -429,22 +362,84 @@
 
   (engine-mode t))
 
+(defun et/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . et/lsp-mode-setup)
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :config
+  (lsp-enable-which-key-integration t))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
+
+(use-package lsp-treemacs
+  :after lsp)
+
+(global-set-key (kbd "C-x t t") 'treemacs)
+(global-set-key (kbd "C-x t s") 'lsp-treemacs-symbols)
+
+(use-package treemacs-icons-dired
+  :config (treemacs-icons-dired-mode))
+
+(use-package lsp-ivy)
+
+(use-package dap-mode)
+
+;(use-package typescript-mode
+;  :mode "\\.ts\\'"
+;  :hook (typescript-mode . lsp-deferred)
+;  :config
+;  (setq typescript-indent-level 2)
+;  (require 'dap-node)
+;  (dap-node-setup))
+
+(use-package python-mode
+  :ensure t
+  :hook (python-mode . lsp-deferred)
+  :custom
+  ;; NOTE: Set these if Python 3 is called "python3" on your system!
+  ;; (python-shell-interpreter "python3")
+  ;; (dap-python-executable "python3")
+  (dap-python-debugger 'debugpy)
+  :config
+  (require 'dap-python))
+
+(use-package pyvenv
+  :config
+  (pyvenv-mode 1))
+
+(use-package company
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind (:map company-active-map
+         ("<tab>" . company-complete-selection))
+        (:map lsp-mode-map
+         ("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+
 (use-package web-mode
   :mode (("\\.css$"  . web-mode)
          ("\\.html$" . web-mode)))
 
-(use-package company-jedi
+(use-package projectile
   :config
-    (add-to-list 'company-backends 'company-jedi))
+    (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
+    (projectile-mode +1))
 
-(use-package pyvenv
-  :hook ((python-mode . pyvenv-mode)))
-
-(use-package flycheck
-  :config
-    (global-flycheck-mode)
-    (global-set-key (kbd "C-c n") 'flycheck-next-error)
-    (global-set-key (kbd "C-c e") 'list-flycheck-errors))
+(use-package magit
+  :bind   (("C-x g" . #'magit-status)))
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
