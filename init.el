@@ -415,6 +415,13 @@
   :config
   (pyvenv-mode 1))
 
+(use-package csharp-mode
+  :ensure t
+  :mode "\\.cs\\'"
+  :hook (csharp-mode . lsp-deferred)
+  :config
+  (require 'dap-netcore))
+
 (use-package company
   :after lsp-mode
   :hook (lsp-mode . company-mode)
