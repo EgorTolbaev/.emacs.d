@@ -109,7 +109,13 @@
 (display-time-mode t)             ; показывать часы в mode-line
 (size-indication-mode t)          ; размер файла в %-ах
 
-(set-frame-parameter (selected-frame) 'alpha '(90 . 90))
+(defun transparent-frame (bool)
+  (if bool
+      (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
+    (set-frame-parameter (selected-frame) 'alpha '(100 . 100))))
+
+(transparent-frame t)
+
 (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
 (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -365,6 +371,65 @@
       :keybinding "y")
 
   (engine-mode t))
+
+(use-package hydra
+  :bind (("C-c b" . hydra-browser/body)
+         ("C-c t" . hydra-treemacs/body)
+         ("C-c s" . hydra-theme/body)
+         ("C-c o" . hydra-org/body)
+         ))
+
+(use-package major-mode-hydra
+  :after hydra
+  :preface
+  (defun with-alltheicon (icon str &optional height v-adjust face)
+    "Display an icon from all-the-icon."
+    (s-concat (all-the-icons-alltheicon icon :v-adjust (or v-adjust 0) :height (or height 1) :face face) " " str))
+
+  (defun with-faicon (icon str &optional height v-adjust face)
+    "Display an icon from Font Awesome icon."
+    (s-concat (all-the-icons-faicon icon ':v-adjust (or v-adjust 0) :height (or height 1) :face face) " " str))
+
+  (defun with-fileicon (icon str &optional height v-adjust face)
+    "Display an icon from the Atom File Icons package."
+    (s-concat (all-the-icons-fileicon icon :v-adjust (or v-adjust 0) :height (or height 1) :face face) " " str))
+
+  (defun with-octicon (icon str &optional height v-adjust face)
+    "Display an icon from the GitHub Octicons."
+    (s-concat (all-the-icons-octicon icon :v-adjust (or v-adjust 0) :height (or height 1) :face face) " " str)))
+
+(pretty-hydra-define hydra-browser
+  (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "chrome" "Browser" 1 -0.05))
+  (""
+   (("d" engine/search-duckduckgo "Duckduckgo")
+    ("i" engine/search-google-images "Google images")
+    ("y" engine/search-youtubes "Youtube")
+    ("g" engine/search-github "GitHub"))))
+
+(pretty-hydra-define hydra-treemacs
+(:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "file-text" "Treemacs" 1 -0.05))
+(""
+ (("t" treemacs "Treemacs")
+  ("s" lsp-treemacs-symbols "Treemacs Symbols"))))
+
+(pretty-hydra-define hydra-theme
+  (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "codepen" "Theme" 1 -0.05))
+  ("All Theme"
+   (("a" counsel-load-theme "View all themes"))
+   "Used themes"
+   (("d" set-night-theme "Night theme")
+    ("l" set-light-theme "Light theme"))
+  "Frame"
+  (("p" (transparent-frame t) "Transparent frame")
+   ("n" (transparent-frame nil) "Not transparent frame"))))
+
+(pretty-hydra-define hydra-org
+(:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "codepen" "Org" 1 -0.05))
+(""
+ (("l" org-insert-link-global "Insert link")
+  ("s" org-store-link "Store link")
+  ("c" org-capture "Create capture")
+  ("a" org-agenda "Open agenda"))))
 
 (defun et/lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
