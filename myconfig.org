@@ -861,10 +861,10 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
 #+begin_src emacs-lisp
 
   (pretty-hydra-define hydra-treemacs
-  (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "file-text" "Treemacs" 1 -0.05))
-  (""
-   (("t" treemacs "Treemacs")
-    ("s" lsp-treemacs-symbols "Treemacs Symbols"))))
+    (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "file-text" "Treemacs" 1 -0.05))
+    (""
+     (("t" treemacs "Treemacs")
+      ("s" lsp-treemacs-symbols "Treemacs Symbols"))))
 
 #+end_src
 
@@ -879,9 +879,9 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
      "Used themes"
      (("d" set-night-theme "Night theme")
       ("l" set-light-theme "Light theme"))
-    "Frame"
-    (("p" (transparent-frame t) "Transparent frame")
-     ("n" (transparent-frame nil) "Not transparent frame"))))
+     "Frame"
+     (("p" (transparent-frame t) "Transparent frame")
+      ("n" (transparent-frame nil) "Not transparent frame"))))
 
 #+end_src
 
@@ -890,12 +890,17 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
 #+begin_src emacs-lisp
 
   (pretty-hydra-define hydra-org
-  (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "codepen" "Org" 1 -0.05))
+    (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "codepen" "Org" 1 -0.05))
   (""
    (("l" org-insert-link-global "Insert link")
     ("s" org-store-link "Store link")
     ("c" org-capture "Create capture")
-    ("a" org-agenda "Open agenda"))))
+    ("a" org-agenda "Open agenda"))
+   "Clock"
+   (("j" org-clock-goto "Org clock goto")
+    ("l" org-clock-in-last "Org clock in last")
+    ("i" org-clock-in "Org clock in")
+    ("o" org-clock-out "Org clock uot"))))
 
 #+end_src
 
