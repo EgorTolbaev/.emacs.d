@@ -60,7 +60,7 @@
   - [[#languages][Languages]]
     - [[#ide-features-with-lsp-mode][IDE Features with lsp-mode]]
     - [[#debugging-with-dap-mode][Debugging with dap-mode]]
-    - [[#typescript][TypeScript]]
+    - [[#typescript-and-javascript][TypeScript and JavaScript]]
     - [[#python][Python]]
     - [[#csharp][CSharp]]
     - [[#company-mode][Company Mode]]
@@ -1006,9 +1006,7 @@ GitHub: [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
 
 #+end_src
 
-*** TypeScript
-
-На данный момент не использую, оставил как пример, для дальнейшей настройки JS
+*** TypeScript and JavaScript
 
 #+begin_src emacs-lisp
 
@@ -1019,6 +1017,12 @@ GitHub: [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
   ;  (setq typescript-indent-level 2)
   ;  (require 'dap-node)
   ;  (dap-node-setup))
+
+  (use-package js2-mode
+    :mode "\\.jsx?\\'"
+    :hook (js2-mode . lsp-deferred)
+    :config
+    (setq js-indent-level 2))
 
 #+end_src
 
@@ -1056,16 +1060,17 @@ GitHub: [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
 
 #+begin_src emacs-lisp
 
-    (use-package python-mode
-      :ensure t
-      :hook (python-mode . lsp-deferred)
-      :custom
-      ;; NOTE: Set these if Python 3 is called "python3" on your system!
-      ;; (python-shell-interpreter "python3")
-      ;; (dap-python-executable "python3")
-      (dap-python-debugger 'debugpy)
-      :config
-      (require 'dap-python))
+  (use-package python-mode
+    :ensure t
+    :mode "\\.py\\'"
+    :hook (python-mode . lsp-deferred)
+    :custom
+    ;; NOTE: Set these if Python 3 is called "python3" on your system!
+    ;; (python-shell-interpreter "python3")
+    ;; (dap-python-executable "python3")
+    (dap-python-debugger 'debugpy)
+    :config
+    (require 'dap-python))
 
 #+end_src
 

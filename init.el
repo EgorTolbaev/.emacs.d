@@ -474,8 +474,15 @@
 ;  (require 'dap-node)
 ;  (dap-node-setup))
 
+(use-package js2-mode
+  :mode "\\.jsx?\\'"
+  :hook (js2-mode . lsp-deferred)
+  :config
+  (setq js-indent-level 2))
+
 (use-package python-mode
   :ensure t
+  :mode "\\.py\\'"
   :hook (python-mode . lsp-deferred)
   :custom
   ;; NOTE: Set these if Python 3 is called "python3" on your system!
