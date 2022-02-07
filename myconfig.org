@@ -29,6 +29,7 @@
   - [[#golden-ratio][Golden ratio]]
 - [[#office][Office]]
   - [[#org-mode][Org mode]]
+    - [[#commands][Commands]]
     - [[#basic-config][Basic Config]]
     - [[#capture][Capture]]
     - [[#org-bullets][Org bullets]]
@@ -39,8 +40,12 @@
   - [[#markdown][Markdown]]
 - [[#file-management][File Management]]
   - [[#dired][Dired]]
+    - [[#commands-1][Commands]]
+    - [[#settings][Settings]]
 - [[#modes][Modes]]
   - [[#ivy][IVY]]
+    - [[#commands-2][Commands]]
+    - [[#settings-1][Settings]]
   - [[#ivy-rich][IVY-RICH]]
   - [[#counsel][COUNSEL]]
   - [[#helpful][Helpful]]
@@ -52,6 +57,8 @@
   - [[#browser][Browser]]
     - [[#engine-mode][Engine-mode]]
   - [[#hydra][Hydra]]
+    - [[#commands-3][Commands]]
+    - [[#settings-hydra][Settings Hydra]]
     - [[#hydra--browser][Hydra / Browser]]
     - [[#hydra--treemacs][Hydra / Treemacs]]
     - [[#hydra--theme][Hydra / Theme]]
@@ -72,6 +79,28 @@
   - [[#eshell][Eshell]]
 
 * About
+
+#+begin_src emacs-lisp
+
+  ;;; init.el --- Initialisation file for Emacs
+
+  ;; Copyright © 2020-2022 Egor Tolbaev <egor05.09.97@gmail.com>
+
+  ;; Author: Egor Tolbaev <egor05.09.97@gmail.com>
+  ;; URL: https://github.com/EgorTolbaev/.emacs.d
+  ;; Keywords: emacs, init, init.el, dotfiles
+
+  ;; This file is NOT part of GNU Emacs.
+
+  ;;; Commentary:
+  ;;
+  ;; I decided to create my own GNU Emacs configuration
+  ;; to simplify my daily life by adding scripts and useful features.
+  ;; This file is generated based on myconfig.org
+
+  ;;; Code:
+
+#+end_src
 
 Я решил создать свою собственную конфигурацию GNU Emacs, что бы упростить мою повседневную жизнь, добавив сценарии и полезные функции.
 
@@ -376,6 +405,21 @@ GitHub: [[https://github.com/roman/golden-ratio.el][golden-ratio]]
 
 Описание: [[https://orgmode.org/manual/Handling-Links.html][org-store-link]], [[https://orgmode.org/manual/Capture.html][org-capture]], [[https://orgmode.org/manual/Agenda-Commands.html][org-agenda]]
 
+*** Commands
+
+| command                                 | key / ex command | description            |
+|-----------------------------------------+------------------+------------------------|
+| org-capture                             | C-c c            | создать заметку        |
+| org-agenda                              | C-c a            | открыть agenda         |
+| org-store-link                          | C-c l            | cоздать ссылку         |
+| org-todo                                | C-c C-t          | изменить статус задачи |
+| org-set-tags-command                    | C-c C-q          | поставить тег          |
+| org-schedule                            | C-c C-s          | указать дату по плану  |
+| org-deadline                            | C-c C-d          | указать дату дедлайна  |
+| org-table-create-or-convert-from-region | C-x pipe         | создать таблицу        |
+| calendar                                | -                | открыть календарь      |
+|-----------------------------------------+------------------+------------------------|
+
 *** Basic Config
 
 Этот раздел содержит базовую конфигурацию =org-mode=, а также конфигурацию для повестоки дня.
@@ -429,9 +473,9 @@ GitHub: [[https://github.com/roman/golden-ratio.el][golden-ratio]]
       '(("d" "Meetings today" tags-todo "+SCHEDULED>=\"<today>\"+SCHEDULED<\"<tomorrow>\"+meeting/ACTIVE"))))
 
 
-  (global-set-key (kbd "C-c l") 'org-store-link) ; Создать ссылку
-  (global-set-key (kbd "C-c c") 'org-capture)    ; Создать заметку
-  (global-set-key (kbd "C-c a") 'org-agenda)     ; Открыть agenda
+  (global-set-key (kbd "C-c l") 'org-store-link)
+  (global-set-key (kbd "C-c c") 'org-capture)
+  (global-set-key (kbd "C-c a") 'org-agenda)
 
 #+end_src
 
@@ -583,11 +627,96 @@ GitHub: [[https://github.com/snosov1/toc-org][toc-org]]
 
 Dired - это встроенный файловый менеджер для Emacs.
 
-[[https://gist.github.com/EgorTolbaev/fda9fb22de6b97e7587542597a963240][Тут несколько ключевых привязок.]]
-
 /В OS Windows может быть не корректная сортировка файлов и дополнительная информация, это неприятно, на работе не мешает./
 
 Для отображения icons в =Dired= использую [[#treemacs-icons][Treemacs Icons]].
+
+*** Commands
+
+| command    | key / ex command | description                  |
+|------------+------------------+------------------------------|
+| dired      | C-x d            | открыть                      |
+| dired-jump | C-x C-j          | открыть dired текущего файла |
+|------------+------------------+------------------------------|
+
+=dired-single=
+
+| command                   | key / ex command | description                      |
+|---------------------------+------------------+----------------------------------|
+| dired-single-up-directory | h                | вернуться назад в текущем буфере |
+| dired-single-buffer       | j                | открыть в текущем буфере         |
+|---------------------------+------------------+----------------------------------|
+
+**** Навигация
+
+| command                      | key / ex command | description                                 |
+|------------------------------+------------------+---------------------------------------------|
+| dired-next-line              | n                | cледующая строка                            |
+| dired-previous-line          | p                | предыдущая строка                           |
+| dired-goto-file              | j                | перейти к файлу в буфере                    |
+| dired-find-file              | RET              | выберите файл или каталог                   |
+| dired-up-directiry           | ^                | перейти в родительский каталог              |
+| dired-find-file-other-window | o                | открыть файл в «другом» окне                |
+| dired-display-file           | C-o              | показать файл в другом окне без фокусировки |
+| dired-view-file              | v                | предварительный просмотр                    |
+| revert-buffer                | g                | обновить буфер                              |
+|------------------------------+------------------+---------------------------------------------|
+
+**** Маркировка файлов
+
+| command                 | key / ex command | description                                             |
+|-------------------------+------------------+---------------------------------------------------------|
+| dired-mark              | m                | отметить файл                                           |
+| dired-unmark            | u                | снять отметку                                           |
+| dired-unmark-all-marks  | U                | снять отметку со всех файлов                            |
+| dired-toggle-marks      | * t or t         | Инвертирует отмеченные файлы в буфере                   |
+| dired-mark-files-regexp | % m              | Пометить файлы в буфере с помощью регулярного выражения |
+|                         | *                | Множество других функций автоматической маркировки      |
+| dired-do-kill-lines     | k                | «Убить» отмеченные предметы                             |
+|-------------------------+------------------+---------------------------------------------------------|
+
+**** Копирование и переименование файлов
+
+| command                | key / ex command | description                                         |
+|------------------------+------------------+-----------------------------------------------------|
+| dired-do-copy          | C                | скопировать файл                                    |
+| dired-do-rename        | R                | переименовать файл                                  |
+| dired-do-rename-regexp | % R              | Переименовать на основе регулярного выражения ^test |
+|------------------------+------------------+-----------------------------------------------------|
+
+**** Удаление файлов
+
+| command                   | key / ex command | description                    |
+|---------------------------+------------------+--------------------------------|
+| dired-do-delete           | D                | Удалить отмеченный файл        |
+| dired-flag-file-deletion  | d                | Отметить файл для удаления     |
+| dired-do-flagged-delete   | x                | Выполнить удаление для отметок |
+| delete-by-moving-to-trash | -                | Переместить в корзину          |
+|---------------------------+------------------+--------------------------------|
+
+**** Создание и распаковка архивов
+
+| command                    | key / ex command | description                                       |
+|----------------------------+------------------+---------------------------------------------------|
+| dired-do-compress          | Z                | Сжать или распаковать файл или папку в ( .tar.gz) |
+| dired-do-compress          | c                | Сжать выделение в конкретный файл                 |
+| dired-compress-files-alist |                  | Привязать команды сжатия к расширению файла       |
+|----------------------------+------------------+---------------------------------------------------|
+
+**** Другие общие операции
+
+| command          | key / ex command | description                                |
+|------------------+------------------+--------------------------------------------|
+| dired-do-touch   | T                | Коснитесь (изменить отметку времени)       |
+| dired-do-chmod   | M                | Изменить режим файла                       |
+| dired-do-chown   | O                | Сменить владельца файла                    |
+| dired-do-chgrp   | G                | Изменить группу файлов                     |
+| dired-do-symlink | S                | Создайте символическую ссылку на этот файл |
+| dired-do-load    | L                | Загрузить файл Emacs Lisp в Emacs          |
+|------------------+------------------+--------------------------------------------|
+
+
+*** Settings
 
 #+begin_src emacs-lisp
 
@@ -614,25 +743,39 @@ Dired - это встроенный файловый менеджер для Ema
 
 [[https://github.com/abo-abo/swiper/tree/7cdde66c95d5205287e88010bc7a3a978c931db0][Ivy]] - это общий механизм завершения для Emacs. Использую в месте с [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#ivy-rich][ivy-rich]] и [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#counsel][counsel]]
 
+*** Commands
+
+| command                | key / ex command | description                     |
+|------------------------+------------------+---------------------------------|
+| swiper                 | C-s              | открыть поиск                   |
+| ivy-alt-done           | TAB or C-l       | выйти из буфера                 |
+| ivy-next-line          | С-j or C-n       | cледующая строка                |
+| ivy-previous-line      | C-k or C-p       | предыдущая строка               |
+| ivy-switch-buffer-kill | C-d              | выти из буфера reverse-i-search |
+| counsel-switch-buffer  | C-M-j            | переключение буферов с превью   |
+|------------------------+------------------+---------------------------------|
+
+*** Settings
+
 #+begin_src emacs-lisp
 
   (use-package ivy
     :diminish
     :bind (("C-s" . swiper)
-      :map ivy-minibuffer-map
-        ("TAB" . ivy-alt-done)
-        ("C-l" . ivy-alt-done)
-	("C-j" . ivy-next-line)
-	("C-k" . ivy-previous-line)
-      :map ivy-switch-buffer-map
-        ("C-k" . ivy-previous-line)
-	("C-l" . ivy-done)
-	("C-d" . ivy-switch-buffer-kill)
-      :map ivy-reverse-i-search-map
-        ("C-k" . ivy-previous-line)
-	("C-d" . ivy-reverse-i-search-kill))
-     :config
-     (ivy-mode 1))
+           :map ivy-minibuffer-map
+           ("TAB" . ivy-alt-done)
+           ("C-l" . ivy-alt-done)
+           ("C-j" . ivy-next-line)
+           ("C-k" . ivy-previous-line)
+           :map ivy-switch-buffer-map
+           ("C-k" . ivy-previous-line)
+           ("C-l" . ivy-done)
+           ("C-d" . ivy-switch-buffer-kill)
+           :map ivy-reverse-i-search-map
+           ("C-k" . ivy-previous-line)
+           ("C-d" . ivy-reverse-i-search-kill))
+    :config
+    (ivy-mode 1))
 
   (global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
 
@@ -788,6 +931,20 @@ Github: [[https://github.com/hrs/engine-mode/tree/e0910f141f2d37c28936c51c3c8bb8
 
 Удобный способ совершать поиск не выходя из Emacs
 
+**** Commands
+
+| command                     | key / ex command | description             |
+|-----------------------------+------------------+-------------------------|
+| engine/keymap-prefix        | C-x /            | открыть буфер команд    |
+| engine/search-duckduckgo    | C-x / d          | поиск в duckduckgo      |
+| engine/search-github        | C-x / g          | поиск в GitHub          |
+| engine/search-google-images | C-x / i          | поиск картинок в google |
+| engine/search-youtube       | C-x / y          | поиск в youtube         |
+|-----------------------------+------------------+-------------------------|
+
+
+**** Settings
+
 #+begin_src emacs-lisp
 
   (use-package engine-mode
@@ -818,6 +975,47 @@ Github: [[https://github.com/hrs/engine-mode/tree/e0910f141f2d37c28936c51c3c8bb8
 GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerrypnz/major-mode-hydra.el][major-mode-hydra]]
 
 =hydra= позволяет сделать меню с командами и всплывающем окне отображать их. Это удобно когда вам нужно группировать команды или просто не запоменать все хоткеии, а подсматривать в подсказку.
+
+*** Commands
+
+| command                     | key / ex command | description                     |
+|-----------------------------+------------------+---------------------------------|
+| Браузер                     |                  |                                 |
+| hydra-browser/body          | C-c b            | hydra браузера                  |
+| engine/search-duckduckgo    | C-c b d          | поиск в duckduckgo              |
+| engine/search-google-images | C-c b i          | поиск картинок в google         |
+| engine/search-youtubes      | C-c b y          | поиск в youtube                 |
+| engine/search-githu         | C-c b g          | поиск в GitHub                  |
+|-----------------------------+------------------+---------------------------------|
+|-----------------------------+------------------+---------------------------------|
+| Treemacs                    |                  |                                 |
+| hydra-treemacs/body         | C-c t            | hydra treemac                   |
+| treemacs                    | C-c t t          | treemac                         |
+| lsp-treemacs-symbols        | C-c t s          | treemacs ymbols                 |
+|-----------------------------+------------------+---------------------------------|
+|-----------------------------+------------------+---------------------------------|
+| Настройка темы              |                  |                                 |
+| hydra-theme/body            | C-c s            | hydra theme                     |
+| counsel-load-theme          | C-c s a          | посмотреть все темы             |
+| set-night-theme             | C-c s d          | установить темную тему          |
+| set-light-theme             | C-c s l          | установить светлую тему         |
+| (transparent-frame t        | C-c s p          | прозрачный фрейм                |
+| (transparent-frame nil)     | C-c s n          | не прозрачный фрейм             |
+|-----------------------------+------------------+---------------------------------|
+|-----------------------------+------------------+---------------------------------|
+| Org                         |                  |                                 |
+| hydra-org/body              | C-c o            | hydra org                       |
+| org-insert-link-global      | C-c o g          | созадать ссылку                 |
+| org-store-link              | C-c o s          | store link                      |
+| org-capture                 | C-c o c          | создать заметку                 |
+| org-agenda                  | C-c o a          | открыть agenda                  |
+| org-clock-goto              | C-c o j          | перейти к задаче                |
+| org-clock-in-last           | C-c o l          | повторный запуск времени задачи |
+| org-clock-in                | C-c o i          | запустить время выполнения      |
+| org-clock-out               | C-c o o          | остановить время выполнения     |
+|-----------------------------+------------------+---------------------------------|
+
+*** Settings Hydra
 
 #+begin_src emacs-lisp
 
@@ -899,7 +1097,7 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
   (pretty-hydra-define hydra-org
     (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "codepen" "Org" 1 -0.05))
   (""
-   (("l" org-insert-link-global "Insert link")
+   (("g" org-insert-link-global "Insert link")
     ("s" org-store-link "Store link")
     ("c" org-capture "Create capture")
     ("a" org-agenda "Open agenda"))
@@ -960,10 +1158,16 @@ Treemacs - файловый менеджер древовидной структ
 
 treemacs-icons-dired - позволяет использовать значки treemacs в dired буферах.
 
-=M-x=:
- - =lsp-treemacs-symbols= - Показать дерево символов в текущем файле;
- - =lsp-treemacs-references= - Показать древовидную структуру для ссылок символа под курсором;
- - =lsp-treemacs-error-list= - Показать древовидную структуру диагностических сообщений в проекте.
+***** Commands
+
+| command                 | key / ex command | description                                                        |
+|-------------------------+------------------+--------------------------------------------------------------------|
+| lsp-treemacs-symbols    | C-x t s          | Показать дерево символов в текущем файле                           |
+| lsp-treemacs-references | -                | Показать древовидную структуру для ссылок символа под курсором     |
+| lsp-treemacs-error-list | -                | Показать древовидную структуру диагностических сообщений в проекте |
+|-------------------------+------------------+--------------------------------------------------------------------|
+
+***** Settings
 
 #+begin_src emacs-lisp
 
@@ -984,9 +1188,15 @@ GitHub: [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
 
 Упрощает поиск в коде.
 
-=M-x=:
-- =lsp-ivy-workspace-symbol= - Поиск имени символа в рабочей области текущего проекта;
-- =lsp-ivy-global-workspace-symbol= - Поиск имени символа во всех активных рабочих областях проекта.
+***** Commands
+
+| command                         | key / ex command | description                                                   |
+|---------------------------------+------------------+---------------------------------------------------------------|
+| lsp-ivy-workspace-symbol        | -                | Поиск имени символа в рабочей области текущего проекта        |
+| lsp-ivy-global-workspace-symbol | -                | Поиск имени символа во всех активных рабочих областях проекта |
+|---------------------------------+------------------+---------------------------------------------------------------|
+
+***** Settings
 
 #+begin_src emacs-lisp
 
@@ -1000,12 +1210,18 @@ GitHub: [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
 
 Документацию по настройки языков можно посмотреть [[https://emacs-lsp.github.io/dap-mode/page/configuration/][тут]].
 
-=M-x=:
-- =dap-breakpoint-toggle= - поставить точку остановы;
-- =dap-breakpoint-delete= - удалить точку остановы;
-- =dap-ui-breakpoint-list= - спосок всех точек остановы;
-- =dap-debug= - запустить отладку;
-- =dap-hydra= - посмотреть как управлять отладкой;
+**** Commands
+
+| command                | key / ex command | description                       |
+|------------------------+------------------+-----------------------------------|
+| dap-breakpoint-toggle  | -                | поставить точку остановы          |
+| dap-breakpoint-delete  | -                | удалить точку остановы            |
+| dap-ui-breakpoint-list | -                | спосок всех точек остановы        |
+| dap-debug              | -                | запустить отладку                 |
+| dap-hydra              | -                | посмотреть как управлять отладкой |
+|------------------------+------------------+-----------------------------------|
+
+**** Settings
 
 #+begin_src emacs-lisp
 

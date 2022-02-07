@@ -1,3 +1,21 @@
+;;; init.el --- Initialisation file for Emacs
+
+;; Copyright © 2020-2022 Egor Tolbaev <egor05.09.97@gmail.com>
+
+;; Author: Egor Tolbaev <egor05.09.97@gmail.com>
+;; URL: https://github.com/EgorTolbaev/.emacs.d
+;; Keywords: emacs, init, init.el, dotfiles
+
+;; This file is NOT part of GNU Emacs.
+
+;;; Commentary:
+;;
+;; I decided to create my own GNU Emacs configuration
+;; to simplify my daily life by adding scripts and useful features.
+;; This file is generated based on myconfig.org
+
+;;; Code:
+
 (setq gc-cons-threshold (* 50 1000 1000))
 
 (defun system-is-linux()
@@ -171,9 +189,9 @@
     '(("d" "Meetings today" tags-todo "+SCHEDULED>=\"<today>\"+SCHEDULED<\"<tomorrow>\"+meeting/ACTIVE"))))
 
 
-(global-set-key (kbd "C-c l") 'org-store-link) ; Создать ссылку
-(global-set-key (kbd "C-c c") 'org-capture)    ; Создать заметку
-(global-set-key (kbd "C-c a") 'org-agenda)     ; Открыть agenda
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c a") 'org-agenda)
 
 (when (system-is-windows)
   (set 'path_note    "c:/Users/user/Dropbox/OrgFiles/notes.org")
@@ -268,20 +286,20 @@
 (use-package ivy
   :diminish
   :bind (("C-s" . swiper)
-    :map ivy-minibuffer-map
-      ("TAB" . ivy-alt-done)
-      ("C-l" . ivy-alt-done)
-      ("C-j" . ivy-next-line)
-      ("C-k" . ivy-previous-line)
-    :map ivy-switch-buffer-map
-      ("C-k" . ivy-previous-line)
-      ("C-l" . ivy-done)
-      ("C-d" . ivy-switch-buffer-kill)
-    :map ivy-reverse-i-search-map
-      ("C-k" . ivy-previous-line)
-      ("C-d" . ivy-reverse-i-search-kill))
-   :config
-   (ivy-mode 1))
+         :map ivy-minibuffer-map
+         ("TAB" . ivy-alt-done)
+         ("C-l" . ivy-alt-done)
+         ("C-j" . ivy-next-line)
+         ("C-k" . ivy-previous-line)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
+  :config
+  (ivy-mode 1))
 
 (global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
 
@@ -431,7 +449,7 @@
 (pretty-hydra-define hydra-org
   (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "codepen" "Org" 1 -0.05))
 (""
- (("l" org-insert-link-global "Insert link")
+ (("g" org-insert-link-global "Insert link")
   ("s" org-store-link "Store link")
   ("c" org-capture "Create capture")
   ("a" org-agenda "Open agenda"))
