@@ -544,13 +544,18 @@ Github: [[https://github.com/joostkremers/visual-fill-column][visual-fill-column
 
 #+begin_src emacs-lisp
 
-  (defun et/org-mode-visual-fill ()
-    (setq visual-fill-column-width 100
-          visual-fill-column-center-text t)
-    (visual-fill-column-mode 1))
+  (when (system-is-windows)
+    (set 'center_org 100))
+  (when (system-is-linux)
+    (set 'center_org 150))
 
-  (use-package visual-fill-column
-    :hook (org-mode . et/org-mode-visual-fill))
+  (defun et/org-mode-visual-fill ()
+      (setq visual-fill-column-width center_org
+            visual-fill-column-center-text t)
+      (visual-fill-column-mode 1))
+
+    (use-package visual-fill-column
+      :hook (org-mode . et/org-mode-visual-fill))
 
 #+end_src
 
