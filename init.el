@@ -142,6 +142,14 @@
   :config
   (golden-ratio-mode 1))
 
+(use-package highlight-indent-guides
+  :ensure t
+  :hook ((prog-mode . highlight-indent-guides-mode)
+         (prog-mode . hs-minor-mode))
+  :config
+  (setq highlight-indent-guides-method 'character)
+  (setq highlight-indent-guides-responsive 'top))
+
 (defun et/org-mode-setup ()
 (org-indent-mode)
 ;;(variable-pitch-mode 1)

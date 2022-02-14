@@ -27,9 +27,12 @@
   - [[#отображение-времени][Отображение времени]]
   - [[#настройка-фрейма][Настройка фрейма]]
   - [[#golden-ratio][Golden ratio]]
+  - [[#highlight-indent-guides][Highlight indent guides]]
+    - [[#commands][Commands]]
+    - [[#settings][Settings]]
 - [[#office][Office]]
   - [[#org-mode][Org mode]]
-    - [[#commands][Commands]]
+    - [[#commands-1][Commands]]
     - [[#basic-config][Basic Config]]
     - [[#capture][Capture]]
     - [[#org-bullets][Org bullets]]
@@ -40,12 +43,12 @@
   - [[#markdown][Markdown]]
 - [[#file-management][File Management]]
   - [[#dired][Dired]]
-    - [[#commands-1][Commands]]
-    - [[#settings][Settings]]
-- [[#modes][Modes]]
-  - [[#ivy][IVY]]
     - [[#commands-2][Commands]]
     - [[#settings-1][Settings]]
+- [[#modes][Modes]]
+  - [[#ivy][IVY]]
+    - [[#commands-3][Commands]]
+    - [[#settings-2][Settings]]
   - [[#ivy-rich][IVY-RICH]]
   - [[#counsel][COUNSEL]]
   - [[#helpful][Helpful]]
@@ -57,7 +60,7 @@
   - [[#browser][Browser]]
     - [[#engine-mode][Engine-mode]]
   - [[#hydra][Hydra]]
-    - [[#commands-3][Commands]]
+    - [[#commands-4][Commands]]
     - [[#settings-hydra][Settings Hydra]]
     - [[#hydra--browser][Hydra / Browser]]
     - [[#hydra--treemacs][Hydra / Treemacs]]
@@ -399,6 +402,36 @@ GitHub: [[https://github.com/roman/golden-ratio.el][golden-ratio]]
     (golden-ratio-mode 1))
 
 #+end_src
+** Highlight indent guides
+
+GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-indent-guides]]
+
+=highlight-indent-guides= - пакет для выделения уровней отступов в коде. С этом режимом так же включаю [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Hideshow.html][hs-minor-mode]] что позволяет скрывать/показывать блок кода.
+
+*** Commands
+
+| command       | key / ex command | description                      |
+|---------------+------------------+----------------------------------|
+| hs-hide-block | =C-c @ C-d=      | скрыть текущий блок              |
+| hs-show-block | =C-c @ C-s=      | показать текущий блок            |
+| hs-hide-all   | =C-c @ C-t=      | скрыть все блоки верхнего уровня |
+| hs-show-all   | =C-c @ C-a=      | показать все блоки в буфере      |
+|---------------+------------------+----------------------------------|
+
+*** Settings
+
+#+begin_src emacs-lisp
+
+  (use-package highlight-indent-guides
+    :ensure t
+    :hook ((prog-mode . highlight-indent-guides-mode)
+           (prog-mode . hs-minor-mode))
+    :config
+    (setq highlight-indent-guides-method 'character)
+    (setq highlight-indent-guides-responsive 'top))
+
+#+end_src
+
 * Office
 
 ** Org mode
