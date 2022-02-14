@@ -63,6 +63,8 @@
     - [[#hydra--treemacs][Hydra / Treemacs]]
     - [[#hydra--theme][Hydra / Theme]]
     - [[#hydra--org][Hydra / Org]]
+    - [[#hydra--windows][Hydra / Windows]]
+    - [[#hydra--text][Hydra / Text]]
 - [[#development][Development]]
   - [[#languages][Languages]]
     - [[#ide-features-with-lsp-mode][IDE Features with lsp-mode]]
@@ -409,14 +411,14 @@ GitHub: [[https://github.com/roman/golden-ratio.el][golden-ratio]]
 
 | command                                 | key / ex command | description            |
 |-----------------------------------------+------------------+------------------------|
-| org-capture                             | C-c c            | создать заметку        |
-| org-agenda                              | C-c a            | открыть agenda         |
-| org-store-link                          | C-c l            | cоздать ссылку         |
-| org-todo                                | C-c C-t          | изменить статус задачи |
-| org-set-tags-command                    | C-c C-q          | поставить тег          |
-| org-schedule                            | C-c C-s          | указать дату по плану  |
-| org-deadline                            | C-c C-d          | указать дату дедлайна  |
-| org-table-create-or-convert-from-region | C-x pipe         | создать таблицу        |
+| org-capture                             | =C-c c=          | создать заметку        |
+| org-agenda                              | =C-c a=          | открыть agenda         |
+| org-store-link                          | =C-c l=          | cоздать ссылку         |
+| org-todo                                | =C-c C-t=        | изменить статус задачи |
+| org-set-tags-command                    | =C-c C-q=        | поставить тег          |
+| org-schedule                            | =C-c C-s=        | указать дату по плану  |
+| org-deadline                            | =C-c C-d=        | указать дату дедлайна  |
+| org-table-create-or-convert-from-region | =C-x pipe=       | создать таблицу        |
 | calendar                                | -                | открыть календарь      |
 |-----------------------------------------+------------------+------------------------|
 
@@ -635,62 +637,62 @@ Dired - это встроенный файловый менеджер для Ema
 
 | command    | key / ex command | description                  |
 |------------+------------------+------------------------------|
-| dired      | C-x d            | открыть                      |
-| dired-jump | C-x C-j          | открыть dired текущего файла |
+| dired      | =C-x d=          | открыть                      |
+| dired-jump | =C-x C-j=        | открыть dired текущего файла |
 |------------+------------------+------------------------------|
 
 =dired-single=
 
 | command                   | key / ex command | description                      |
 |---------------------------+------------------+----------------------------------|
-| dired-single-up-directory | h                | вернуться назад в текущем буфере |
-| dired-single-buffer       | j                | открыть в текущем буфере         |
+| dired-single-up-directory | =h=              | вернуться назад в текущем буфере |
+| dired-single-buffer       | =j=              | открыть в текущем буфере         |
 |---------------------------+------------------+----------------------------------|
 
 **** Навигация
 
 | command                      | key / ex command | description                                 |
 |------------------------------+------------------+---------------------------------------------|
-| dired-next-line              | n                | cледующая строка                            |
-| dired-previous-line          | p                | предыдущая строка                           |
-| dired-goto-file              | j                | перейти к файлу в буфере                    |
-| dired-find-file              | RET              | выберите файл или каталог                   |
-| dired-up-directiry           | ^                | перейти в родительский каталог              |
-| dired-find-file-other-window | o                | открыть файл в «другом» окне                |
-| dired-display-file           | C-o              | показать файл в другом окне без фокусировки |
-| dired-view-file              | v                | предварительный просмотр                    |
-| revert-buffer                | g                | обновить буфер                              |
+| dired-next-line              | =n=              | cледующая строка                            |
+| dired-previous-line          | =p=              | предыдущая строка                           |
+| dired-goto-file              | =j=              | перейти к файлу в буфере                    |
+| dired-find-file              | =RET=            | выберите файл или каталог                   |
+| dired-up-directiry           | =^=              | перейти в родительский каталог              |
+| dired-find-file-other-window | =o=              | открыть файл в «другом» окне                |
+| dired-display-file           | =C-o=            | показать файл в другом окне без фокусировки |
+| dired-view-file              | =v=              | предварительный просмотр                    |
+| revert-buffer                | =g=              | обновить буфер                              |
 |------------------------------+------------------+---------------------------------------------|
 
 **** Маркировка файлов
 
 | command                 | key / ex command | description                                             |
 |-------------------------+------------------+---------------------------------------------------------|
-| dired-mark              | m                | отметить файл                                           |
-| dired-unmark            | u                | снять отметку                                           |
-| dired-unmark-all-marks  | U                | снять отметку со всех файлов                            |
-| dired-toggle-marks      | * t or t         | Инвертирует отмеченные файлы в буфере                   |
-| dired-mark-files-regexp | % m              | Пометить файлы в буфере с помощью регулярного выражения |
-|                         | *                | Множество других функций автоматической маркировки      |
-| dired-do-kill-lines     | k                | «Убить» отмеченные предметы                             |
+| dired-mark              | =m=              | отметить файл                                           |
+| dired-unmark            | =u=              | снять отметку                                           |
+| dired-unmark-all-marks  | =U=              | снять отметку со всех файлов                            |
+| dired-toggle-marks      | =* t= or =t=     | Инвертирует отмеченные файлы в буфере                   |
+| dired-mark-files-regexp | =% m=            | Пометить файлы в буфере с помощью регулярного выражения |
+|                         | =*=              | Множество других функций автоматической маркировки      |
+| dired-do-kill-lines     | =k=              | «Убить» отмеченные предметы                             |
 |-------------------------+------------------+---------------------------------------------------------|
 
 **** Копирование и переименование файлов
 
 | command                | key / ex command | description                                         |
 |------------------------+------------------+-----------------------------------------------------|
-| dired-do-copy          | C                | скопировать файл                                    |
-| dired-do-rename        | R                | переименовать файл                                  |
-| dired-do-rename-regexp | % R              | Переименовать на основе регулярного выражения ^test |
+| dired-do-copy          | =C=              | скопировать файл                                    |
+| dired-do-rename        | =R=              | переименовать файл                                  |
+| dired-do-rename-regexp | =% R=            | Переименовать на основе регулярного выражения ^test |
 |------------------------+------------------+-----------------------------------------------------|
 
 **** Удаление файлов
 
 | command                   | key / ex command | description                    |
 |---------------------------+------------------+--------------------------------|
-| dired-do-delete           | D                | Удалить отмеченный файл        |
-| dired-flag-file-deletion  | d                | Отметить файл для удаления     |
-| dired-do-flagged-delete   | x                | Выполнить удаление для отметок |
+| dired-do-delete           | =D=              | Удалить отмеченный файл        |
+| dired-flag-file-deletion  | =d=              | Отметить файл для удаления     |
+| dired-do-flagged-delete   | =x=              | Выполнить удаление для отметок |
 | delete-by-moving-to-trash | -                | Переместить в корзину          |
 |---------------------------+------------------+--------------------------------|
 
@@ -698,21 +700,21 @@ Dired - это встроенный файловый менеджер для Ema
 
 | command                    | key / ex command | description                                       |
 |----------------------------+------------------+---------------------------------------------------|
-| dired-do-compress          | Z                | Сжать или распаковать файл или папку в ( .tar.gz) |
-| dired-do-compress          | c                | Сжать выделение в конкретный файл                 |
-| dired-compress-files-alist |                  | Привязать команды сжатия к расширению файла       |
+| dired-do-compress          | =Z=              | Сжать или распаковать файл или папку в ( .tar.gz) |
+| dired-do-compress          | =c=              | Сжать выделение в конкретный файл                 |
+| dired-compress-files-alist | -                | Привязать команды сжатия к расширению файла       |
 |----------------------------+------------------+---------------------------------------------------|
 
 **** Другие общие операции
 
 | command          | key / ex command | description                                |
 |------------------+------------------+--------------------------------------------|
-| dired-do-touch   | T                | Коснитесь (изменить отметку времени)       |
-| dired-do-chmod   | M                | Изменить режим файла                       |
-| dired-do-chown   | O                | Сменить владельца файла                    |
-| dired-do-chgrp   | G                | Изменить группу файлов                     |
-| dired-do-symlink | S                | Создайте символическую ссылку на этот файл |
-| dired-do-load    | L                | Загрузить файл Emacs Lisp в Emacs          |
+| dired-do-touch   | =T=              | Коснитесь (изменить отметку времени)       |
+| dired-do-chmod   | =M=              | Изменить режим файла                       |
+| dired-do-chown   | =O=              | Сменить владельца файла                    |
+| dired-do-chgrp   | =G=              | Изменить группу файлов                     |
+| dired-do-symlink | =S=              | Создайте символическую ссылку на этот файл |
+| dired-do-load    | =L=              | Загрузить файл Emacs Lisp в Emacs          |
 |------------------+------------------+--------------------------------------------|
 
 
@@ -747,12 +749,12 @@ Dired - это встроенный файловый менеджер для Ema
 
 | command                | key / ex command | description                     |
 |------------------------+------------------+---------------------------------|
-| swiper                 | C-s              | открыть поиск                   |
-| ivy-alt-done           | TAB or C-l       | выйти из буфера                 |
-| ivy-next-line          | С-j or C-n       | cледующая строка                |
-| ivy-previous-line      | C-k or C-p       | предыдущая строка               |
-| ivy-switch-buffer-kill | C-d              | выти из буфера reverse-i-search |
-| counsel-switch-buffer  | C-M-j            | переключение буферов с превью   |
+| swiper                 | =C-s=            | открыть поиск                   |
+| ivy-alt-done           | =TAB= or =C-l=   | выйти из буфера                 |
+| ivy-next-line          | =С-j= or =C-n=   | cледующая строка                |
+| ivy-previous-line      | =C-k= or =C-p=   | предыдущая строка               |
+| ivy-switch-buffer-kill | =C-d=            | выти из буфера reverse-i-search |
+| counsel-switch-buffer  | =C-M-j=          | переключение буферов с превью   |
 |------------------------+------------------+---------------------------------|
 
 *** Settings
@@ -935,11 +937,11 @@ Github: [[https://github.com/hrs/engine-mode/tree/e0910f141f2d37c28936c51c3c8bb8
 
 | command                     | key / ex command | description             |
 |-----------------------------+------------------+-------------------------|
-| engine/keymap-prefix        | C-x /            | открыть буфер команд    |
-| engine/search-duckduckgo    | C-x / d          | поиск в duckduckgo      |
-| engine/search-github        | C-x / g          | поиск в GitHub          |
-| engine/search-google-images | C-x / i          | поиск картинок в google |
-| engine/search-youtube       | C-x / y          | поиск в youtube         |
+| engine/keymap-prefix        | =C-x /=          | открыть буфер команд    |
+| engine/search-duckduckgo    | =C-x / d=        | поиск в duckduckgo      |
+| engine/search-github        | =C-x / g=        | поиск в GitHub          |
+| engine/search-google-images | =C-x / i=        | поиск картинок в google |
+| engine/search-youtube       | =C-x / y=        | поиск в youtube         |
 |-----------------------------+------------------+-------------------------|
 
 
@@ -978,42 +980,57 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
 
 *** Commands
 
-| command                     | key / ex command | description                     |
-|-----------------------------+------------------+---------------------------------|
-| Браузер                     |                  |                                 |
-| hydra-browser/body          | C-c b            | hydra браузера                  |
-| engine/search-duckduckgo    | C-c b d          | поиск в duckduckgo              |
-| engine/search-google-images | C-c b i          | поиск картинок в google         |
-| engine/search-youtubes      | C-c b y          | поиск в youtube                 |
-| engine/search-githu         | C-c b g          | поиск в GitHub                  |
-|-----------------------------+------------------+---------------------------------|
-|-----------------------------+------------------+---------------------------------|
-| Treemacs                    |                  |                                 |
-| hydra-treemacs/body         | C-c t            | hydra treemac                   |
-| treemacs                    | C-c t t          | treemac                         |
-| lsp-treemacs-symbols        | C-c t s          | treemacs ymbols                 |
-|-----------------------------+------------------+---------------------------------|
-|-----------------------------+------------------+---------------------------------|
-| Настройка темы              |                  |                                 |
-| hydra-theme/body            | C-c s            | hydra theme                     |
-| counsel-load-theme          | C-c s a          | посмотреть все темы             |
-| set-night-theme             | C-c s d          | установить темную тему          |
-| set-light-theme             | C-c s l          | установить светлую тему         |
-| (transparent-frame t        | C-c s p          | прозрачный фрейм                |
-| (transparent-frame nil)     | C-c s n          | не прозрачный фрейм             |
-|-----------------------------+------------------+---------------------------------|
-|-----------------------------+------------------+---------------------------------|
-| Org                         |                  |                                 |
-| hydra-org/body              | C-c o            | hydra org                       |
-| org-insert-link-global      | C-c o g          | созадать ссылку                 |
-| org-store-link              | C-c o s          | store link                      |
-| org-capture                 | C-c o c          | создать заметку                 |
-| org-agenda                  | C-c o a          | открыть agenda                  |
-| org-clock-goto              | C-c o j          | перейти к задаче                |
-| org-clock-in-last           | C-c o l          | повторный запуск времени задачи |
-| org-clock-in                | C-c o i          | запустить время выполнения      |
-| org-clock-out               | C-c o o          | остановить время выполнения     |
-|-----------------------------+------------------+---------------------------------|
+| command                     | key / ex command     | description                     |
+|-----------------------------+----------------------+---------------------------------|
+| Браузер                     |                      |                                 |
+| hydra-browser/body          | =C-c b=              | hydra браузера                  |
+| engine/search-duckduckgo    | =C-c b d=            | поиск в duckduckgo              |
+| engine/search-google-images | =C-c b i=            | поиск картинок в google         |
+| engine/search-youtubes      | =C-c b y=            | поиск в youtube                 |
+| engine/search-githu         | =C-c b g=            | поиск в GitHub                  |
+|-----------------------------+----------------------+---------------------------------|
+|-----------------------------+----------------------+---------------------------------|
+| Treemacs                    |                      |                                 |
+| hydra-treemacs/body         | =C-c t=              | hydra treemac                   |
+| treemacs                    | =C-c t t=            | treemac                         |
+| lsp-treemacs-symbols        | =C-c t s=            | treemacs ymbols                 |
+|-----------------------------+----------------------+---------------------------------|
+|-----------------------------+----------------------+---------------------------------|
+| Настройка темы              |                      |                                 |
+| hydra-theme/body            | =C-c s=              | hydra theme                     |
+| counsel-load-theme          | =C-c s a=            | посмотреть все темы             |
+| set-night-theme             | =C-c s d=            | установить темную тему          |
+| set-light-theme             | =C-c s l=            | установить светлую тему         |
+| (transparent-frame t        | =C-c s p=            | прозрачный фрейм                |
+| (transparent-frame nil)     | =C-c s n=            | не прозрачный фрейм             |
+|-----------------------------+----------------------+---------------------------------|
+|-----------------------------+----------------------+---------------------------------|
+| Org                         |                      |                                 |
+| hydra-org/body              | =C-c o=              | hydra org                       |
+| org-insert-link-global      | =C-c o g=            | созадать ссылку                 |
+| org-store-link              | =C-c o s=            | store link                      |
+| org-capture                 | =C-c o c=            | создать заметку                 |
+| org-agenda                  | =C-c o a=            | открыть agenda                  |
+| org-clock-goto              | =C-c o j=            | перейти к задаче                |
+| org-clock-in-last           | =C-c o l=            | повторный запуск времени задачи |
+| org-clock-in                | =C-c o i=            | запустить время выполнения      |
+| org-clock-out               | =C-c o o=            | остановить время выполнения     |
+|-----------------------------+----------------------+---------------------------------|
+|-----------------------------+----------------------+---------------------------------|
+| Windows                     |                      |                                 |
+| hydra-windows/body          | =C-c w=              | hydra windows                   |
+| golden-ratio-mode           | =C-c w g=            | включить/отключить golden ratio |
+| balance-windows             | =C-c w b= or =C-x += | сбалансировать размер всех окон |
+| shrink-window               | =C-c w s=            | уменьшить окно по вертикали     |
+| shrink-window-horizontally  | =C-c w [= or =C-x {= | уменьшить окно по горизонтали   |
+| enlarge-window-horizontally | =C-c w ]= or =C-x }= | увеличить окно по горизонтали   |
+|-----------------------------+----------------------+---------------------------------|
+|-----------------------------+----------------------+---------------------------------|
+| Text                        |                      |                                 |
+| hydra-text-scale/body       | =C-c T=              | hydra text                      |
+| text-scale-increase         | =C-c T j=            | увеличить текст                 |
+| text-scale-decrease         | =C-c T k=            | уменьшить текст                 |
+|-----------------------------+----------------------+---------------------------------|
 
 *** Settings Hydra
 
@@ -1024,6 +1041,8 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
            ("C-c t" . hydra-treemacs/body)
            ("C-c s" . hydra-theme/body)
            ("C-c o" . hydra-org/body)
+           ("C-c w" . hydra-windows/body)
+           ("C-c T" . hydra-text-scale/body)
            ))
 
   (use-package major-mode-hydra
@@ -1109,6 +1128,33 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
 
 #+end_src
 
+*** Hydra / Windows
+
+#+begin_src emacs-lisp
+
+  (pretty-hydra-define hydra-windows
+    (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "windows" "Windows" 1 -0.05))
+    (""
+     (("g" golden-ratio-mode "Golden ratio")
+      ("b" balance-windows   "Balance windows"))
+     ""
+     (("s" shrink-window               "Shrink window")
+      ("[" shrink-window-horizontally  "Shrink window horizontally")
+      ("]" enlarge-window-horizontally "Enlarge window horizontally"))))
+
+#+end_src
+
+*** Hydra / Text
+
+#+begin_src emacs-lisp
+
+  (pretty-hydra-define hydra-text-scale
+    (:hint nil :forein-keys warn :quit-key "q" :timeout 4 :title (with-faicon "codepen" "Text" 1 -0.05))
+    (""
+     (("j" text-scale-increase "in")
+      ("k" text-scale-decrease "out"))))
+
+#+end_src
 * Development
 
 ** Languages
@@ -1162,7 +1208,7 @@ treemacs-icons-dired - позволяет использовать значки 
 
 | command                 | key / ex command | description                                                        |
 |-------------------------+------------------+--------------------------------------------------------------------|
-| lsp-treemacs-symbols    | C-x t s          | Показать дерево символов в текущем файле                           |
+| lsp-treemacs-symbols    | =C-x t s=        | Показать дерево символов в текущем файле                           |
 | lsp-treemacs-references | -                | Показать древовидную структуру для ссылок символа под курсором     |
 | lsp-treemacs-error-list | -                | Показать древовидную структуру диагностических сообщений в проекте |
 |-------------------------+------------------+--------------------------------------------------------------------|

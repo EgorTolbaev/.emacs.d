@@ -400,6 +400,8 @@
          ("C-c t" . hydra-treemacs/body)
          ("C-c s" . hydra-theme/body)
          ("C-c o" . hydra-org/body)
+         ("C-c w" . hydra-windows/body)
+         ("C-c T" . hydra-text-scale/body)
          ))
 
 (use-package major-mode-hydra
@@ -458,6 +460,22 @@
   ("l" org-clock-in-last "Org clock in last")
   ("i" org-clock-in "Org clock in")
   ("o" org-clock-out "Org clock uot"))))
+
+(pretty-hydra-define hydra-windows
+  (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "windows" "Windows" 1 -0.05))
+  (""
+   (("g" golden-ratio-mode "Golden ratio")
+    ("b" balance-windows   "Balance windows"))
+   ""
+   (("s" shrink-window               "Shrink window")
+    ("[" shrink-window-horizontally  "Shrink window horizontally")
+    ("]" enlarge-window-horizontally "Enlarge window horizontally"))))
+
+(pretty-hydra-define hydra-text-scale
+  (:hint nil :forein-keys warn :quit-key "q" :timeout 4 :title (with-faicon "codepen" "Text" 1 -0.05))
+  (""
+   (("j" text-scale-increase "in")
+    ("k" text-scale-decrease "out"))))
 
 (defun et/lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
