@@ -575,6 +575,17 @@
   :mode (("\\.css$"  . web-mode)
          ("\\.html$" . web-mode)))
 
+(use-package json-mode
+  :mode "\\.json\\'")
+
+(use-package yaml-mode
+  :mode (("\\.yml$"  . yaml-mode)
+         ("\\.yaml$" . yaml-mode)))
+
+(use-package makefile-gmake-mode
+  :ensure nil
+  :mode  ("Makefile.*" . makefile-gmake-mode))
+
 (use-package projectile
   :config
     (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)

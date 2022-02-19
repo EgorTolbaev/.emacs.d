@@ -77,6 +77,9 @@
     - [[#csharp][CSharp]]
     - [[#company-mode][Company Mode]]
     - [[#web-mode][Web mode]]
+    - [[#json][JSON]]
+    - [[#yaml][YAML]]
+    - [[#makefile][Makefile]]
   - [[#projectile][Projectile]]
   - [[#magit][Magit]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
@@ -1447,6 +1450,45 @@ web-mode - это режим emacs для редактирования веб-ш
   (use-package web-mode
     :mode (("\\.css$"  . web-mode)
            ("\\.html$" . web-mode)))
+
+#+end_src
+
+*** JSON
+
+=json-mode= - режим Emacs для обработки файлов JSON
+
+GitHub: [[https://github.com/joshwnj/json-mode][json-mode]]
+
+#+begin_src emacs-lisp
+
+  (use-package json-mode
+    :mode "\\.json\\'")
+
+#+end_src
+
+*** YAML
+
+=yaml-mode= - режим Emacs для обработки файлов YAML/YML
+
+GitHub: [[https://github.com/yoshiki/yaml-mode][yaml-mode]]
+
+#+begin_src emacs-lisp
+
+  (use-package yaml-mode
+    :mode (("\\.yml$"  . yaml-mode)
+           ("\\.yaml$" . yaml-mode)))
+
+#+end_src
+
+*** Makefile
+
+=makefile-gmake-mode= - режим Emacs для обработки файлов Makefile
+
+#+begin_src emacs-lisp
+
+  (use-package makefile-gmake-mode
+    :ensure nil
+    :mode  ("Makefile.*" . makefile-gmake-mode))
 
 #+end_src
 
