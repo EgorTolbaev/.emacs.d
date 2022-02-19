@@ -1386,11 +1386,23 @@ GitHub: [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
 
 Для =virtualenv= можно использовать =pyvenv=. Чтобы запустить используйте =pyvenv-activate=.
 
+GitHub: [[https://github.com/pythonic-emacs/pyenv-mode][pyvenv]]
+GitHub: [[https://github.com/pythonic-emacs/pyenv-mode][pyenv-mode]]
+
 #+begin_src emacs-lisp
 
   (use-package pyvenv
     :config
     (pyvenv-mode 1))
+
+  (use-package pyenv-mode
+    ;; Integrate pyenv with Python-mode
+    :init
+    (let ((pyenv-path (expand-file-name "~/.pyenv/bin")))
+      (setenv "PATH" (concat pyenv-path ":" (getenv "PATH")))
+      (add-to-list 'exec-path pyenv-path))
+    :config
+    (pyenv-mode))
 
 #+end_src
 

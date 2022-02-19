@@ -550,6 +550,15 @@
   :config
   (pyvenv-mode 1))
 
+(use-package pyenv-mode
+  ;; Integrate pyenv with Python-mode
+  :init
+  (let ((pyenv-path (expand-file-name "~/.pyenv/bin")))
+    (setenv "PATH" (concat pyenv-path ":" (getenv "PATH")))
+    (add-to-list 'exec-path pyenv-path))
+  :config
+  (pyenv-mode))
+
 (use-package csharp-mode
   :ensure t
   :mode "\\.cs\\'"
