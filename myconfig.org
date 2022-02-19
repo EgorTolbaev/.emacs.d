@@ -80,6 +80,8 @@
     - [[#json][JSON]]
     - [[#yaml][YAML]]
     - [[#makefile][Makefile]]
+  - [[#buildsystem][Buildsystem]]
+    - [[#docker][Docker]]
   - [[#projectile][Projectile]]
   - [[#magit][Magit]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
@@ -1501,6 +1503,31 @@ GitHub: [[https://github.com/yoshiki/yaml-mode][yaml-mode]]
   (use-package makefile-gmake-mode
     :ensure nil
     :mode  ("Makefile.*" . makefile-gmake-mode))
+
+#+end_src
+
+** Buildsystem
+
+*** Docker
+
+=Docker=, режим для управления докером из Emacs.
+
+GitHub: [[https://github.com/Silex/docker.el][docker]]
+
+#+begin_src emacs-lisp
+
+  (use-package docker
+    :bind ("C-c d" . docker))
+
+#+end_src
+
+=Dockerfile Mode= — режим Emacs для обработки файлов Dockerfile.
+
+GitHub: [[https://github.com/spotify/dockerfile-mode][dockerfile-mode]]
+
+#+begin_src emacs-lisp
+
+  (use-package dockerfile-mode)
 
 #+end_src
 

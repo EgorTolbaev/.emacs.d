@@ -595,6 +595,11 @@
   :ensure nil
   :mode  ("Makefile.*" . makefile-gmake-mode))
 
+(use-package docker
+  :bind ("C-c d" . docker))
+
+(use-package dockerfile-mode)
+
 (use-package projectile
   :config
     (define-key projectile-mode-map (kbd "C-x p") 'projectile-command-map)
