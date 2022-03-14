@@ -231,6 +231,44 @@
          :clock-in :clock-resume
          :empty-lines 1)))
 
+(when (system-is-windows)
+  (set 'path_org_roam "c:/Users/user/Dropbox/RoamNotes"))
+(when (system-is-linux)
+  (set 'path_org_roam "~/Dropbox/RoamNotes"))
+
+(use-package org-roam
+  :ensure t
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory path_org_roam)
+  (org-roam-completion-everywhere t)
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert)
+         :map org-mode-map
+         ("C-M-i" . completion-at-point)
+         :map org-roam-dailies-map
+         ("Y" . org-roam-dailies-capture-yesterday)
+         ("T" . org-roam-dailies-capture-tomorrow))
+  :bind-keymap
+  ("C-c n d" . org-roam-dailies-map)
+  :config
+  (require 'org-roam-dailies) ;; Ensure the keymap is available
+  (org-roam-db-autosync-mode))
+
+(use-package org-roam-ui
+  :after org-roam
+  ;;normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+  ;;a hookable mode anymore, you're advised to pick something yourself
+  ;;if you don't care about startup time, use
+  ;;:hook (after-init . org-roam-ui-mode)
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t))
+
 (use-package org-bullets
   :after org
   :hook (org-mode . org-bullets-mode)
@@ -552,6 +590,7 @@
 
 (use-package pyenv-mode
   ;; Integrate pyenv with Python-mode
+  :hook (python-mode . pyenv-mode)
   :init
   (let ((pyenv-path (expand-file-name "~/.pyenv/bin")))
     (setenv "PATH" (concat pyenv-path ":" (getenv "PATH")))

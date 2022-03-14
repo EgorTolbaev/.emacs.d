@@ -35,6 +35,8 @@
     - [[#commands-1][Commands]]
     - [[#basic-config][Basic Config]]
     - [[#capture][Capture]]
+    - [[#org-roam][Org-roam]]
+    - [[#org-roam-ui][Org-roam-ui]]
     - [[#org-bullets][Org bullets]]
     - [[#center-org-buffers][Center Org Buffers]]
     - [[#toc-org][Toc org]]
@@ -558,6 +560,111 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
 
 #+end_src
 
+*** Org-roam
+
+[[https://www.orgroam.com/][Org-roam]] - это система для управления вашими знаниями на основе org файлов. Удобный способ создать собственную создать собственную wiki или просто управлять своими заметками.
+
+**** Установка
+
+***** Windows
+
+Чтобы установить org-roam на OS Windows, вым нужно устоновить компилятор C [[https://www.msys2.org/][MSYS2]] и в его терминале ввести команду:
+
+#+begin_src bash
+
+  pacman -S gcc
+
+#+end_src
+
+Далее нужно добавить пути, для этого в терминале введем следующие:
+
+#+begin_src bash
+
+  setx PATH "c:\msys64\mingw32\bin;c:\msys64\usr\bin;%PATH%"
+
+#+end_src
+
+Чтобы узнать подробней читайте [[https://www.orgroam.com/manual.html#C-Compiler][инструкцию]].
+
+***** Linux
+
+Еще не настроено:)
+
+**** Commands
+
+| command                             | key / ex command | description                              |
+|-------------------------------------+------------------+------------------------------------------|
+| org-roam-node-find                  | =C-c n f=        | открыть/создать узел                     |
+| org-roam-node-insert                | =C-c n i=        | добавить ссылку на узел                  |
+| org-roam-buffer-toggle              | =C-c n l=        | посмотреть связи между узлами            |
+| completion-at-point                 | =C-M-i=          | автозавершение при вводе первых символов |
+| org-id-get-create                   | -                | создать узел из заголовка                |
+| org-roam-alias-add                  | -                | добавить alias узлу                      |
+| org-roam-dailies-capture-today      | =C-c n d n=      | создать заметку на текущий день          |
+| org-roam-dailies-goto-today         | =C-c n d d=      | перейти к заметкам текущего дня          |
+| org-roam-dailies-capture-yesterday  | =C-c n d Y=      | создать заметку вчерашнего дня           |
+| org-roam-dailies-capture-tomorrow   | =C-c n d T=      | создать заметку завтрашнего дня          |
+| org-roam-dailies-capture-date       | =C-c n d v=      | создать заметку на определенную дату     |
+| org-roam-dailies-goto-date          | =C-c n d c=      | перейти к файлу за конкретную дату       |
+| org-roam-dailies-goto-next-note     | =C-c n d b=      | перейти к заметки вчерашнего дня         |
+| org-roam-dailies-goto-previous-note | =C-c n d f=      | перейти к заметку завтрашнего дня        |
+|-------------------------------------+------------------+------------------------------------------|
+
+**** Settings
+
+#+begin_src emacs-lisp
+
+  (when (system-is-windows)
+    (set 'path_org_roam "c:/Users/user/Dropbox/RoamNotes"))
+  (when (system-is-linux)
+    (set 'path_org_roam "~/Dropbox/RoamNotes"))
+
+  (use-package org-roam
+    :ensure t
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory path_org_roam)
+    (org-roam-completion-everywhere t)
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n i" . org-roam-node-insert)
+           :map org-mode-map
+           ("C-M-i" . completion-at-point)
+           :map org-roam-dailies-map
+           ("Y" . org-roam-dailies-capture-yesterday)
+           ("T" . org-roam-dailies-capture-tomorrow))
+    :bind-keymap
+    ("C-c n d" . org-roam-dailies-map)
+    :config
+    (require 'org-roam-dailies) ;; Ensure the keymap is available
+    (org-roam-db-autosync-mode))
+
+#+end_src
+
+*** Org-roam-ui
+
+GitHub: [[https://github.com/org-roam/org-roam-ui][org-roam-ui]]
+
+=org-roam-ui= — это интерфейс для просмотра и взаимодействия с вашими заметками в [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#Org-roam][Org-roam]].
+
+Используйте =M-x org-roam-ui-mode RET= для включения глобального режима. Он запустит веб-сервер по адресу http://127.0.0.1:35901/ и подключится к нему через WebSocket для получения обновлений в реальном времени.
+
+#+begin_src emacs-lisp
+
+  (use-package org-roam-ui
+    :after org-roam
+    ;;normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+    ;;a hookable mode anymore, you're advised to pick something yourself
+    ;;if you don't care about startup time, use
+    ;;:hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
+#+end_src
 *** Org bullets
 
 Github: [[https://github.com/sabof/org-bullets][org-bullets]]
@@ -1399,6 +1506,7 @@ GitHub: [[https://github.com/pythonic-emacs/pyenv-mode][pyenv-mode]]
 
   (use-package pyenv-mode
     ;; Integrate pyenv with Python-mode
+    :hook (python-mode . pyenv-mode)
     :init
     (let ((pyenv-path (expand-file-name "~/.pyenv/bin")))
       (setenv "PATH" (concat pyenv-path ":" (getenv "PATH")))
