@@ -12,6 +12,7 @@
 ;;
 ;; I decided to create my own GNU Emacs configuration
 ;; to simplify my daily life by adding scripts and useful features.
+;; This configuration does not claim to be ideal and is in constant development, but it is fully operational.
 ;; This file is generated based on myconfig.org
 
 ;;; Code:
@@ -69,7 +70,8 @@
                 org-agenda-mode-hook
                 treemacs-mode-hook
                 eww-mode-hook
-                calendar-mode-hook))
+                calendar-mode-hook
+                deft-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 (defvar et/default-font-size 110)
@@ -100,8 +102,7 @@
 
 (setq auto-mode-alist
     (append
-     '(
-       ("\\.el$"  . lisp-mode)
+     '(("\\.el$"  . lisp-mode)
        ("\\.org$" . org-mode))))
 
 (use-package doom-themes
@@ -127,12 +128,12 @@
 (display-time-mode t)             ; показывать часы в mode-line
 (size-indication-mode t)          ; размер файла в %-ах
 
-(defun transparent-frame (bool)
+(defun et/transparent-frame (bool)
   (if bool
       (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
     (set-frame-parameter (selected-frame) 'alpha '(100 . 100))))
 
-(transparent-frame t)
+(et/transparent-frame t)
 
 (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
 (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
@@ -150,91 +151,121 @@
   (setq highlight-indent-guides-method 'character)
   (setq highlight-indent-guides-responsive 'top))
 
+(when (system-is-windows)
+  (set 'path_file_daily "c:/Users/user/Dropbox/Braindump/daily/"))
+(when (system-is-linux)
+  (set 'path_file_daily "~/Dropbox/Braindump/daily"))
+
+(when (system-is-windows)
+  (set 'inbox_file "c:/Users/user/Dropbox/Braindump/inbox.org"))
+(when (system-is-linux)
+  (set 'inbox_file "~/Dropbox/Braindump/inbox.org"))
+
+(defun et/file-today(path)
+  "Получает путь к файлу сегодняшнего дня"
+  (interactive)
+  (set 'capture-file
+       (let* ((now (decode-time)))
+         (format-time-string (concat path "%Y-%m-%d.org") (apply #'encode-time now)))))
+
 (defun et/org-mode-setup ()
-(org-indent-mode)
-;;(variable-pitch-mode 1)
-(visual-line-mode 1))
+  (org-indent-mode)
+  ;;(variable-pitch-mode 1)
+  (visual-line-mode 1))
 
 (use-package org
   :hook (org-mode . et/org-mode-setup)
   :config
   (setq org-ellipsis " ▾")
-
   (setq org-agenda-start-with-log-mode t)
   (setq org-log-done 'time)  ; Заметки с отметкой времени
   (setq org-log-into-drawer t)
-
   (when (system-is-windows)
-    (setq org-agenda-files '("c:/Users/user/Dropbox/OrgFiles/tasks/job.org"
-                             "c:/Users/user/Dropbox/OrgFiles/tasks/house.org"
-                             "c:/Users/user/Dropbox/OrgFiles/tasks/study.org"
-                             "c:/Users/user/Dropbox/OrgFiles/tasks/meet.org"
-                             "c:/Users/user/Dropbox/OrgFiles/holidays/Birthdays.org")))
+    (setq org-agenda-files '("c:/Users/user/Dropbox/OrgFiles/holidays/Birthdays.org"
+                             "c:/Users/user/Dropbox/Braindump/Habits.org"
+                             "c:/Users/user/Dropbox/Braindump/daily")))
   (when (system-is-linux)
-    (setq org-agenda-files '("~/Dropbox/OrgFiles/tasks/job.org"
-                             "~/Dropbox/OrgFiles/tasks/house.org"
-                             "~/Dropbox/OrgFiles/tasks/study.org"
-                             "~/Dropbox/OrgFiles/holidays/Birthdays.org")))
+    (setq org-agenda-files '("~/Dropbox/OrgFiles/holidays/Birthdays.org"
+                             "~/Dropbox/Braindump/Habits.org"
+                             "~/Dropbox/Braindump/daily")))
+
+
+  (require 'org-habit)
+  (add-to-list 'org-modules 'org-habit)
+  (setq org-habit-graph-column 60)
 
   (setq org-todo-keywords '((sequence "TODO(t)"
                                       "IN-PROGRESS(s)"
                                       "PAUSE(p@/!)"
-                                      "NEXT(n)"
+                                      "NEXT(n@)"
                                       "ACTIVE(a)"
                                       "WAITING(w@/!)""|" "DONE(d!)" "CANCEL(c@)")))
-
   (setq org-tag-alist
-   '((:startgroup)
-      (:endgroup)
-      ("@home" . ?H)
-      ("@work" . ?W)
-      ("agenda" . ?a)
-      ("meeting" .?m)
-      ("note" . ?n)
-      ("idea" . ?i)))
-
+        '((:startgroup)
+                                        ; Put mutually exclusive tags here
+          (:endgroup)
+          ("@home" . ?H)
+          ("@work" . ?W)
+          ("agenda" . ?a)
+          ("meeting" .?m)
+          ("note" . ?n)
+          ("idea" . ?i)
+          ("day" . ?d)))
   (setq org-agenda-custom-commands
-    '(("d" "Meetings today" tags-todo "+SCHEDULED>=\"<today>\"+SCHEDULED<\"<tomorrow>\"+meeting/ACTIVE"))))
-
+        '(("D" . "Day")
+          ("Dd" "Day"
+           ((agenda "" ((org-agenda-span 0)))
+            (todo "TODO")
+            (todo "NEXT")
+            (todo "PAUSE")))
+          ("Dm" "Meetings today" tags "+meeting" ((org-agenda-files (list (et/file-today path_file_daily)))))
+          ("Dw" "Work Tasks today" tags-todo "+@work" ((org-agenda-files (list (et/file-today path_file_daily)))))
+          ("De" "Tags today"
+           ((tags "+day" ((org-agenda-files (list (et/file-today path_file_daily)))))
+            (tags "+@work" ((org-agenda-files (list (et/file-today path_file_daily)))))
+            (tags "+@home" ((org-agenda-files (list (et/file-today path_file_daily)))))
+            (tags "+meeting" ((org-agenda-files (list (et/file-today path_file_daily)))))))
+          ("w" "Work Tasks"
+           ((todo "TODO")
+            (todo "NEXT")
+            (todo "PAUSE")))
+          ("i" "Inbox"
+           ((todo "TODO"))((org-agenda-files (list inbox_file))))))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t))))
 
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c a") 'org-agenda)
 
 (when (system-is-windows)
-  (set 'path_note    "c:/Users/user/Dropbox/OrgFiles/notes.org")
-  (set 'path_journal "c:/Users/user/Dropbox/OrgFiles/Journal.org")
-  (set 'path_meeting "c:/Users/user/Dropbox/OrgFiles/tasks/meet.org")
-  (set 'path_task    "c:/Users/user/Dropbox/OrgFiles/tasks/job.org"))
+  (set 'capture_file "c:/Users/user/Dropbox/Braindump/inbox.org"))
 (when (system-is-linux)
-  (set 'path_note    "~/Dropbox/OrgFiles/notes.org")
-  (set 'path_journal "~/Dropbox/OrgFiles/Journal.org")
-  (set 'path_meeting "~/Dropbox/OrgFiles/tasks/meet.org")
-  (set 'path_task    "~/Dropbox/OrgFiles/tasks/job.org"))
+  (set 'capture_file "~/Dropbox/Braindump/inbox.org"))
+
+(server-start)
+(require 'org-protocol)
 
 (setq org-capture-templates
-      '(("n" "Notes" entry (file+headline path_note "Notes")
-         "* TODO %? %^g \nCreated %U\n  %i\n")
+      '(("i" "Inbox" entry (file capture_file)
+         "* TODO %?" :empty-lines 1)
+        ("c" "org-protocol-capture" entry (file capture_file)
+         "* TODO [[%:link][%:description]]\n\n %i"
+         :immediate-finish t)))
 
-        ("m"  "Meeting work")
-        ("mn" "New meeting work" entry (file+olp path_meeting "New meetings")
-         "* ACTIVE %? :meeting: \nSCHEDULED: %^t  %i" :empty-lines 1)
+(defun et/org-capture-inbox ()
+  (interactive)
+  (org-capture nil "c"))
 
-        ("w"  "Work")
-        ("wn" "New task" entry (file+olp path_task "Tasks")
-         "* TODO %?\nSCHEDULED:  %^t \nDEADLINE: %^t  %i" :empty-lines 1)
-
-        ("j" "Journal Entries")
-        ("jj" "Journal" entry
-         (file+olp+datetree path_journal)
-         "\n* %<%I:%M %p> - %? :journal:\n\nNote:\n\n"
-         :clock-in :clock-resume
-         :empty-lines 1)))
+(defun et/open-inbox ()
+  (interactive)
+  (find-file capture_file))
 
 (when (system-is-windows)
-  (set 'path_org_roam "c:/Users/user/Dropbox/RoamNotes"))
+  (set 'path_org_roam "c:/Users/user/Dropbox/Braindump"))
 (when (system-is-linux)
-  (set 'path_org_roam "~/Dropbox/RoamNotes"))
+  (set 'path_org_roam "~/Dropbox/Braindump"))
 
 (use-package org-roam
   :ensure t
@@ -243,6 +274,17 @@
   :custom
   (org-roam-directory path_org_roam)
   (org-roam-completion-everywhere t)
+  (org-roam-node-display-template
+   (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+  (org-roam-dailies-capture-templates
+   '(("d" "default" entry "* %? %^G \n %^t %i"
+      :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Day")) :unnarrowed t)
+     ("w" "Task with time" entry "* %? %^G \n %i"
+      :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Day")) :unnarrowed t)
+     ("m" "Meeting work" entry "* %? :meeting: \n %^t %i"
+      :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Meeting work")) :unnarrowed t)
+     ("t" "Task" entry "* TODO %? :@work: \n %^t %i"
+      :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Task")) :unnarrowed t)))
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)
          ("C-c n i" . org-roam-node-insert)
@@ -255,7 +297,18 @@
   ("C-c n d" . org-roam-dailies-map)
   :config
   (require 'org-roam-dailies) ;; Ensure the keymap is available
-  (org-roam-db-autosync-mode))
+  (org-roam-db-autosync-mode)
+  (cl-defmethod org-roam-node-type ((node org-roam-node))
+    "Return the TYPE of NODE."
+    (condition-case nil
+        (file-name-nondirectory
+         (directory-file-name
+          (file-name-directory
+           (file-relative-name (org-roam-node-file node) org-roam-directory))))
+      (error "")))
+  (defun et/tag-new-node-as-draft ()
+    (org-roam-tag-add '("draft")))
+  (add-hook 'org-roam-capture-new-node-hook #'et/tag-new-node-as-draft))
 
 (use-package org-roam-ui
   :after org-roam
@@ -276,7 +329,7 @@
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
 (when (system-is-windows)
-  (set 'center_org 100))
+  (set 'center_org 130))
 (when (system-is-linux)
   (set 'center_org 150))
 
@@ -304,7 +357,7 @@
   (defvar et/path-expand "~/.emacs.d/myconfig.org"))
 
 (defun et/org-babel-tangle-config ()
-    (when (string-equal (buffer-file-name)
+  (when (string-equal (buffer-file-name)
                       (expand-file-name et/path-expand))
     (let ((org-confirm-babel-evaluate nil))
       (org-babel-tangle))))
@@ -333,6 +386,25 @@
 
 ;; (use-package all-the-icons-dired
 ;;   :hook (dired-mode . all-the-icons-dired-mode))
+
+(when (system-is-windows)
+  (setq et/deft-dir-list '("c:/Users/user/Dropbox/Braindump/main"
+                           "c:/Users/user/Dropbox/Braindump/daily")))
+(when (system-is-linux)
+  (setq et/deft-dir-list '("~/Dropbox/Braindump/main"
+                           "~/Dropbox/Braindump/daily")))
+
+(use-package deft
+  :config (setq deft-directory "c:/Users/user/Dropbox/Braindump/main"
+                deft-extensions '("md" "org"))
+  (setq deft-use-filename-as-title t))
+
+(defun et/pick-deft-dir ()
+  "Select directories from a list"
+  (interactive)
+  (setq deft-directory
+        (ido-completing-read "Select directory: " et/deft-dir-list))
+  (deft-refresh))
 
 (use-package ivy
   :diminish
@@ -496,21 +568,22 @@
    (("d" set-night-theme "Night theme")
     ("l" set-light-theme "Light theme"))
    "Frame"
-   (("p" (transparent-frame t) "Transparent frame")
-    ("n" (transparent-frame nil) "Not transparent frame"))))
+   (("p" (et/transparent-frame t) "Transparent frame")
+    ("n" (et/transparent-frame nil) "Not transparent frame"))))
 
 (pretty-hydra-define hydra-org
   (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "codepen" "Org" 1 -0.05))
-(""
- (("g" org-insert-link-global "Insert link")
-  ("s" org-store-link "Store link")
-  ("c" org-capture "Create capture")
-  ("a" org-agenda "Open agenda"))
- "Clock"
- (("j" org-clock-goto "Org clock goto")
-  ("l" org-clock-in-last "Org clock in last")
-  ("i" org-clock-in "Org clock in")
-  ("o" org-clock-out "Org clock uot"))))
+  (""
+   (("g" org-insert-link-global "Insert link")
+    ("l" org-store-link "Store link")
+    ("c" org-capture "Create capture")
+    ("a" org-agenda "Open agenda")
+    ("s" et/org-capture-inbox "Inbox"))
+   "Clock"
+   (("j" org-clock-goto "Org clock goto")
+    ("d" org-clock-in-last "Org clock in last")
+    ("i" org-clock-in "Org clock in")
+    ("o" org-clock-out "Org clock uot"))))
 
 (pretty-hydra-define hydra-windows
   (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "windows" "Windows" 1 -0.05))

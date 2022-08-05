@@ -34,6 +34,7 @@
   - [[#org-mode][Org mode]]
     - [[#commands-1][Commands]]
     - [[#basic-config][Basic Config]]
+    - [[#настройка-org-protocol][Настройка org-protocol]]
     - [[#capture][Capture]]
     - [[#org-roam][Org-roam]]
     - [[#org-roam-ui][Org-roam-ui]]
@@ -47,10 +48,13 @@
   - [[#dired][Dired]]
     - [[#commands-2][Commands]]
     - [[#settings-1][Settings]]
-- [[#modes][Modes]]
-  - [[#ivy][IVY]]
+  - [[#deft][Deft]]
     - [[#commands-3][Commands]]
     - [[#settings-2][Settings]]
+- [[#modes][Modes]]
+  - [[#ivy][IVY]]
+    - [[#commands-4][Commands]]
+    - [[#settings-3][Settings]]
   - [[#ivy-rich][IVY-RICH]]
   - [[#counsel][COUNSEL]]
   - [[#helpful][Helpful]]
@@ -62,7 +66,7 @@
   - [[#browser][Browser]]
     - [[#engine-mode][Engine-mode]]
   - [[#hydra][Hydra]]
-    - [[#commands-4][Commands]]
+    - [[#commands-5][Commands]]
     - [[#settings-hydra][Settings Hydra]]
     - [[#hydra--browser][Hydra / Browser]]
     - [[#hydra--treemacs][Hydra / Treemacs]]
@@ -108,6 +112,7 @@
   ;;
   ;; I decided to create my own GNU Emacs configuration
   ;; to simplify my daily life by adding scripts and useful features.
+  ;; This configuration does not claim to be ideal and is in constant development, but it is fully operational.
   ;; This file is generated based on myconfig.org
 
   ;;; Code:
@@ -132,7 +137,7 @@
 
 * Переменные ОС
 
-Некоторые части конфигурации отличаются в зависимости от системы, поэтому я определил переменные для дальнейшего использовани.
+Некоторые части конфигурации отличаются в зависимости от системы, поэтому я определил функции для дальнейшего использовани.
 
 #+begin_src emacs-lisp
 
@@ -213,7 +218,8 @@
                   org-agenda-mode-hook
                   treemacs-mode-hook
                   eww-mode-hook
-                  calendar-mode-hook))
+                  calendar-mode-hook
+                  deft-mode-hook))
       (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 #+end_src
@@ -294,8 +300,7 @@
 
   (setq auto-mode-alist
       (append
-       '(
-         ("\\.el$"  . lisp-mode)
+       '(("\\.el$"  . lisp-mode)
          ("\\.org$" . org-mode))))
 
 #+end_src
@@ -353,11 +358,11 @@ GitHub: [[https://github.com/seagle0128/doom-modeline][doom-modeline]]
 
 GitHub: [[https://github.com/domtronn/all-the-icons.el][all-the-icons]]
 
-Для того, чтобы значки работали, очень важно, чтобы вы установили шрифты ресурсов, включенные в этот пакет.
+Для того, чтобы значки работали, очень важно, чтобы Вы установили шрифты ресурсов, включенные в этот пакет.
 
-M-x all-the-icons-install-fonts
+=M-x all-the-icons-install-fonts=
 
-Для Windows эта функция предложит указать каталог для загрузки, чтобы вы могли установить их вручную.
+/Для Windows эта функция предложит указать каталог для загрузки/, /чтобы вы могли установить их вручную/.
 
 #+begin_src emacs-lisp
 
@@ -383,12 +388,12 @@ M-x all-the-icons-install-fonts
 
 #+begin_src emacs-lisp
 
-  (defun transparent-frame (bool)
+  (defun et/transparent-frame (bool)
     (if bool
         (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
       (set-frame-parameter (selected-frame) 'alpha '(100 . 100))))
 
-  (transparent-frame t)
+  (et/transparent-frame t)
 
   (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
   (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
@@ -409,6 +414,7 @@ GitHub: [[https://github.com/roman/golden-ratio.el][golden-ratio]]
     (golden-ratio-mode 1))
 
 #+end_src
+
 ** Highlight indent guides
 
 GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-indent-guides]]
@@ -466,54 +472,93 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
 
 Этот раздел содержит базовую конфигурацию =org-mode=, а также конфигурацию для повестоки дня.
 
+*Есть проблема с* =org-agenda-files= *на данный момент открывает все файлы* =org-roam daily=, *это не очень хорошо, но решения я пока что не нашел*.
+
 #+begin_src emacs-lisp
 
+  (when (system-is-windows)
+    (set 'path_file_daily "c:/Users/user/Dropbox/Braindump/daily/"))
+  (when (system-is-linux)
+    (set 'path_file_daily "~/Dropbox/Braindump/daily"))
+
+  (when (system-is-windows)
+    (set 'inbox_file "c:/Users/user/Dropbox/Braindump/inbox.org"))
+  (when (system-is-linux)
+    (set 'inbox_file "~/Dropbox/Braindump/inbox.org"))
+
+  (defun et/file-today(path)
+    "Получает путь к файлу сегодняшнего дня"
+    (interactive)
+    (set 'capture-file
+         (let* ((now (decode-time)))
+           (format-time-string (concat path "%Y-%m-%d.org") (apply #'encode-time now)))))
+
   (defun et/org-mode-setup ()
-  (org-indent-mode)
-  ;;(variable-pitch-mode 1)
-  (visual-line-mode 1))
+    (org-indent-mode)
+    ;;(variable-pitch-mode 1)
+    (visual-line-mode 1))
 
   (use-package org
     :hook (org-mode . et/org-mode-setup)
     :config
     (setq org-ellipsis " ▾")
-
     (setq org-agenda-start-with-log-mode t)
     (setq org-log-done 'time)  ; Заметки с отметкой времени
     (setq org-log-into-drawer t)
-
     (when (system-is-windows)
-      (setq org-agenda-files '("c:/Users/user/Dropbox/OrgFiles/tasks/job.org"
-                               "c:/Users/user/Dropbox/OrgFiles/tasks/house.org"
-                               "c:/Users/user/Dropbox/OrgFiles/tasks/study.org"
-                               "c:/Users/user/Dropbox/OrgFiles/tasks/meet.org"
-                               "c:/Users/user/Dropbox/OrgFiles/holidays/Birthdays.org")))
+      (setq org-agenda-files '("c:/Users/user/Dropbox/OrgFiles/holidays/Birthdays.org"
+                               "c:/Users/user/Dropbox/Braindump/Habits.org"
+                               "c:/Users/user/Dropbox/Braindump/daily")))
     (when (system-is-linux)
-      (setq org-agenda-files '("~/Dropbox/OrgFiles/tasks/job.org"
-                               "~/Dropbox/OrgFiles/tasks/house.org"
-                               "~/Dropbox/OrgFiles/tasks/study.org"
-                               "~/Dropbox/OrgFiles/holidays/Birthdays.org")))
+      (setq org-agenda-files '("~/Dropbox/OrgFiles/holidays/Birthdays.org"
+                               "~/Dropbox/Braindump/Habits.org"
+                               "~/Dropbox/Braindump/daily")))
+
+
+    (require 'org-habit)
+    (add-to-list 'org-modules 'org-habit)
+    (setq org-habit-graph-column 60)
 
     (setq org-todo-keywords '((sequence "TODO(t)"
                                         "IN-PROGRESS(s)"
                                         "PAUSE(p@/!)"
-                                        "NEXT(n)"
+                                        "NEXT(n@)"
                                         "ACTIVE(a)"
                                         "WAITING(w@/!)""|" "DONE(d!)" "CANCEL(c@)")))
-
     (setq org-tag-alist
-     '((:startgroup)
-        (:endgroup)
-        ("@home" . ?H)
-        ("@work" . ?W)
-        ("agenda" . ?a)
-        ("meeting" .?m)
-        ("note" . ?n)
-        ("idea" . ?i)))
-
+          '((:startgroup)
+                                          ; Put mutually exclusive tags here
+            (:endgroup)
+            ("@home" . ?H)
+            ("@work" . ?W)
+            ("agenda" . ?a)
+            ("meeting" .?m)
+            ("note" . ?n)
+            ("idea" . ?i)
+            ("day" . ?d)))
     (setq org-agenda-custom-commands
-      '(("d" "Meetings today" tags-todo "+SCHEDULED>=\"<today>\"+SCHEDULED<\"<tomorrow>\"+meeting/ACTIVE"))))
-
+          '(("D" . "Day")
+            ("Dd" "Day"
+             ((agenda "" ((org-agenda-span 0)))
+              (todo "TODO")
+              (todo "NEXT")
+              (todo "PAUSE")))
+            ("Dm" "Meetings today" tags "+meeting" ((org-agenda-files (list (et/file-today path_file_daily)))))
+            ("Dw" "Work Tasks today" tags-todo "+@work" ((org-agenda-files (list (et/file-today path_file_daily)))))
+            ("De" "Tags today"
+             ((tags "+day" ((org-agenda-files (list (et/file-today path_file_daily)))))
+              (tags "+@work" ((org-agenda-files (list (et/file-today path_file_daily)))))
+              (tags "+@home" ((org-agenda-files (list (et/file-today path_file_daily)))))
+              (tags "+meeting" ((org-agenda-files (list (et/file-today path_file_daily)))))))
+            ("w" "Work Tasks"
+             ((todo "TODO")
+              (todo "NEXT")
+              (todo "PAUSE")))
+            ("i" "Inbox"
+             ((todo "TODO"))((org-agenda-files (list inbox_file))))))
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((python . t))))
 
   (global-set-key (kbd "C-c l") 'org-store-link)
   (global-set-key (kbd "C-c c") 'org-capture)
@@ -521,54 +566,106 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
 
 #+end_src
 
+*** Настройка org-protocol
+
+=Org-mode= имеет удобную функцию =org-protocol=, которая связана с =org-capture=.
+
+=Org-protocol= позволяет делать захват статей или их частей пряма из браузера.
+
+Это позволяет при чтении чего-либо в браузере сохранить ссылку и выделеный текст прямо в =org= файл который Вы указали.
+
+Для самой простой настройки Вам нужно сделать следующее:
+
+1) В свой config Emacs  добавить вызов функции =server-start= и пакет =org-protocol=;
+2) Добавить шаблон захвата (=org-capture-templates=)
+
+   Пример простого шаблона:
+  #+begin_src text
+    ("c" "org-protocol-capture" entry (file capture_file)
+    "* TODO [[%:link][%:description]]\n\n %i"
+    :immediate-finish t)
+  #+end_src
+3) В браузере котором Вы работаете настроить Bookmarklet для вызова следующего JS кода:
+   #+begin_src js
+
+     javascript:location.href ='org-protocol://capture?template=c&url='+
+         encodeURIComponent(location.href) +
+         '&title=' + encodeURIComponent(document.title) +
+         '&body=' + encodeURIComponent(window.getSelection())
+
+   #+end_src
+4) Зарегестрировать =org-protocl= в своей системе:
+
+   - Windows
+
+     Нужно создать обычный текстовый файл и добавить в него следующие строки
+
+      #+begin_src bash
+
+        REGEDIT4
+
+        [HKEY_CLASSES_ROOT\org-protocol]
+        @="URL:Org Protocol"
+        "URL Protocol"=""
+        [HKEY_CLASSES_ROOT\org-protocol\shell]
+        [HKEY_CLASSES_ROOT\org-protocol\shell\open]
+        [HKEY_CLASSES_ROOT\org-protocol\shell\open\command]
+        @="\"C:\\emacs\\bin\\emacsclientw.exe\" \"%1\""
+
+      #+end_src
+
+      после сохранить файл с расширением =reg= и запустить.
+
+      *Обратите внимание что строка* @"\"C:\\emacs\\bin\\emacsclientw.exe\" \"%1\"" *может отличаться, в зависимости куда был установлен Emacs*
+
+   - Linux
+
+     Еще не настраивал:)
+
+[[https://orgmode.org/worg/org-contrib/org-protocol.html#org379cab0][Подробно про настройку можно почитать тут]]
+
 *** Capture
 
 Я использую  =capture= для быстрого создания задач, заметок и другой организации дел.
 
+На данный момент =capture= связан с =org-protocl=, смотрите пункт выше.
+
 #+begin_src emacs-lisp
 
   (when (system-is-windows)
-    (set 'path_note    "c:/Users/user/Dropbox/OrgFiles/notes.org")
-    (set 'path_journal "c:/Users/user/Dropbox/OrgFiles/Journal.org")
-    (set 'path_meeting "c:/Users/user/Dropbox/OrgFiles/tasks/meet.org")
-    (set 'path_task    "c:/Users/user/Dropbox/OrgFiles/tasks/job.org"))
+    (set 'capture_file "c:/Users/user/Dropbox/Braindump/inbox.org"))
   (when (system-is-linux)
-    (set 'path_note    "~/Dropbox/OrgFiles/notes.org")
-    (set 'path_journal "~/Dropbox/OrgFiles/Journal.org")
-    (set 'path_meeting "~/Dropbox/OrgFiles/tasks/meet.org")
-    (set 'path_task    "~/Dropbox/OrgFiles/tasks/job.org"))
+    (set 'capture_file "~/Dropbox/Braindump/inbox.org"))
+
+  (server-start)
+  (require 'org-protocol)
 
   (setq org-capture-templates
-        '(("n" "Notes" entry (file+headline path_note "Notes")
-           "* TODO %? %^g \nCreated %U\n  %i\n")
+        '(("i" "Inbox" entry (file capture_file)
+           "* TODO %?" :empty-lines 1)
+          ("c" "org-protocol-capture" entry (file capture_file)
+           "* TODO [[%:link][%:description]]\n\n %i"
+           :immediate-finish t)))
 
-          ("m"  "Meeting work")
-          ("mn" "New meeting work" entry (file+olp path_meeting "New meetings")
-           "* ACTIVE %? :meeting: \nSCHEDULED: %^t  %i" :empty-lines 1)
+  (defun et/org-capture-inbox ()
+    (interactive)
+    (org-capture nil "c"))
 
-          ("w"  "Work")
-          ("wn" "New task" entry (file+olp path_task "Tasks")
-           "* TODO %?\nSCHEDULED:  %^t \nDEADLINE: %^t  %i" :empty-lines 1)
-
-          ("j" "Journal Entries")
-          ("jj" "Journal" entry
-           (file+olp+datetree path_journal)
-           "\n* %<%I:%M %p> - %? :journal:\n\nNote:\n\n"
-           :clock-in :clock-resume
-           :empty-lines 1)))
-
+  (defun et/open-inbox ()
+    (interactive)
+    (find-file capture_file))
 
 #+end_src
 
 *** Org-roam
 
-[[https://www.orgroam.com/][Org-roam]] - это система для управления вашими знаниями на основе org файлов. Удобный способ создать собственную создать собственную wiki или просто управлять своими заметками.
+[[https://www.orgroam.com/][Org-roam]] - это система для управления вашими знаниями на основе org файлов. Удобный способ создать собственную wiki или просто управлять своими заметками.
 
 **** Установка
 
 ***** Windows
 
-Чтобы установить org-roam на OS Windows, вым нужно устоновить компилятор C [[https://www.msys2.org/][MSYS2]] и в его терминале ввести команду:
+Чтобы установить org-roam на OS Windows, Вам нужно устоновить компилятор =C= [[https://www.msys2.org/][MSYS2]] и в его терминале ввести команду:
 
 #+begin_src bash
 
@@ -614,31 +711,53 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
 
 #+begin_src emacs-lisp
 
-  (when (system-is-windows)
-    (set 'path_org_roam "c:/Users/user/Dropbox/RoamNotes"))
-  (when (system-is-linux)
-    (set 'path_org_roam "~/Dropbox/RoamNotes"))
+      (when (system-is-windows)
+        (set 'path_org_roam "c:/Users/user/Dropbox/Braindump"))
+      (when (system-is-linux)
+        (set 'path_org_roam "~/Dropbox/Braindump"))
 
-  (use-package org-roam
-    :ensure t
-    :init
-    (setq org-roam-v2-ack t)
-    :custom
-    (org-roam-directory path_org_roam)
-    (org-roam-completion-everywhere t)
-    :bind (("C-c n l" . org-roam-buffer-toggle)
-           ("C-c n f" . org-roam-node-find)
-           ("C-c n i" . org-roam-node-insert)
-           :map org-mode-map
-           ("C-M-i" . completion-at-point)
-           :map org-roam-dailies-map
-           ("Y" . org-roam-dailies-capture-yesterday)
-           ("T" . org-roam-dailies-capture-tomorrow))
-    :bind-keymap
-    ("C-c n d" . org-roam-dailies-map)
-    :config
-    (require 'org-roam-dailies) ;; Ensure the keymap is available
-    (org-roam-db-autosync-mode))
+      (use-package org-roam
+        :ensure t
+        :init
+        (setq org-roam-v2-ack t)
+        :custom
+        (org-roam-directory path_org_roam)
+        (org-roam-completion-everywhere t)
+        (org-roam-node-display-template
+         (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+        (org-roam-dailies-capture-templates
+         '(("d" "default" entry "* %? %^G \n %^t %i"
+            :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Day")) :unnarrowed t)
+           ("w" "Task with time" entry "* %? %^G \n %i"
+            :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Day")) :unnarrowed t)
+           ("m" "Meeting work" entry "* %? :meeting: \n %^t %i"
+            :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Meeting work")) :unnarrowed t)
+           ("t" "Task" entry "* TODO %? :@work: \n %^t %i"
+            :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Task")) :unnarrowed t)))
+        :bind (("C-c n l" . org-roam-buffer-toggle)
+               ("C-c n f" . org-roam-node-find)
+               ("C-c n i" . org-roam-node-insert)
+               :map org-mode-map
+               ("C-M-i" . completion-at-point)
+               :map org-roam-dailies-map
+               ("Y" . org-roam-dailies-capture-yesterday)
+               ("T" . org-roam-dailies-capture-tomorrow))
+        :bind-keymap
+        ("C-c n d" . org-roam-dailies-map)
+        :config
+        (require 'org-roam-dailies) ;; Ensure the keymap is available
+        (org-roam-db-autosync-mode)
+        (cl-defmethod org-roam-node-type ((node org-roam-node))
+          "Return the TYPE of NODE."
+          (condition-case nil
+              (file-name-nondirectory
+               (directory-file-name
+                (file-name-directory
+                 (file-relative-name (org-roam-node-file node) org-roam-directory))))
+            (error "")))
+        (defun et/tag-new-node-as-draft ()
+          (org-roam-tag-add '("draft")))
+        (add-hook 'org-roam-capture-new-node-hook #'et/tag-new-node-as-draft))
 
 #+end_src
 
@@ -665,6 +784,7 @@ GitHub: [[https://github.com/org-roam/org-roam-ui][org-roam-ui]]
           org-roam-ui-open-on-start t))
 
 #+end_src
+
 *** Org bullets
 
 Github: [[https://github.com/sabof/org-bullets][org-bullets]]
@@ -690,7 +810,7 @@ Github: [[https://github.com/joostkremers/visual-fill-column][visual-fill-column
 #+begin_src emacs-lisp
 
   (when (system-is-windows)
-    (set 'center_org 100))
+    (set 'center_org 130))
   (when (system-is-linux)
     (set 'center_org 150))
 
@@ -745,7 +865,7 @@ GitHub: [[https://github.com/snosov1/toc-org][toc-org]]
     (defvar et/path-expand "~/.emacs.d/myconfig.org"))
 
   (defun et/org-babel-tangle-config ()
-      (when (string-equal (buffer-file-name)
+    (when (string-equal (buffer-file-name)
                         (expand-file-name et/path-expand))
       (let ((org-confirm-babel-evaluate nil))
         (org-babel-tangle))))
@@ -779,7 +899,7 @@ GitHub: [[https://github.com/snosov1/toc-org][toc-org]]
 
 Dired - это встроенный файловый менеджер для Emacs.
 
-/В OS Windows может быть не корректная сортировка файлов и дополнительная информация, это неприятно, на работе не мешает./
+/В OS Windows может быть не корректная сортировка файлов и дополнительная информация, это неприятно, но работе не мешает./
 
 Для отображения icons в =Dired= использую [[#treemacs-icons][Treemacs Icons]].
 
@@ -890,6 +1010,53 @@ Dired - это встроенный файловый менеджер для Ema
 
 #+end_src
 
+** Deft
+
+GitHub: [[https://github.com/jrblevin/deft][Deft]]
+
+Deft — это режим Emacs для быстрого просмотра, фильтрации и редактирования каталогов простых текстовых заметок, вдохновленный Notational Velocity.
+
+*** Commands
+
+| command                        | key / ex command | description                                                  |
+|--------------------------------+------------------+--------------------------------------------------------------|
+| deft-open-file-other-window    | =C-o=            | открыть файл в другом окне не меня фокуса                    |
+| deft-open-file-other-window    | =C-u C-o=        | открыть файл в другом окне переключившись на него            |
+| deft-filter-clear              | =С-с С-с=        | очистить фильтр поиска                                       |
+| deft-filter                    | =C-c C-l=        | редактировать строку поиска                                  |
+|                                | =M-p= and =M-n=  | история поиска в режиме редактирования строки поиска         |
+| deft-toggle-incremental-search | =C-c C-t=        | переключение между обычным поиском и по регулярным выражения |
+| deft-rename-file               | =C-c C-r=        | переименовать файл                                           |
+| deft-delete-file               | =С-с С-d=        | удалить файл                                                 |
+| deft-new-file                  | =C-c C-n=        | создать файл                                                 |
+| deft-archive-file              | =C-c C-a=        | переместить файл в архив                                     |
+|                                | =C-c C-q=        | закрыть deft                                                 |
+|--------------------------------+------------------+--------------------------------------------------------------|
+
+*** Settings
+
+#+begin_src emacs-lisp
+
+  (when (system-is-windows)
+    (setq et/deft-dir-list '("c:/Users/user/Dropbox/Braindump/main"
+                             "c:/Users/user/Dropbox/Braindump/daily")))
+  (when (system-is-linux)
+    (setq et/deft-dir-list '("~/Dropbox/Braindump/main"
+                             "~/Dropbox/Braindump/daily")))
+
+  (use-package deft
+    :config (setq deft-directory "c:/Users/user/Dropbox/Braindump/main"
+                  deft-extensions '("md" "org"))
+    (setq deft-use-filename-as-title t))
+
+  (defun et/pick-deft-dir ()
+    "Select directories from a list"
+    (interactive)
+    (setq deft-directory
+          (ido-completing-read "Select directory: " et/deft-dir-list))
+    (deft-refresh))
+
+#+end_src
 * Modes
 ** IVY
 
@@ -993,6 +1160,7 @@ which-key- это второстепенный режим для Emacs, кото
 #+end_src
 
 * General packages
+
 ** BS
 
 GitHub: [[https://github.com/emacs-mirror/emacs/blob/master/lisp/bs.el][bs]]
@@ -1151,18 +1319,19 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
 | counsel-load-theme          | =C-c s a=            | посмотреть все темы             |
 | set-night-theme             | =C-c s d=            | установить темную тему          |
 | set-light-theme             | =C-c s l=            | установить светлую тему         |
-| (transparent-frame t        | =C-c s p=            | прозрачный фрейм                |
-| (transparent-frame nil)     | =C-c s n=            | не прозрачный фрейм             |
+| (et/transparent-frame t)    | =C-c s p=            | прозрачный фрейм                |
+| (et/transparent-frame nil)  | =C-c s n=            | не прозрачный фрейм             |
 |-----------------------------+----------------------+---------------------------------|
 |-----------------------------+----------------------+---------------------------------|
 | Org                         |                      |                                 |
 | hydra-org/body              | =C-c o=              | hydra org                       |
 | org-insert-link-global      | =C-c o g=            | созадать ссылку                 |
-| org-store-link              | =C-c o s=            | store link                      |
+| org-store-link              | =C-c o l=            | store link                      |
 | org-capture                 | =C-c o c=            | создать заметку                 |
 | org-agenda                  | =C-c o a=            | открыть agenda                  |
+| et/org-capture-inbox        | =C-c o s=            | сделать запись                  |
 | org-clock-goto              | =C-c o j=            | перейти к задаче                |
-| org-clock-in-last           | =C-c o l=            | повторный запуск времени задачи |
+| org-clock-in-last           | =C-c o d=            | повторный запуск времени задачи |
 | org-clock-in                | =C-c o i=            | запустить время выполнения      |
 | org-clock-out               | =C-c o o=            | остановить время выполнения     |
 |-----------------------------+----------------------+---------------------------------|
@@ -1254,8 +1423,8 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
      (("d" set-night-theme "Night theme")
       ("l" set-light-theme "Light theme"))
      "Frame"
-     (("p" (transparent-frame t) "Transparent frame")
-      ("n" (transparent-frame nil) "Not transparent frame"))))
+     (("p" (et/transparent-frame t) "Transparent frame")
+      ("n" (et/transparent-frame nil) "Not transparent frame"))))
 
 #+end_src
 
@@ -1265,16 +1434,17 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
 
   (pretty-hydra-define hydra-org
     (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "codepen" "Org" 1 -0.05))
-  (""
-   (("g" org-insert-link-global "Insert link")
-    ("s" org-store-link "Store link")
-    ("c" org-capture "Create capture")
-    ("a" org-agenda "Open agenda"))
-   "Clock"
-   (("j" org-clock-goto "Org clock goto")
-    ("l" org-clock-in-last "Org clock in last")
-    ("i" org-clock-in "Org clock in")
-    ("o" org-clock-out "Org clock uot"))))
+    (""
+     (("g" org-insert-link-global "Insert link")
+      ("l" org-store-link "Store link")
+      ("c" org-capture "Create capture")
+      ("a" org-agenda "Open agenda")
+      ("s" et/org-capture-inbox "Inbox"))
+     "Clock"
+     (("j" org-clock-goto "Org clock goto")
+      ("d" org-clock-in-last "Org clock in last")
+      ("i" org-clock-in "Org clock in")
+      ("o" org-clock-out "Org clock uot"))))
 
 #+end_src
 
