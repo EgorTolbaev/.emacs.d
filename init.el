@@ -105,6 +105,13 @@
      '(("\\.el$"  . lisp-mode)
        ("\\.org$" . org-mode))))
 
+(defun edit-configs ()
+  "Opens the README.org file."
+  (interactive)
+  (find-file "~/.emacs.d/myconfig.org"))
+
+(global-set-key (kbd "C-x e") #'edit-configs)
+
 (use-package doom-themes
   :config
     (load-theme 'doom-Iosvkem))
@@ -463,27 +470,35 @@
 
 (use-package dashboard
   :init
-   (progn
-     (setq dashboard-startup-banner "~/.emacs.d/images/ET_Light_Small.png")
-     (setq dashboard-items '((recents  . 5)
-                             (projects . 5)))
-     (setq dashboard-show-shortcuts nil)
-     (setq dashboard-center-content t)
-     (setq dashboard-set-file-icons t)
-     (setq dashboard-set-heading-icons t)
-     (setq dashboard-set-init-info t ))
+  (progn
+    (setq dashboard-startup-banner "~/.emacs.d/images/ET_Light_Small.png")
+    (setq dashboard-items '((recents  . 5)
+                            (projects . 5)
+                            (agenda . 5)))
+    (setq dashboard-show-shortcuts nil)
+    (setq dashboard-center-content t)
+    (setq dashboard-set-file-icons t)
+    (setq dashboard-set-heading-icons t)
+    (setq dashboard-set-init-info t ))
   :config
-   (dashboard-setup-startup-hook))
-
-;; Кнопки навигации
-(setq dashboard-set-navigator t)
-
-(setq dashboard-navigator-buttons
-    `(
-      ((,(all-the-icons-octicon "mark-github" :height 1.1 :v-adjust 0.0)
-       "Homepage"
-       "Browse homepage"
-       (lambda (&rest _) (browse-url "https://github.com/EgorTolbaev"))))))
+  (dashboard-setup-startup-hook)
+  :custom
+  ;; Кнопки навигации
+  (dashboard-set-navigator t)
+  (dashboard-navigator-buttons
+   (if (featurep 'all-the-icons)
+       `(((,(all-the-icons-octicon "mark-github" :height 1.1 :v-adjust 0.0)
+           "Homepage" "Browse homepage"
+           (lambda (&rest _) (browse-url "https://github.com/EgorTolbaev")))
+          (,(all-the-icons-fileicon "elisp" :height 1.1 :v-adjust -0.1)
+           "Configuration" "" (lambda (&rest _) (edit-configs)))))
+     `((("" "Homepage" "Browse homepage"
+         (lambda (&rest _) (browse-url "https://github.com/EgorTolbaev")))
+        ("" "Configuration" "" (lambda (&rest _) (edit-configs)))))))
+  ;; Настройки dashboard-agenda для показа с определенным тегом и статусом
+  (dashboard-filter-agenda-entry 'dashboard-filter-agenda-by-todo)
+  (dashboard-match-agenda-entry "day|@work"
+    dashboard-match-next-entry "TODO=\"TODO\"|TODO=\"IN-PROGRESS\"|TODO=\"PAUSE\""))
 
 (use-package reverse-im
   :custom
