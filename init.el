@@ -102,8 +102,9 @@
 
 (setq auto-mode-alist
     (append
-     '(("\\.el$"  . lisp-mode)
-       ("\\.org$" . org-mode))))
+     '(("\\.el$"  . emacs-lisp-mode)
+       ("\\.org$" . org-mode)
+       ("\\.tex$" . latex-mode))))
 
 (defun edit-configs ()
   "Opens the README.org file."
@@ -218,13 +219,16 @@
           ("note" . ?n)
           ("idea" . ?i)
           ("day" . ?d)))
+
   (setq org-agenda-custom-commands
         '(("D" . "Day")
           ("Dd" "Day"
            ((agenda "" ((org-agenda-span 0)))
             (todo "TODO")
-            (todo "NEXT")
-            (todo "PAUSE")))
+            (todo "IN-PROGRESS")
+            (todo "WAITING")
+            (todo "PAUSE")
+            (todo "NEXT")))
           ("Dm" "Meetings today" tags "+meeting" ((org-agenda-files (list (et/file-today path_file_daily)))))
           ("Dw" "Work Tasks today" tags-todo "+@work" ((org-agenda-files (list (et/file-today path_file_daily)))))
           ("De" "Tags today"
@@ -234,8 +238,10 @@
             (tags "+meeting" ((org-agenda-files (list (et/file-today path_file_daily)))))))
           ("w" "Work Tasks"
            ((todo "TODO")
-            (todo "NEXT")
-            (todo "PAUSE")))
+            (todo "IN-PROGRESS")
+            (todo "WAITING")
+            (todo "PAUSE")
+            (todo "NEXT")))
           ("i" "Inbox"
            ((todo "TODO"))((org-agenda-files (list inbox_file))))))
   (org-babel-do-load-languages
@@ -483,6 +489,7 @@
   :config
   (dashboard-setup-startup-hook)
   :custom
+  (dashboard-banner-logo-title "Good Hack")
   ;; Кнопки навигации
   (dashboard-set-navigator t)
   (dashboard-navigator-buttons
@@ -694,8 +701,9 @@
   (require 'dap-netcore))
 
 (use-package company
-  :after lsp-mode
-  :hook (lsp-mode . company-mode)
+  ;:after lsp-mode
+  ;:hook (lsp-mode . company-mode)
+  :hook (after-init . global-company-mode)
   :bind (:map company-active-map
          ("<tab>" . company-complete-selection))
         (:map lsp-mode-map
