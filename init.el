@@ -159,91 +159,103 @@
   (setq highlight-indent-guides-method 'character)
   (setq highlight-indent-guides-responsive 'top))
 
-(when (system-is-windows)
-  (set 'path_file_daily "c:/Users/user/Dropbox/Braindump/daily/"))
-(when (system-is-linux)
-  (set 'path_file_daily "~/Dropbox/Braindump/daily"))
-
-(when (system-is-windows)
-  (set 'inbox_file "c:/Users/user/Dropbox/Braindump/inbox.org"))
-(when (system-is-linux)
-  (set 'inbox_file "~/Dropbox/Braindump/inbox.org"))
-
-(defun et/file-today(path)
-  "Получает путь к файлу сегодняшнего дня"
-  (interactive)
-  (set 'capture-file
-       (let* ((now (decode-time)))
-         (format-time-string (concat path "%Y-%m-%d.org") (apply #'encode-time now)))))
-
-(defun et/org-mode-setup ()
-  (org-indent-mode)
-  ;;(variable-pitch-mode 1)
-  (visual-line-mode 1))
-
 (use-package org
-  :hook (org-mode . et/org-mode-setup)
   :config
   (setq org-ellipsis " ▾")
   (setq org-agenda-start-with-log-mode t)
   (setq org-log-done 'time)  ; Заметки с отметкой времени
   (setq org-log-into-drawer t)
   (when (system-is-windows)
-    (setq org-agenda-files '("c:/Users/user/Dropbox/OrgFiles/holidays/Birthdays.org"
-                             "c:/Users/user/Dropbox/Braindump/Habits.org"
-                             "c:/Users/user/Dropbox/Braindump/daily")))
+    (setq org-agenda-files '(;; Файлы GTD
+			     "c:/Users/user/Dropbox/GTD/next_tasks.org"
+			     "c:/Users/user/Dropbox/GTD/projects.org"
+			     "c:/Users/user/Dropbox/GTD/journal.org"
+			     "c:/Users/user/Dropbox/GTD/agenda.org"
+			     "c:/Users/user/Dropbox/GTD/waiting.org"))
+    (set 'inbox_file "c:/Users/user/Dropbox/GTD/inbox.org"))
   (when (system-is-linux)
-    (setq org-agenda-files '("~/Dropbox/OrgFiles/holidays/Birthdays.org"
-                             "~/Dropbox/Braindump/Habits.org"
-                             "~/Dropbox/Braindump/daily")))
+    (setq org-agenda-files '(;; Файлы GTD
+			     "~/Dropbox/GTD/next_tasks.org"
+			     "~/Dropbox/GTD/projects.org"
+			     "~/Dropbox/GTD/journal.org"
+			     "~/Dropbox/GTD/agenda.org"
+			     "~/Dropbox/GTD/waiting.org"))
+    (set 'inbox_file "~/Dropbox/GTD/inbox.org"))
 
+
+  (setq org-refile-targets
+	'(("inbox.org" :maxlevel . 1)
+	  ("projects.org" :maxlevel . 1)
+	  ("journal.org" :maxlevel . 4)
+	  ("someday.org" :maxlevel . 1)
+	  ("next_tasks.org" :maxlevel . 1)
+	  ("waiting.org" :maxlevel . 1)
+	  ("agenda.org" :maxlevel . 1)))
+
+  ;; Save Org buffers after refiling!
+  (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
   (require 'org-habit)
   (add-to-list 'org-modules 'org-habit)
   (setq org-habit-graph-column 60)
 
   (setq org-todo-keywords '((sequence "TODO(t)"
-                                      "IN-PROGRESS(s)"
-                                      "PAUSE(p@/!)"
-                                      "NEXT(n@)"
-                                      "ACTIVE(a)"
-                                      "WAITING(w@/!)""|" "DONE(d!)" "CANCEL(c@)")))
+				      "IN-PROGRESS(s)"
+				      "PAUSE(p@/!)"
+				      "NEXT(n@)"
+				      "ACTIVE(a)"
+				      "WAITING(w@/!)""|" "DONE(d!)" "CANCEL(c@)")))
   (setq org-tag-alist
-        '((:startgroup)
-                                        ; Put mutually exclusive tags here
-          (:endgroup)
-          ("@home" . ?H)
-          ("@work" . ?W)
-          ("agenda" . ?a)
-          ("meeting" .?m)
-          ("note" . ?n)
-          ("idea" . ?i)
-          ("day" . ?d)))
+	'((:startgroup)
+					; Put mutually exclusive tags here
+	  (:endgroup)
+	  ("@home" . ?H)
+	  ("@work" . ?W)
+	  ("meeting" .?m)
+	  ("day" . ?d)
+	  ("projects" . ?p)
+	  ("next" . ?n)
+	  ("waiting" . ?g)
+	  ("sprint" .?s)))
 
   (setq org-agenda-custom-commands
-        '(("D" . "Day")
-          ("Dd" "Day"
-           ((agenda "" ((org-agenda-span 0)))
-            (todo "TODO")
-            (todo "IN-PROGRESS")
-            (todo "WAITING")
-            (todo "PAUSE")
-            (todo "NEXT")))
-          ("Dm" "Meetings today" tags "+meeting" ((org-agenda-files (list (et/file-today path_file_daily)))))
-          ("Dw" "Work Tasks today" tags-todo "+@work" ((org-agenda-files (list (et/file-today path_file_daily)))))
-          ("De" "Tags today"
-           ((tags "+day" ((org-agenda-files (list (et/file-today path_file_daily)))))
-            (tags "+@work" ((org-agenda-files (list (et/file-today path_file_daily)))))
-            (tags "+@home" ((org-agenda-files (list (et/file-today path_file_daily)))))
-            (tags "+meeting" ((org-agenda-files (list (et/file-today path_file_daily)))))))
-          ("w" "Work Tasks"
-           ((todo "TODO")
-            (todo "IN-PROGRESS")
-            (todo "WAITING")
-            (todo "PAUSE")
-            (todo "NEXT")))
-          ("i" "Inbox"
-           ((todo "TODO"))((org-agenda-files (list inbox_file))))))
+	'(("d" "Dashboard"
+	   ((agenda "" ((org-agenda-span 0)))
+	    (tags-todo "+TODO=\"TODO\"-habits"
+		       ((org-agenda-overriding-header "TODO")))
+	    (todo "IN-PROGRESS"
+		  ((org-agenda-overriding-header "IN-PROGRESS")))
+	    (todo "WAITING"
+		  ((org-agenda-overriding-header "WAITING")))
+	    (todo "PAUSE"
+		  ((org-agenda-overriding-header "PAUSE")))
+	    (todo "NEXT"
+		  ((org-agenda-overriding-header "Next")))))
+
+	  ("w" "Workflow Status"
+	   ((tags-todo "projects"
+		       ((org-agenda-overriding-header "Projects")
+			(org-agenda-files org-agenda-files)))
+	    (tags-todo "next"
+		       ((org-agenda-overriding-header "Next")
+			(org-agenda-files org-agenda-files)))
+	    (tags-todo "waiting"
+		       ((org-agenda-overriding-header "Waiting")
+			(org-agenda-files org-agenda-files)))))
+	  ("s" "Sprint"
+	   ((tags-todo "sprint"
+		       ((org-agenda-overriding-header "Sprint")
+			(org-agenda-files org-agenda-files)))))
+
+	  ("i" "Inbox"
+	   ((todo "TODO"))((org-agenda-files (list inbox_file))))
+
+	  ;; Low-effort next actions
+	  ("e" tags-todo "+TODO=\"TODO\"+Effort<15&+Effort>0"
+	   ((org-agenda-overriding-header "Low Effort Tasks")
+	    (org-agenda-max-todos 20)
+	    (org-agenda-files org-agenda-files)))))
+
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t))))
@@ -253,32 +265,75 @@
 (global-set-key (kbd "C-c a") 'org-agenda)
 
 (when (system-is-windows)
-  (set 'capture_file "c:/Users/user/Dropbox/Braindump/inbox.org"))
+  (set 'gtd_inbox_file "c:/Users/user/Dropbox/GTD/inbox.org")
+  (set 'gtd_journal_filel "c:/Users/user/Dropbox/GTD/journal.org")
+  (set 'gtd_agenda_filel "c:/Users/user/Dropbox/GTD/agenda.org")
+  (set 'gtd_notes_filel "c:/Users/user/Dropbox/GTD/notes.org")
+  (set 'gtd_projects_filel "c:/Users/user/Dropbox/GTD/projects.org")
+  (set 'gtd_someday_filel "c:/Users/user/Dropbox/GTD/someday.org")
+  (set 'gtd_next_tasks_file "c:/Users/user/Dropbox/GTD/next_tasks.org")
+  (set 'gtd_waiting_file "c:/Users/user/Dropbox/GTD/waiting.org"))
 (when (system-is-linux)
-  (set 'capture_file "~/Dropbox/Braindump/inbox.org"))
+  (set 'inbox_file "~/Dropbox/GTD/inbox.org")
+  (set 'journal_filel "~/Dropbox/GTD/journal.org")
+  (set 'gtd_agenda_filel "~/Dropbox/GTD/agenda.org")
+  (set 'gtd_notes_filel "~/Dropbox/GTD/notes.org")
+  (set 'gtd_projects_filel "~/Dropbox/GTD/projects.org")
+  (set 'gtd_someday_filel "~/Dropbox/GTD/someday.org")
+  (set 'gtd_next_tasks_file "~/Dropbox/GTD/next_tasks.org")
+  (set 'gtd_waiting_file "~/Dropbox/GTD/waiting.org"))
 
 (server-start)
 (require 'org-protocol)
 
 (setq org-capture-templates
-      '(("i" "Inbox" entry (file capture_file)
-         "* TODO %?" :empty-lines 1)
-        ("c" "org-protocol-capture" entry (file capture_file)
-         "* TODO [[%:link][%:description]]\n\n %i"
-         :immediate-finish t)))
+      '(;; Захват задач в файл Inbox
+	("i" "Inbox task")
+	("ii" "Just a task (просто задача)" entry (file+olp gtd_inbox_file "Inbox")
+	 "* TODO %?\n Entered on %U")
+	("il" "Task with a link to a file (задача с ссылкой на файл))" entry (file+olp gtd_inbox_file "Inbox")
+	 "* TODO %?\n Entered on %U \n %a")
+	("im" "Meeting (собрание)" entry (file+olp gtd_agenda_filel "Future")
+	 "* TODO %? :meeting: \n %^t %i")
+	("is" "Schedule a task (запланировать задачу)" entry (file+olp gtd_inbox_file "Inbox")
+	 "* TODO %? %^G \n SCHEDULED: %^t %i")
+	("id" "Task with a deadline (задача с дедлайном)" entry (file+olp gtd_inbox_file "Inbox")
+	 "* TODO %? %^G \n DEADLINE: %^t %i")
+	;; Журнал дня
+	("j" "Journal Entries")
+	("jj" "Journal" entry (file+function gtd_journal_filel
+					     (lambda ()
+					       (org-datetree-find-date-create
+						(org-date-to-gregorian (org-today)) t)
+					       (re-search-forward "^\\*.+ Day" nil t)))
+	 "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n")
+	("jd" "Tasks for the day" entry
+	 (file+olp+datetree gtd_journal_filel)
+	 "\n* Day \n* %<%Y-%m-%d %p> - Tasks for the day")
+	;; Заметки
+	("n" "Note")
+	("nn" "Note with link" entry  (file gtd_notes_filel)
+	 "* Note (%a)\n Entered on/ %U\n %?")
+	("nj" "Just a note" entry  (file gtd_notes_filel)
+	  "* Note %?\n  Entered on/ %U\n")
+	;; Захват задач из внешних источников (браузер)
+	("c" "org-protocol-capture" entry (file+olp gtd_inbox_file "Inbox")
+	 "* TODO [[%:link][%:description]]\n\n %i"
+	 :immediate-finish t)
+	;; Захват выделенного региона, используеться в функции et/org-capture-inbox
+	("e" "capturing a selected region" entry (file+olp gtd_inbox_file "Inbox")
+	 "* TODO %?\n %a\n %i"
+	 :immediate-finish t)))
 
 (defun et/org-capture-inbox ()
+  "Записать выделенный регион в файл Inbox"
   (interactive)
-  (org-capture nil "c"))
-
-(defun et/open-inbox ()
-  (interactive)
-  (find-file capture_file))
+  (org-capture nil "e"))
 
 (when (system-is-windows)
-  (set 'path_org_roam "c:/Users/user/Dropbox/Braindump"))
+  (set 'path_org_roam "c:/Users/user/Dropbox/Braindump/main"))
 (when (system-is-linux)
-  (set 'path_org_roam "~/Dropbox/Braindump"))
+  (set 'path_org_roam "~/Dropbox/Braindump/main"))
 
 (use-package org-roam
   :ensure t
@@ -287,25 +342,14 @@
   :custom
   (org-roam-directory path_org_roam)
   (org-roam-completion-everywhere t)
-  (org-roam-node-display-template
-   (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
-  (org-roam-dailies-capture-templates
-   '(("d" "default" entry "* %? %^G \n %^t %i"
-      :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Day")) :unnarrowed t)
-     ("w" "Task with time" entry "* %? %^G \n %i"
-      :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Day")) :unnarrowed t)
-     ("m" "Meeting work" entry "* %? :meeting: \n %^t %i"
-      :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Meeting work")) :unnarrowed t)
-     ("t" "Task" entry "* TODO %? :@work: \n %^t %i"
-      :if-new (file+head+olp "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n" ("Task")) :unnarrowed t)))
   :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find)
-         ("C-c n i" . org-roam-node-insert)
-         :map org-mode-map
-         ("C-M-i" . completion-at-point)
-         :map org-roam-dailies-map
-         ("Y" . org-roam-dailies-capture-yesterday)
-         ("T" . org-roam-dailies-capture-tomorrow))
+	 ("C-c n f" . org-roam-node-find)
+	 ("C-c n i" . org-roam-node-insert)
+	 :map org-mode-map
+	 ("C-M-i" . completion-at-point)
+	 :map org-roam-dailies-map
+	 ("Y" . org-roam-dailies-capture-yesterday)
+	 ("T" . org-roam-dailies-capture-tomorrow))
   :bind-keymap
   ("C-c n d" . org-roam-dailies-map)
   :config
@@ -314,14 +358,11 @@
   (cl-defmethod org-roam-node-type ((node org-roam-node))
     "Return the TYPE of NODE."
     (condition-case nil
-        (file-name-nondirectory
-         (directory-file-name
-          (file-name-directory
-           (file-relative-name (org-roam-node-file node) org-roam-directory))))
-      (error "")))
-  (defun et/tag-new-node-as-draft ()
-    (org-roam-tag-add '("draft")))
-  (add-hook 'org-roam-capture-new-node-hook #'et/tag-new-node-as-draft))
+	(file-name-nondirectory
+	 (directory-file-name
+	  (file-name-directory
+	   (file-relative-name (org-roam-node-file node) org-roam-directory))))
+      (error ""))))
 
 (use-package org-roam-ui
   :after org-roam
@@ -363,6 +404,47 @@
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 (add-to-list 'org-structure-template-alist '("py" . "src python"))
+(add-to-list 'org-structure-template-alist '("cs" . "src csharp"))
+
+(defun et/open-inbox ()
+  "Открыть файл Inbox"
+  (interactive)
+  (find-file gtd_inbox_file))
+
+(defun et/open-agenda ()
+  "Открыть файл Agenda"
+  (interactive)
+  (find-file gtd_agenda_filel))
+
+(defun et/open-journal ()
+  "Открыть файл Journal"
+  (interactive)
+  (find-file gtd_journal_filel))
+
+(defun et/open-notes ()
+  "Открыть файл Notes"
+  (interactive)
+  (find-file gtd_notes_filel))
+
+(defun et/open-projects ()
+  "Открыть файл Projects"
+  (interactive)
+  (find-file gtd_projects_filel))
+
+(defun et/open-someday ()
+  "Открыть файл Someday"
+  (interactive)
+  (find-file gtd_someday_filel))
+
+(defun et/open-next-tasks ()
+  "Открыть файл Someday"
+  (interactive)
+  (find-file gtd_next_tasks_file))
+
+(defun et/open-waiting ()
+  "Открыть файл Someday"
+  (interactive)
+  (find-file gtd_waiting_file))
 
 (when (system-is-windows)
   (defvar et/path-expand "./myconfig.org"))
@@ -402,10 +484,10 @@
 
 (when (system-is-windows)
   (setq et/deft-dir-list '("c:/Users/user/Dropbox/Braindump/main"
-                           "c:/Users/user/Dropbox/Braindump/daily")))
+                           "c:/Users/user/Dropbox/GTD/")))
 (when (system-is-linux)
   (setq et/deft-dir-list '("~/Dropbox/Braindump/main"
-                           "~/Dropbox/Braindump/daily")))
+                           "~/Dropbox/GTD/")))
 
 (use-package deft
   :config (setq deft-directory "c:/Users/user/Dropbox/Braindump/main"
@@ -542,12 +624,13 @@
 
 (use-package hydra
   :bind (("C-c b" . hydra-browser/body)
-         ("C-c t" . hydra-treemacs/body)
-         ("C-c s" . hydra-theme/body)
-         ("C-c o" . hydra-org/body)
-         ("C-c w" . hydra-windows/body)
-         ("C-c T" . hydra-text-scale/body)
-         ))
+	 ("C-c t" . hydra-treemacs/body)
+	 ("C-c s" . hydra-theme/body)
+	 ("C-c o" . hydra-org/body)
+	 ("C-c w" . hydra-windows/body)
+	 ("C-c T" . hydra-text-scale/body)
+	 ("C-c g" . hydra-file-gtd/body)
+	 ))
 
 (use-package major-mode-hydra
   :after hydra
@@ -599,13 +682,13 @@
    (("g" org-insert-link-global "Insert link")
     ("l" org-store-link "Store link")
     ("c" org-capture "Create capture")
-    ("a" org-agenda "Open agenda")
-    ("s" et/org-capture-inbox "Inbox"))
+    ("a" org-agenda "Open agenda"))
    "Clock"
    (("j" org-clock-goto "Org clock goto")
     ("d" org-clock-in-last "Org clock in last")
     ("i" org-clock-in "Org clock in")
-    ("o" org-clock-out "Org clock uot"))))
+    ("o" org-clock-out "Org clock uot")
+    ("t" org-clock-report "Org clock report"))))
 
 (pretty-hydra-define hydra-windows
   (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "windows" "Windows" 1 -0.05))
@@ -622,6 +705,19 @@
   (""
    (("j" text-scale-increase "in")
     ("k" text-scale-decrease "out"))))
+
+(pretty-hydra-define hydra-file-gtd
+  (:hint nil :forein-keys warn :quit-key "q" :timeout 4 :title (with-faicon "codepen" "GTD" 1 -0.05))
+  ("File GTD"
+   (("i" (et/open-inbox) "Open Inbox")
+    ("a" (et/open-agenda) "Open Agenda")
+    ("j" (et/open-journal) "Open Journal")
+    ("n" (et/open-notes) "Open Note"))
+   ""
+    (("p" (et/open-projects) "Open Project")
+    ("s" (et/open-someday) "Open Someday")
+    ("t" (et/open-next-tasks) "Open Next task")
+    ("w" (et/open-waiting) "Open Waiting"))))
 
 (defun et/lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
@@ -741,7 +837,7 @@
     (projectile-mode +1))
 
 (use-package magit
-  :bind   (("C-x g" . #'magit-status)))
+  :bind (("C-x g" . #'magit-status)))
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
