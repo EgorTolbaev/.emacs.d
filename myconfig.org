@@ -2,7 +2,7 @@
 #+TITLE: GNU Emacs Configuration
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 
-* Table of Contents                                                     :TOC_3:
+* Table of Contents                                                   :TOC_3:
 - [[#about][About]]
 - [[#startup-performance][Startup Performance]]
 - [[#переменные-ос][Переменные ОС]]
@@ -93,9 +93,11 @@
   - [[#buildsystem][Buildsystem]]
     - [[#docker][Docker]]
   - [[#projectile][Projectile]]
-  - [[#magit][Magit]]
     - [[#commands-6][Commands]]
     - [[#settings-4][Settings]]
+  - [[#magit][Magit]]
+    - [[#commands-7][Commands]]
+    - [[#settings-5][Settings]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
 - [[#terminals][Terminals]]
   - [[#eshell][Eshell]]
@@ -760,7 +762,7 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
 	   "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n")
 	  ("jd" "Tasks for the day" entry
 	   (file+olp+datetree gtd_journal_filel)
-	   "\n* Day \n* %<%Y-%m-%d %p> - Tasks for the day")
+	   "\n* Day \n* Meeting :meeting: \n* %<%Y-%m-%d %p> - Tasks for the day")
 	  ;; Заметки
 	  ("n" "Note")
 	  ("nn" "Note with link" entry  (file gtd_notes_filel)
@@ -2018,6 +2020,34 @@ GitHub: [[https://github.com/spotify/dockerfile-mode][dockerfile-mode]]
 GitHub: [[https://github.com/bbatsov/projectile/tree/db5748ea4a6428136769e7e50c6d0a12aa7acd8f][projectile]]
 
 Projectile - это библиотека взаимодействия с проектом для Emacs.
+
+*** Commands
+
+| command                              | key / ex command | description                                                     |
+|--------------------------------------+------------------+-----------------------------------------------------------------|
+| projectile-command-map               | =C-x p=          |                                                                 |
+| projectile-find-file                 | =C-x p f=        | Показать список всех файлов в проекте.                          |
+|                                      |                  | С аргументом префикса он сначала очистит кеш.                   |
+| projectile-find-file-other-window    | =C-x p 4 f=      | Перейти к файлу проекта с помощью                               |
+|                                      |                  | завершения и показать его в другом окне.                        |
+| projectile-find-dir                  | =C-x p d=        | Показать список всех каталогов в проекте.                       |
+|                                      |                  | С аргументом префикса он сначала очистит кеш.                   |
+| projectile-find-dir-other-window     | =C-x p 4 d=      | Перейдите в каталог проекта и покажите его в другом окне.       |
+| projectile-switch-to-buffer          | =C-x p b=        | Показать список всех буферов проекта, открытых в данный момент. |
+| projectile-dired                     | =C-x p D=        | Открывает корень проекта в формате dired                        |
+| projectile-kill-buffers              | =C-x p k=        | Убивает все буферы проекта.                                     |
+| projectile-recentf                   | =C-x p e=        | Показывает список недавно посещенных файлов проекта.            |
+| projectile-next-project-buffer       | =C-x p left=     | Переключиться на предыдущий буфер проекта.                      |
+| projectile-previous-project-buffer   | =C-x p right=    | Переключиться на следующий буфер проекта.                       |
+| projectile-run-shell-command-in-root | =C-x p !=        | Запускается shell-command в корневом каталоге проекта.          |
+| projectile-run-shell                 | =C-x p x s=      | Запускается shell.                                              |
+| projectile-save-project-buffer       | =C-x p S=        | Сохраните все буферы проекта.                                   |
+| projectile-switch-project            | =C-x p p=        | Отображение списка известных проектов                           |
+|--------------------------------------+------------------+-----------------------------------------------------------------|
+
+Полный список команд можно посмотреть по [[https://docs.projectile.mx/projectile/usage.html][ссылке]].
+
+*** Settings
 
 #+begin_src emacs-lisp
 

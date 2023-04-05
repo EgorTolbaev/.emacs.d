@@ -309,7 +309,7 @@
 	 "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n")
 	("jd" "Tasks for the day" entry
 	 (file+olp+datetree gtd_journal_filel)
-	 "\n* Day \n* %<%Y-%m-%d %p> - Tasks for the day")
+	 "\n* Day \n* Meeting :meeting: \n* %<%Y-%m-%d %p> - Tasks for the day")
 	;; Заметки
 	("n" "Note")
 	("nn" "Note with link" entry  (file gtd_notes_filel)
