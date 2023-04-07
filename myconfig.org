@@ -458,7 +458,6 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
 #+begin_src emacs-lisp
 
   (use-package highlight-indent-guides
-    :ensure t
     :hook ((prog-mode . highlight-indent-guides-mode)
            (prog-mode . hs-minor-mode))
     :config
@@ -845,7 +844,6 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
     (set 'path_org_roam "~/Dropbox/Braindump/main"))
 
   (use-package org-roam
-    :ensure t
     :init
     (setq org-roam-v2-ack t)
     :custom
@@ -1268,7 +1266,7 @@ Deft — это режим Emacs для быстрого просмотра, ф�
 
   (use-package ivy-rich
     :init
-      (ivy-rich-mode 1))
+    (ivy-rich-mode 1))
 
 #+end_src
 
@@ -1855,7 +1853,6 @@ GitHub: [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
 #+begin_src emacs-lisp
 
   (use-package python-mode
-    :ensure t
     :mode "\\.py\\'"
     :hook (python-mode . lsp-deferred)
     :custom
@@ -1893,18 +1890,37 @@ GitHub: [[https://github.com/pythonic-emacs/pyenv-mode][pyenv-mode]]
 
 *** CSharp
 
-GitHub: [[https://github.com/emacs-csharp/csharp-mode][csharp-mode]]
+GitHub: [[https://github.com/emacs-csharp/csharp-mode][csharp-mode]], [[https://github.com/omajid/csproj-mode][csproj-mode]], [[https://github.com/julienXX/dotnet.el][dotnet]]
+
+=csproj-mode= - Основной режим GNU/Emacs для редактирования csproj ( .csproj, .vbproj) и других файлов проекта.
+=dotnet= - режим [[https://learn.microsoft.com/en-us/dotnet/core/tools/][dotnet CLI]] для GNU/Emacs
 
 Перед использованиям убедитесь что у вас установлен языковой сервер [[https://emacs-lsp.github.io/lsp-mode/page/lsp-csharp-omnisharp/][omnisharp]]. Простой способ это сделать, открыть файл с расширением =.cs= и Emacs сам предложит это сделать или =M-x: lsp-install-server= и выбрать нужный сервер.
 
 #+begin_src emacs-lisp
 
+  (use-package csproj-mode)
+  (use-package dotnet)
+
   (use-package csharp-mode
-    :ensure t
     :mode "\\.cs\\'"
-    :hook (csharp-mode . lsp-deferred)
+    :hook ((csharp-mode . lsp-deferred)
+	   (csharp-mode . dotnet-mode))
     :config
     (require 'dap-netcore))
+
+#+end_src
+
+Не смотря на то что пакет =dotnet= удобный и позволяет избегать написание одних и тех же команд в терминале, по какой то причине он не развивается и в нем есть недочеты.
+
+Один из них, это не удобная работа с несколькими проектами. При первом запуске =dotnet-run= записывается путь к проекту и при изменения проекта путь остается прежним. Я добавил свою функцию чтобы обнулять =dotnet-run-last-proj-dir=, а после запускать команду =dotnet-run=.
+
+#+begin_src emacs-lisp
+
+  (defun et/dotnet-run ()
+    (interactive)
+    (setq dotnet-run-last-proj-dir nil)
+    (dotnet-run dotnet-run-last-proj-dir))
 
 #+end_src
 

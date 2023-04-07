@@ -152,7 +152,6 @@
   (golden-ratio-mode 1))
 
 (use-package highlight-indent-guides
-  :ensure t
   :hook ((prog-mode . highlight-indent-guides-mode)
          (prog-mode . hs-minor-mode))
   :config
@@ -336,7 +335,6 @@
   (set 'path_org_roam "~/Dropbox/Braindump/main"))
 
 (use-package org-roam
-  :ensure t
   :init
   (setq org-roam-v2-ack t)
   :custom
@@ -523,7 +521,7 @@
 
 (use-package ivy-rich
   :init
-    (ivy-rich-mode 1))
+  (ivy-rich-mode 1))
 
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
@@ -764,7 +762,6 @@
   (setq js-indent-level 2))
 
 (use-package python-mode
-  :ensure t
   :mode "\\.py\\'"
   :hook (python-mode . lsp-deferred)
   :custom
@@ -789,12 +786,20 @@
   :config
   (pyenv-mode))
 
+(use-package csproj-mode)
+(use-package dotnet)
+
 (use-package csharp-mode
-  :ensure t
   :mode "\\.cs\\'"
-  :hook (csharp-mode . lsp-deferred)
+  :hook ((csharp-mode . lsp-deferred)
+	 (csharp-mode . dotnet-mode))
   :config
   (require 'dap-netcore))
+
+(defun et/dotnet-run ()
+  (interactive)
+  (setq dotnet-run-last-proj-dir nil)
+  (dotnet-run dotnet-run-last-proj-dir))
 
 (use-package company
   ;:after lsp-mode
