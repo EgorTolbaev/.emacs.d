@@ -106,7 +106,7 @@
 
 #+begin_src emacs-lisp
 
-  ;;; init.el --- Initialisation file for Emacs
+  ;;; init.el --- Initialisation file for GNU Emacs
 
   ;; Copyright © 2020-2022 Egor Tolbaev <egor05.09.97@gmail.com>
 
@@ -131,7 +131,7 @@
 
 Для управления конфигурациями пакетов я использую пакет use-package от John Wiegley.
 
-Этот файл генерирует [[https://github.com/EgorTolbaev/.emacs.d/blob/master/init.el][init.el]] который будет загружен Emacs при запуске.
+Этот файл генерирует [[https://github.com/EgorTolbaev/.emacs.d/blob/master/init.el][init.el]] который будет загружен GNU Emacs при запуске.
 
 * Startup Performance
 
@@ -406,7 +406,7 @@ GitHub: [[https://github.com/domtronn/all-the-icons.el][all-the-icons]]
 
 Устанавливаю прозрачность фрейма и разворачиваю окно по умолчанию.
 
-/Что бы это было красиво следите за свои рабочим столом и окнами по зади фрейма Emacs/
+/Что бы это было красиво следите за свои рабочим столом и окнами по зади фрейма GNU Emacs/
 
 #+begin_src emacs-lisp
 
@@ -660,7 +660,7 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
 
 Для самой простой настройки Вам нужно сделать следующее:
 
-1) В свой config Emacs  добавить вызов функции =server-start= и пакет =org-protocol=;
+1) В свой config GNU Emacs  добавить вызов функции =server-start= и пакет =org-protocol=;
 2) Добавить шаблон захвата (=org-capture-templates=)
 
    Пример простого шаблона:
@@ -700,7 +700,7 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
 
       после сохранить файл с расширением =reg= и запустить.
 
-      *Обратите внимание что строка* @"\"C:\\emacs\\bin\\emacsclientw.exe\" \"%1\"" *может отличаться, в зависимости куда был установлен Emacs*
+      *Обратите внимание что строка* @"\"C:\\emacs\\bin\\emacsclientw.exe\" \"%1\"" *может отличаться, в зависимости куда был установлен GNU Emacs*
 
    - Linux
 
@@ -1036,7 +1036,7 @@ GitHub: [[https://github.com/snosov1/toc-org][toc-org]]
 
 ** Markdown
 
-[[https://jblevins.org/projects/markdown-mode/][Markdown Mode for Emacs]]
+[[https://jblevins.org/projects/markdown-mode/][Markdown Mode for GNU Emacs]]
 
 Прежде чем использовать этот пакет, нужно убедиться что установлен какой то процессор Markdown
 
@@ -1057,7 +1057,7 @@ GitHub: [[https://github.com/snosov1/toc-org][toc-org]]
 
 ** Dired
 
-Dired - это встроенный файловый менеджер для Emacs.
+Dired - это встроенный файловый менеджер для GNU Emacs.
 
 /В OS Windows может быть не корректная сортировка файлов и дополнительная информация, это неприятно, но работе не мешает./
 
@@ -1144,7 +1144,7 @@ Dired - это встроенный файловый менеджер для Ema
 | dired-do-chown   | =O=              | Сменить владельца файла                    |
 | dired-do-chgrp   | =G=              | Изменить группу файлов                     |
 | dired-do-symlink | =S=              | Создайте символическую ссылку на этот файл |
-| dired-do-load    | =L=              | Загрузить файл Emacs Lisp в Emacs          |
+| dired-do-load    | =L=              | Загрузить файл GNU Emacs Lisp в GNU Emacs  |
 |------------------+------------------+--------------------------------------------|
 
 
@@ -1174,7 +1174,7 @@ Dired - это встроенный файловый менеджер для Ema
 
 GitHub: [[https://github.com/jrblevin/deft][Deft]]
 
-Deft — это режим Emacs для быстрого просмотра, фильтрации и редактирования каталогов простых текстовых заметок, вдохновленный Notational Velocity.
+Deft — это режим GNU Emacs для быстрого просмотра, фильтрации и редактирования каталогов простых текстовых заметок, вдохновленный Notational Velocity.
 
 *** Commands
 
@@ -1220,7 +1220,7 @@ Deft — это режим Emacs для быстрого просмотра, ф�
 * Modes
 ** IVY
 
-[[https://github.com/abo-abo/swiper/tree/7cdde66c95d5205287e88010bc7a3a978c931db0][Ivy]] - это общий механизм завершения для Emacs. Использую в месте с [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#ivy-rich][ivy-rich]] и [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#counsel][counsel]]
+[[https://github.com/abo-abo/swiper/tree/7cdde66c95d5205287e88010bc7a3a978c931db0][Ivy]] - это общий механизм завершения для GNU Emacs. Использую в месте с [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#ivy-rich][ivy-rich]] и [[https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#counsel][counsel]]
 
 *** Commands
 
@@ -1287,7 +1287,7 @@ Deft — это режим Emacs для быстрого просмотра, ф�
 
 GitHub: [[https://github.com/Wilfred/helpful][helpful]]
 
-Helpful - это альтернатива встроенной справке Emacs, которая предоставляет гораздо больше контекстной информации.
+Helpful - это альтернатива встроенной справке GNU Emacs, которая предоставляет гораздо больше контекстной информации.
 
 #+begin_src emacs-lisp
 
@@ -1307,7 +1307,7 @@ Helpful - это альтернатива встроенной справке Em
 
 GitHub: [[https://github.com/justbur/emacs-which-key][which-key]]
 
-which-key- это второстепенный режим для Emacs, который отображает привязки клавиш после введенной вами неполной команды (префикса) во всплывающем окне.
+which-key- это второстепенный режим для GNU Emacs, который отображает привязки клавиш после введенной вами неполной команды (префикса) во всплывающем окне.
 
 #+begin_src emacs-lisp
 
@@ -1343,7 +1343,7 @@ GitHub: [[https://github.com/emacs-mirror/emacs/blob/master/lisp/bs.el][bs]]
 
 GitHub: [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]
 
-Расширяемый стартовый экран Emacs.
+Расширяемый стартовый экран GNU Emacs.
 
 #+begin_src emacs-lisp
 
@@ -1400,7 +1400,7 @@ GitHub: [[https://github.com/emacsmirror/reverse-im][reverse-im]]
 
 ** Browser
 
-Я решил использовать в связке с Emacs браузер, ориентированный на клавиатуру, с минимальным графическим интерфейсом [[https://github.com/qutebrowser/qutebrowser][Qutebrowser]]
+Я решил использовать в связке с GNU Emacs браузер, ориентированный на клавиатуру, с минимальным графическим интерфейсом [[https://github.com/qutebrowser/qutebrowser][Qutebrowser]]
 
 При установки qutebrowser на Windows возможно потребуеться вручную добавить путь в переменную $path = C:\Program Files\qutebrowser
 
@@ -1418,7 +1418,7 @@ GitHub: [[https://github.com/emacsmirror/reverse-im][reverse-im]]
 
 Github: [[https://github.com/hrs/engine-mode/tree/e0910f141f2d37c28936c51c3c8bb8a9ca0c01d1][engine-mode]]
 
-Удобный способ совершать поиск не выходя из Emacs
+Удобный способ совершать поиск не выходя из GNU Emacs
 
 **** Commands
 
@@ -1708,7 +1708,7 @@ GitHub: [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
 
 **** lsp-ui
 
-[[https://emacs-lsp.github.io/lsp-ui/][lsp-ui]] - это набор улучшений пользовательского интерфейса, созданных на основе, =lsp-mode= которые делают Emacs еще более похожим на IDE.
+[[https://emacs-lsp.github.io/lsp-ui/][lsp-ui]] - это набор улучшений пользовательского интерфейса, созданных на основе, =lsp-mode= которые делают GNU Emacs еще более похожим на IDE.
 
 #+begin_src emacs-lisp
 
@@ -1723,7 +1723,7 @@ GitHub: [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
 
 GitHub: [[https://github.com/emacs-lsp/lsp-treemacs][lsp-treemacs]]
 
-Treemacs - файловый менеджер древовидной структуры для Emacs.
+Treemacs - файловый менеджер древовидной структуры для GNU Emacs.
 
 treemacs-icons-dired - позволяет использовать значки treemacs в dired буферах.
 
@@ -1775,7 +1775,7 @@ GitHub: [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
 
 *** Debugging with dap-mode
 
-[[https://emacs-lsp.github.io/dap-mode/][dap-mode]] - это пакет для отладки в Emacs.
+[[https://emacs-lsp.github.io/dap-mode/][dap-mode]] - это пакет для отладки в GNU Emacs.
 
 Документацию по настройки языков можно посмотреть [[https://emacs-lsp.github.io/dap-mode/page/configuration/][тут]].
 
@@ -1848,7 +1848,7 @@ GitHub: [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
 
 #+end_src
 
-*Важная заметка!* если при использование OS Windows возникли проблемы, с нормальной работы Python при открытии файлов, попробутей сначало запустить среду Python внутри Emacs при помощи =run-python=.
+*Важная заметка!* если при использование OS Windows возникли проблемы, с нормальной работы Python при открытии файлов, попробутей сначало запустить среду Python внутри GNU Emacs при помощи =run-python=.
 
 #+begin_src emacs-lisp
 
@@ -1892,10 +1892,10 @@ GitHub: [[https://github.com/pythonic-emacs/pyenv-mode][pyenv-mode]]
 
 GitHub: [[https://github.com/emacs-csharp/csharp-mode][csharp-mode]], [[https://github.com/omajid/csproj-mode][csproj-mode]], [[https://github.com/julienXX/dotnet.el][dotnet]]
 
-=csproj-mode= - Основной режим GNU/Emacs для редактирования csproj ( .csproj, .vbproj) и других файлов проекта.
-=dotnet= - режим [[https://learn.microsoft.com/en-us/dotnet/core/tools/][dotnet CLI]] для GNU/Emacs
+=csproj-mode= - Основной режим GNU Emacs для редактирования csproj ( .csproj, .vbproj) и других файлов проекта.
+=dotnet= - режим [[https://learn.microsoft.com/en-us/dotnet/core/tools/][dotnet CLI]] для GNU Emacs
 
-Перед использованиям убедитесь что у вас установлен языковой сервер [[https://emacs-lsp.github.io/lsp-mode/page/lsp-csharp-omnisharp/][omnisharp]]. Простой способ это сделать, открыть файл с расширением =.cs= и Emacs сам предложит это сделать или =M-x: lsp-install-server= и выбрать нужный сервер.
+Перед использованиям убедитесь что у вас установлен языковой сервер [[https://emacs-lsp.github.io/lsp-mode/page/lsp-csharp-omnisharp/][omnisharp]]. Простой способ это сделать, открыть файл с расширением =.cs= и GNU Emacs сам предложит это сделать или =M-x: lsp-install-server= и выбрать нужный сервер.
 
 #+begin_src emacs-lisp
 
@@ -1928,7 +1928,7 @@ GitHub: [[https://github.com/emacs-csharp/csharp-mode][csharp-mode]], [[https://
 
 GitHub: [[https://github.com/company-mode/company-mode][company]]
 
-Company - это фреймворк для автозавершения текста для Emacs.
+Company - это фреймворк для автозавершения текста для GNU Emacs.
 
 GitHub: [[https://github.com/sebastiencs/company-box][company-box]]
 
@@ -1969,7 +1969,7 @@ web-mode - это режим emacs для редактирования веб-ш
 
 *** JSON
 
-=json-mode= - режим Emacs для обработки файлов JSON
+=json-mode= - режим GNU Emacs для обработки файлов JSON
 
 GitHub: [[https://github.com/joshwnj/json-mode][json-mode]]
 
@@ -1982,7 +1982,7 @@ GitHub: [[https://github.com/joshwnj/json-mode][json-mode]]
 
 *** YAML
 
-=yaml-mode= - режим Emacs для обработки файлов YAML/YML
+=yaml-mode= - режим GNU Emacs для обработки файлов YAML/YML
 
 GitHub: [[https://github.com/yoshiki/yaml-mode][yaml-mode]]
 
@@ -1996,7 +1996,7 @@ GitHub: [[https://github.com/yoshiki/yaml-mode][yaml-mode]]
 
 *** Makefile
 
-=makefile-gmake-mode= - режим Emacs для обработки файлов Makefile
+=makefile-gmake-mode= - режим GNU Emacs для обработки файлов Makefile
 
 #+begin_src emacs-lisp
 
@@ -2010,7 +2010,7 @@ GitHub: [[https://github.com/yoshiki/yaml-mode][yaml-mode]]
 
 *** Docker
 
-=Docker=, режим для управления докером из Emacs.
+=Docker=, режим для управления докером из GNU Emacs.
 
 GitHub: [[https://github.com/Silex/docker.el][docker]]
 
@@ -2021,7 +2021,7 @@ GitHub: [[https://github.com/Silex/docker.el][docker]]
 
 #+end_src
 
-=Dockerfile Mode= — режим Emacs для обработки файлов Dockerfile.
+=Dockerfile Mode= — режим GNU Emacs для обработки файлов Dockerfile.
 
 GitHub: [[https://github.com/spotify/dockerfile-mode][dockerfile-mode]]
 
@@ -2035,7 +2035,7 @@ GitHub: [[https://github.com/spotify/dockerfile-mode][dockerfile-mode]]
 
 GitHub: [[https://github.com/bbatsov/projectile/tree/db5748ea4a6428136769e7e50c6d0a12aa7acd8f][projectile]]
 
-Projectile - это библиотека взаимодействия с проектом для Emacs.
+Projectile - это библиотека взаимодействия с проектом для GNU Emacs.
 
 *** Commands
 
@@ -2119,9 +2119,9 @@ GitHub: [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]]
 
 ** Eshell
 
-=Eshell= — это собственная реализация оболочки Emacs, написанная на Emacs Lisp.
+=Eshell= — это собственная реализация оболочки GNU Emacs, написанная на GNU Emacs Lisp.
 
-=eshell-git-prompt= - пакет предоставляет темы приглашения Emacs Shell (Eshell).
+=eshell-git-prompt= - пакет предоставляет темы приглашения GNU Emacs Shell (Eshell).
 
 GitHub: [[https://github.com/xuchunyang/eshell-git-prompt][eshell-git-prompt]]
 

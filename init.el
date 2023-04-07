@@ -1,4 +1,4 @@
-;;; init.el --- Initialisation file for Emacs
+;;; init.el --- Initialisation file for GNU Emacs
 
 ;; Copyright © 2020-2022 Egor Tolbaev <egor05.09.97@gmail.com>
 
