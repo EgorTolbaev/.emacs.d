@@ -64,19 +64,22 @@
 
 ;; Отключить номера строк где они не нужны
 (dolist (mode '(org-mode-hook
-                term-mode-hook
-                shell-mode-hook
-                eshell-mode-hook
-                org-agenda-mode-hook
-                treemacs-mode-hook
-                eww-mode-hook
-                calendar-mode-hook
-                deft-mode-hook))
+		term-mode-hook
+		shell-mode-hook
+		eshell-mode-hook
+		org-agenda-mode-hook
+		treemacs-mode-hook
+		eww-mode-hook
+		calendar-mode-hook
+		deft-mode-hook
+		cfw:calendar-mode-hook
+		cfw:details-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-(defvar et/default-font-size 110)
+(defvar et/default-font-size 115)
 ;;(set-face-attribute 'default nil :font "Consolas")
-(set-face-attribute 'default nil :font "Source Code Pro Medium" :height et/default-font-size)
+;;(set-face-attribute 'default nil :font "Source Code Pro Medium" :height et/default-font-size)
+(set-face-attribute 'default nil :font "Fira Mono" :height et/default-font-size)
 ;(set-fontset-font t 'latin "Noto Sans")
 (set-fontset-font t 'latin "Cantarell")
 
@@ -373,6 +376,23 @@
         org-roam-ui-follow t
         org-roam-ui-update-on-save t
         org-roam-ui-open-on-start t))
+
+(use-package calfw
+  :commands cfw:open-org-calendar
+  :config
+  (setq cfw:fchar-junction ?╋
+	cfw:fchar-vertical-line ?┃
+	cfw:fchar-horizontal-line ?━
+	cfw:fchar-left-junction ?┣
+	cfw:fchar-right-junction ?┫
+	cfw:fchar-top-junction ?┯
+	cfw:fchar-top-left-corner ?┏
+	cfw:fchar-top-right-corner ?┓)
+  (setq calendar-week-start-day 1) ; 0:Sunday, 1:Monday
+
+  (use-package calfw-org
+    :config
+    (setq cfw:org-agenda-schedule-args '(:timestamp))))
 
 (use-package org-bullets
   :after org
@@ -686,7 +706,9 @@
     ("d" org-clock-in-last "Org clock in last")
     ("i" org-clock-in "Org clock in")
     ("o" org-clock-out "Org clock uot")
-    ("t" org-clock-report "Org clock report"))))
+    ("t" org-clock-report "Org clock report"))
+   "Calendar"
+   (("w" cfw:open-org-calendar "cfw org calendar "))))
 
 (pretty-hydra-define hydra-windows
   (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "windows" "Windows" 1 -0.05))

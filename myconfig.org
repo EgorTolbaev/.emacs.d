@@ -40,6 +40,9 @@
     - [[#capture][Capture]]
     - [[#org-roam][Org-roam]]
     - [[#org-roam-ui][Org-roam-ui]]
+    - [[#calendar][Calendar]]
+    - [[#commands-2][Commands]]
+    - [[#settimgs][Settimgs]]
     - [[#org-bullets][Org bullets]]
     - [[#center-org-buffers][Center Org Buffers]]
     - [[#toc-org][Toc org]]
@@ -49,14 +52,14 @@
   - [[#markdown][Markdown]]
 - [[#file-management][File Management]]
   - [[#dired][Dired]]
-    - [[#commands-2][Commands]]
+    - [[#commands-3][Commands]]
     - [[#settings-1][Settings]]
   - [[#deft][Deft]]
-    - [[#commands-3][Commands]]
+    - [[#commands-4][Commands]]
     - [[#settings-2][Settings]]
 - [[#modes][Modes]]
   - [[#ivy][IVY]]
-    - [[#commands-4][Commands]]
+    - [[#commands-5][Commands]]
     - [[#settings-3][Settings]]
   - [[#ivy-rich][IVY-RICH]]
   - [[#counsel][COUNSEL]]
@@ -69,7 +72,7 @@
   - [[#browser][Browser]]
     - [[#engine-mode][Engine-mode]]
   - [[#hydra][Hydra]]
-    - [[#commands-5][Commands]]
+    - [[#commands-6][Commands]]
     - [[#settings-hydra][Settings Hydra]]
     - [[#hydra--browser][Hydra / Browser]]
     - [[#hydra--treemacs][Hydra / Treemacs]]
@@ -93,10 +96,10 @@
   - [[#buildsystem][Buildsystem]]
     - [[#docker][Docker]]
   - [[#projectile][Projectile]]
-    - [[#commands-6][Commands]]
+    - [[#commands-7][Commands]]
     - [[#settings-4][Settings]]
   - [[#magit][Magit]]
-    - [[#commands-7][Commands]]
+    - [[#commands-8][Commands]]
     - [[#settings-5][Settings]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
 - [[#terminals][Terminals]]
@@ -220,14 +223,16 @@
 
   ;; Отключить номера строк где они не нужны
   (dolist (mode '(org-mode-hook
-                  term-mode-hook
-                  shell-mode-hook
-                  eshell-mode-hook
-                  org-agenda-mode-hook
-                  treemacs-mode-hook
-                  eww-mode-hook
-                  calendar-mode-hook
-                  deft-mode-hook))
+		  term-mode-hook
+		  shell-mode-hook
+		  eshell-mode-hook
+		  org-agenda-mode-hook
+		  treemacs-mode-hook
+		  eww-mode-hook
+		  calendar-mode-hook
+		  deft-mode-hook
+		  cfw:calendar-mode-hook
+		  cfw:details-mode-hook))
       (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 #+end_src
@@ -238,9 +243,10 @@
 
 #+begin_src emacs-lisp
 
-  (defvar et/default-font-size 110)
+  (defvar et/default-font-size 115)
   ;;(set-face-attribute 'default nil :font "Consolas")
-  (set-face-attribute 'default nil :font "Source Code Pro Medium" :height et/default-font-size)
+  ;;(set-face-attribute 'default nil :font "Source Code Pro Medium" :height et/default-font-size)
+  (set-face-attribute 'default nil :font "Fira Mono" :height et/default-font-size)
   ;(set-fontset-font t 'latin "Noto Sans")
   (set-fontset-font t 'latin "Cantarell")
 
@@ -897,6 +903,46 @@ GitHub: [[https://github.com/org-roam/org-roam-ui][org-roam-ui]]
 
 #+end_src
 
+*** Calendar
+
+Github: [[https://github.com/kiwanami/emacs-calfw][emacs-calfw]]
+
+*** Commands
+
+| command                     | key / ex command | description                |
+|-----------------------------+------------------+----------------------------|
+| cfw:change-view-moth        | =M=              | просмотр месяца            |
+| cfw:change-view-week        | =W=              | 1 неделя просмотра         |
+| cfw:change-view-two-weeks   | =T=              | 2 недели просмотра         |
+| cfw:change-view-day         | =D=              | день                       |
+| cfw:refresh-calendar-buffer | =r=              | обновить                   |
+| cfw:show-details-command    | =SPC=            | всплывающий буфер сведений |
+|                             | =q=              | выйти                      |
+|-----------------------------+------------------+----------------------------|
+
+*** Settimgs
+#+begin_src emacs-lisp
+
+  (use-package calfw
+    :commands cfw:open-org-calendar
+    :config
+    (setq cfw:fchar-junction ?╋
+	  cfw:fchar-vertical-line ?┃
+	  cfw:fchar-horizontal-line ?━
+	  cfw:fchar-left-junction ?┣
+	  cfw:fchar-right-junction ?┫
+	  cfw:fchar-top-junction ?┯
+	  cfw:fchar-top-left-corner ?┏
+	  cfw:fchar-top-right-corner ?┓)
+    (setq calendar-week-start-day 1) ; 0:Sunday, 1:Monday
+
+    (use-package calfw-org
+      :config
+      (setq cfw:org-agenda-schedule-args '(:timestamp))))
+
+
+#+end_src
+
 *** Org bullets
 
 Github: [[https://github.com/sabof/org-bullets][org-bullets]]
@@ -1502,6 +1548,7 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
 | org-clock-in-last           | =C-c o d=            | повторный запуск времени задачи |
 | org-clock-in                | =C-c o i=            | запустить время выполнения      |
 | org-clock-out               | =C-c o o=            | остановить время выполнения     |
+| cfw:open-org-calendar       | =C-c o w=            | открыть календарь cfw           |
 |-----------------------------+----------------------+---------------------------------|
 |-----------------------------+----------------------+---------------------------------|
 | Windows                     |                      |                                 |
@@ -1628,7 +1675,9 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
       ("d" org-clock-in-last "Org clock in last")
       ("i" org-clock-in "Org clock in")
       ("o" org-clock-out "Org clock uot")
-      ("t" org-clock-report "Org clock report"))))
+      ("t" org-clock-report "Org clock report"))
+     "Calendar"
+     (("w" cfw:open-org-calendar "cfw org calendar "))))
 
 #+end_src
 
