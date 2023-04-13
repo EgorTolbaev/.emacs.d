@@ -27,13 +27,16 @@
   - [[#icons][Icons]]
   - [[#отображение-времени][Отображение времени]]
   - [[#настройка-фрейма][Настройка фрейма]]
-  - [[#golden-ratio][Golden ratio]]
-  - [[#highlight-indent-guides][Highlight indent guides]]
+  - [[#выбор-окна][Выбор окна]]
     - [[#commands][Commands]]
     - [[#settings][Settings]]
+  - [[#golden-ratio][Golden ratio]]
+  - [[#highlight-indent-guides][Highlight indent guides]]
+    - [[#commands-1][Commands]]
+    - [[#settings-1][Settings]]
 - [[#office][Office]]
   - [[#org-mode][Org mode]]
-    - [[#commands-1][Commands]]
+    - [[#commands-2][Commands]]
     - [[#описание-рабочего-процесса][Описание рабочего процесса]]
     - [[#basic-config][Basic Config]]
     - [[#настройка-org-protocol][Настройка org-protocol]]
@@ -41,7 +44,7 @@
     - [[#org-roam][Org-roam]]
     - [[#org-roam-ui][Org-roam-ui]]
     - [[#calendar][Calendar]]
-    - [[#commands-2][Commands]]
+    - [[#commands-3][Commands]]
     - [[#settimgs][Settimgs]]
     - [[#org-bullets][Org bullets]]
     - [[#center-org-buffers][Center Org Buffers]]
@@ -52,15 +55,15 @@
   - [[#markdown][Markdown]]
 - [[#file-management][File Management]]
   - [[#dired][Dired]]
-    - [[#commands-3][Commands]]
-    - [[#settings-1][Settings]]
-  - [[#deft][Deft]]
     - [[#commands-4][Commands]]
     - [[#settings-2][Settings]]
-- [[#modes][Modes]]
-  - [[#ivy][IVY]]
+  - [[#deft][Deft]]
     - [[#commands-5][Commands]]
     - [[#settings-3][Settings]]
+- [[#modes][Modes]]
+  - [[#ivy][IVY]]
+    - [[#commands-6][Commands]]
+    - [[#settings-4][Settings]]
   - [[#ivy-rich][IVY-RICH]]
   - [[#counsel][COUNSEL]]
   - [[#helpful][Helpful]]
@@ -72,7 +75,7 @@
   - [[#browser][Browser]]
     - [[#engine-mode][Engine-mode]]
   - [[#hydra][Hydra]]
-    - [[#commands-6][Commands]]
+    - [[#commands-7][Commands]]
     - [[#settings-hydra][Settings Hydra]]
     - [[#hydra--browser][Hydra / Browser]]
     - [[#hydra--treemacs][Hydra / Treemacs]]
@@ -96,11 +99,11 @@
   - [[#buildsystem][Buildsystem]]
     - [[#docker][Docker]]
   - [[#projectile][Projectile]]
-    - [[#commands-7][Commands]]
-    - [[#settings-4][Settings]]
-  - [[#magit][Magit]]
     - [[#commands-8][Commands]]
     - [[#settings-5][Settings]]
+  - [[#magit][Magit]]
+    - [[#commands-9][Commands]]
+    - [[#settings-6][Settings]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
 - [[#terminals][Terminals]]
   - [[#eshell][Eshell]]
@@ -426,6 +429,46 @@ GitHub: [[https://github.com/domtronn/all-the-icons.el][all-the-icons]]
   (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
   (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+#+end_src
+
+** Выбор окна
+
+GitHub: [[https://github.com/abo-abo/ace-window][ace-window]]
+
+=ace-window= - позволяет удобно переключаться между открытыми окнами. Все что Вам нужно это нажать =M-o= и выбрать окно. Кроме переключения между окнами в пакете также есть и другие функции для работы с ними.
+
+*** Commands
+
+| command                       | key / ex command | description                                                |
+|-------------------------------+------------------+------------------------------------------------------------|
+| ace-window                    | =M-o=            | Выбор окна                                                 |
+| aw-delete-window              | =M-o x=          | удалить окно                                               |
+| aw-swap-window                | =M-o m=          | поменять местами окна                                      |
+| aw-move-window                | =M-o M=          | переместить окно                                           |
+| aw-copy-window                | =M-o c=          | копировать окно                                            |
+| aw-switch-buffer-in-window    | =M-o j=          | выбрать буфер                                              |
+| aw-flip-window                | =M-o n=          | выбрать предыдущее окно                                    |
+| aw-switch-buffer-other-window | =M-o u=          | выбрать буфер в другом окне                                |
+| aw-split-window-fair          | =M-o c=          | справедливо разделить окно по вертикали или по горизонтали |
+| aw-split-window-vert          | =M-o v=          | разделить окно по вертикали                                |
+| aw-split-window-horz          | =M-o b=          | разделить окно по горизонтали                              |
+| delete-other-windows          | =M-o o=          | развернуть текущее окно                                    |
+| aw-show-dispatch-help         | =M-o ?=          | показать эти привязки команд                               |
+|-------------------------------+------------------+------------------------------------------------------------|
+
+*** Settings
+
+#+begin_src emacs-lisp
+
+  (use-package ace-window
+    :bind (("M-o" . ace-window))
+    :custom
+    (aw-scope 'frame)
+    (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+    (aw-minibuffer-flag t)
+    :config
+    (ace-window-display-mode 1))
 
 #+end_src
 
