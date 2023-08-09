@@ -1,18 +1,19 @@
 <p align="center"><img src="assets/emacs-logo.svg" width=150 height=150/></p>
 <p align="center"><a href="https://www.gnu.org/software/emacs/"><b>GNU Emacs</b></a></p>
 <p align="center">
-	<a href="https://www.gnu.org/software/emacs/"><img src="https://img.shields.io/badge/GNU%20Emacs-27.1-b48ead.svg?style=flat-square"/></a>
-	<a href="https://orgmode.org/"><img src="https://img.shields.io/badge/org--mode-9.5-489a9f.svg?style=flat-square"/></a>
+	<a href="https://www.gnu.org/software/emacs/"><img src="https://img.shields.io/badge/GNU%20Emacs-27.1+-b48ead.svg?style=flat-square"/></a>
+	<a href="https://orgmode.org/"><img src="https://img.shields.io/badge/org--mode-9.3+-489a9f.svg?style=flat-square"/></a>
 	<a href="https://github.com/jwiegley/use-package"><img src="https://img.shields.io/badge/use--package-2.4.1-88c0d0.svg?style=flat-square"/></a>
 </p>
-<p align="center">This repository contains all my GNU Emacs configuration.</p>
+<p align="center">Этот репозиторий содержит мою конфигурацию GNU Emacs.</p>
+<p align="center">Read this in other languages: <a href="README.en.md">English</a></p>
 
 ---
 
 <p align="center"><img src="assets/screenshots/emacs-preview.PNG"/></p>
 
-<details> 
-  <summary>Screenshots</summary>
+<details>
+  <summary>Скриншоты</summary>
   Dashboard
   <p align="center"><img src="assets/screenshots/dashboard.PNG"/></p>
   Org-mode
@@ -26,84 +27,77 @@
 <br/>
 
 <blockquote>
-    Mode Line: <a href="https://github.com/seagle0128/doom-modeline">DOOM Modeline</a> <br>
-	Theme:<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;Dark theme: <a href="https://github.com/hlissner/emacs-doom-themes/blob/screenshots/doom-Iosvkem.png">doom-Iosvkem</a><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;Light theme: <a href="https://github.com/hlissner/emacs-doom-themes/blob/screenshots/doom-opera-light.png">doom-opera-light</a>
+	GNU Emacs: 29.1<br>
+    Mode Line: <a href="https://github.com/seagle0128/doom-modeline">DOOM Modeline</a><br>
+	Тема:<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;Темная тема: <a href="https://github.com/hlissner/emacs-doom-themes/blob/screenshots/doom-Iosvkem.png">doom-Iosvkem</a><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;Светлая тема: <a href="https://github.com/hlissner/emacs-doom-themes/blob/screenshots/doom-opera-light.png">doom-opera-light</a>
     <br>
-    Font: <a href="https://github.com/adobe-fonts/source-code-pro">Source Code Pro</a>
+    Font: <a href="https://fonts.google.com/specimen/Fira+Mono">Fira Mono</a>
 </blockquote>
 
 <br/>
 
-List of files:
+Список файлов:
 
 - [`myconfig.org`](https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org):
-  main configuration file.
+  основной файл конфигурации.
 
 - [`init.el`](https://github.com/EgorTolbaev/.emacs.d/blob/master/init.el):
-  load the generated configuration file.
+  сгенерированный файл конфигурации.
 
-## Usage Instructions
+## Инструкции по использованию
 
-### Linux и macOS
+### GNU/Linux и macOS
 
-On Linux, Emacs can be found in every major Linux distribution’s package manager. On macOS you can install Emacs using Homebrew via brew install emacs.
+В GNU/Linux GNU Emacs можно найти в менеджере пакетов каждого основного дистрибутива GNU/Linux. В macOS Вы можете установить GNU Emacs с помощью Homebrew через brew install GNU Emacs.
 
-You can easily get started with this configuration on Linux and macOS by following these steps:
+Вы можете легко начать работу с этой конфигурацией в GNU/Linux и macOS, выполнив следующие действия:
 
-1. Clone this repository to a folder on your system:
+1. Клонируйте этот репозиторий в папку в вашей системе:
 
 ```
 git clone https://github.com/EgorTolbaev/.emacs.d
 ```
 
-2. Back up any existing Emacs configuration you may already have in your home directory in the `.emacs.d` folder
-3. Start Emacs!
+2. Сделайте резервную копию любой существующей конфигурации GNU Emacs, которая, возможно, уже есть в вашем домашнем каталоге `.emacs.d`.
+3. Запустите GNU Emacs!
 
 ### Windows
 
-You can download the latest Emacs version for Windows by heading to the [GNU FTP site](https://ftp.gnu.org/gnu/emacs/windows/). You can also [install Emacs via Chocolatey](https://community.chocolatey.org/packages/Emacs) if you prefer a more automated approach.
+Вы можете загрузить последнюю версию GNU Emacs для Windows, перейдя по ссылке [GNU FTP site](https://ftp.gnu.org/gnu/emacs/windows/). Вы также можете установить GNU Emacs через [Chocolatey](https://community.chocolatey.org/packages/Emacs), если предпочитаете более автоматизированный подход.
 
-The location where the Emacs configuration folder lives may vary based on your version of Windows. If you have trouble getting this to work, check the [official FAQ](https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html#Location-of-init-file) on the topic.
+Расположение папки конфигурации GNU Emacs может различаться в зависимости от вашей версии Windows. Если у вас возникли проблемы с тем, чтобы это работало, проверьте [официальный FAQ](https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html#Location-of-init-file) по теме.
 
-For most modern Windows versions (Windows 7+), these steps should work:
+Для большинства современных версий Windows (Windows 7+) должны работать следующие шаги:
 
-1. Clone this repository to a folder on your system:
+1. Клонируйте этот репозиторий в папку в вашей системе:
 
 ```
 git clone https://github.com/EgorTolbaev/.emacs.d
 ```
 
-2. Back up any existing Emacs configuration you may already have in your home directory (likely C:\Users\yourusername\ or C:\Users\yourusername\AppData\Roaming\) in the `.emacs.d` folder
-3. Start Emacs!
+2. Сделайте резервную копию любой существующей конфигурации GNU Emacs, которая у вас уже может быть в вашем домашнем каталоге (вероятно, C:\Users\yourusername\ или C:\Users\yourusername\AppData\Roaming\) `.emacs.d`
+3. Запустите GNU Emacs!
 
-## Additional settings
+## Дополнительные настройки
 
-### Installing fonts
+### Установка шрифтов
 
-This configuration uses the [Source Code Pro](https://github.com/adobe-fonts/source-code-pro) font by [@adobe-fonts](https://github.com/adobe-fonts) and installation instructions can be found on [this wiki page](https://github.com/adobe-fonts/source-code-pro/releases/tag/2.038R-ro%2F1.058R-it%2F1.018R-VAR).
+В этой конфигурации используется шрифт [Source Code Pro](https://github.com/adobe-fonts/source-code-pro) от [@adobe-fonts](https://github.com/adobe-fonts), инструкции по установке можно найти на [этой вики-странице](https://github.com/adobe-fonts/source-code-pro/releases/tag/2.038R-ro%2F1.058R-it%2F1.018R-VAR ).
 
-In this configuration, one more font is used that will need to be installed for Windows, in linux it is probably there.
+В этой конфигурации используется еще один шрифт, который нужно будет установить для Windows, в GNU/Linux он наверняка есть.
 
-[Cantarell](https://github.com/GNOME/cantarell-fonts) download it with [google fonts](https://fonts.google.com/specimen/Cantarell).
+[Cantarell](https://github.com/GNOME/cantarell-fonts) скачать можно тут [google fonts](https://fonts.google.com/specimen/Cantarell).
 
-However, since this is meant to be your configuration, feel free to choose your own font!
+Однако, поскольку это ваша конфигурация, не стесняйтесь выбирать свой собственный шрифт!
 
 ### Markdown
 
-For markdown to work, you need to install its processor. In this configuration, I use [pandoc](https://pandoc.org/), instructions on how to install it can be found [here](https://pandoc.org/installing.html).
+Чтобы markdown работала, нужно установить его процессор. В этой конфигурации я использую [pandoc](https://pandoc.org/), инструкции по его установке можно найти [здесь](https://pandoc.org/installing.html).
 
-You can also use whichever markdown processor you like, just install it and make changes to the [configuration](https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#markdown).
-
-### Qutebrowser
-
-In place with Emacs, I use [Qutebrowser](https://qutebrowser.org/), use it in place with browse-url and engine-mode, to install it read the [instructions](https://qutebrowser.org/doc/install.html).
-
-If you are interested in my Qutebrowser configuration, you can see it [here](https://github.com/EgorTolbaev/dotfiles/tree/master/qutebrowser).
-
-If for some reason you do not want to use this, make changes to the [configuration](https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#browser).
+Вы также можете использовать любой процессор markdown, который вам нравится, просто установите его и внесите изменения в [configuration](https://github.com/EgorTolbaev/.emacs.d/blob/master/myconfig.org#markdown).
 
 ---
 
-**Feel free to file an issue**
+**Не стесняйтесь сообщить о проблеме**

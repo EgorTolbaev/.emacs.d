@@ -1,6 +1,6 @@
 ;;; init.el --- Initialisation file for GNU Emacs
 
-;; Copyright © 2020-2022 Egor Tolbaev <egor05.09.97@gmail.com>
+;; Copyright © 2020-2023 Egor Tolbaev <egor05.09.97@gmail.com>
 
 ;; Author: Egor Tolbaev <egor05.09.97@gmail.com>
 ;; URL: https://github.com/EgorTolbaev/.emacs.d
@@ -43,6 +43,9 @@
 (when (file-exists-p custom-file)
   (load custom-file))
 
+;; disable because of elpa bug in emacs 27.1
+(setq package-check-signature nil)
+
 (setq inhibit-startup-message t)
 
 ;; (setq ring-bell-function 'ignore)              ; Отключить звуковой сигнал
@@ -72,6 +75,7 @@
 		eww-mode-hook
 		calendar-mode-hook
 		deft-mode-hook
+		dired-mode-hook
 		cfw:calendar-mode-hook
 		cfw:details-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
@@ -108,6 +112,10 @@
      '(("\\.el$"  . emacs-lisp-mode)
        ("\\.org$" . org-mode)
        ("\\.tex$" . latex-mode))))
+
+(use-package multiple-cursors)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 
 (defun edit-configs ()
   "Opens the README.org file."
@@ -198,9 +206,10 @@
 	'(("inbox.org" :maxlevel . 1)
 	  ("projects.org" :maxlevel . 1)
 	  ("journal.org" :maxlevel . 4)
-	  ("someday.org" :maxlevel . 1)
+	  ;("someday.org" :maxlevel . 1)
 	  ("next_tasks.org" :maxlevel . 1)
 	  ("waiting.org" :maxlevel . 1)
+	  ("archive.org" :maxlevel . 1)
 	  ("agenda.org" :maxlevel . 1)))
 
   ;; Save Org buffers after refiling!
@@ -281,7 +290,7 @@
   (set 'gtd_agenda_filel "c:/Users/user/Dropbox/GTD/agenda.org")
   (set 'gtd_notes_filel "c:/Users/user/Dropbox/GTD/notes.org")
   (set 'gtd_projects_filel "c:/Users/user/Dropbox/GTD/projects.org")
-  (set 'gtd_someday_filel "c:/Users/user/Dropbox/GTD/someday.org")
+					;(set 'gtd_someday_filel "c:/Users/user/Dropbox/GTD/someday.org")
   (set 'gtd_next_tasks_file "c:/Users/user/Dropbox/GTD/next_tasks.org")
   (set 'gtd_waiting_file "c:/Users/user/Dropbox/GTD/waiting.org"))
 (when (system-is-linux)
@@ -290,7 +299,7 @@
   (set 'gtd_agenda_filel "~/Dropbox/GTD/agenda.org")
   (set 'gtd_notes_filel "~/Dropbox/GTD/notes.org")
   (set 'gtd_projects_filel "~/Dropbox/GTD/projects.org")
-  (set 'gtd_someday_filel "~/Dropbox/GTD/someday.org")
+					;(set 'gtd_someday_filel "~/Dropbox/GTD/someday.org")
   (set 'gtd_next_tasks_file "~/Dropbox/GTD/next_tasks.org")
   (set 'gtd_waiting_file "~/Dropbox/GTD/waiting.org"))
 
@@ -321,12 +330,18 @@
 	("jd" "Tasks for the day" entry
 	 (file+olp+datetree gtd_journal_filel)
 	 "\n* Day \n* Meeting :meeting: \n* %<%Y-%m-%d %p> - Tasks for the day")
+	("jn" "Nex date" entry (file+function gtd_journal_filel
+					      (lambda ()
+						(org-datetree-find-date-create
+						 (org-date-to-gregorian (org-date-to-gregorian (time-add (org-today) 1))) t)
+						(re-search-forward "^\\*.+ Day" nil t)))
+	 "\n* Day \n* Meeting :meeting: \n* %(org-insert-time-stamp (org-read-date nil t \"++1d\" nil (org-read-date nil t \"%:date\")) nil t) - Tasks for the day")
 	;; Заметки
 	("n" "Note")
 	("nn" "Note with link" entry  (file gtd_notes_filel)
 	 "* Note (%a)\n Entered on/ %U\n %?")
 	("nj" "Just a note" entry  (file gtd_notes_filel)
-	  "* Note %?\n  Entered on/ %U\n")
+	 "* Note %?\n  Entered on/ %U\n")
 	;; Захват задач из внешних источников (браузер)
 	("c" "org-protocol-capture" entry (file+olp gtd_inbox_file "Inbox")
 	 "* TODO [[%:link][%:description]]\n\n %i"
@@ -458,13 +473,13 @@
   (interactive)
   (find-file gtd_projects_filel))
 
-(defun et/open-someday ()
-  "Открыть файл Someday"
-  (interactive)
-  (find-file gtd_someday_filel))
+;(defun et/open-someday ()
+;  "Открыть файл Someday"
+;  (interactive)
+;  (find-file gtd_someday_filel))
 
 (defun et/open-next-tasks ()
-  "Открыть файл Someday"
+  "Открыть файл Nex tasks"
   (interactive)
   (find-file gtd_next_tasks_file))
 
@@ -493,8 +508,10 @@
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "pandoc"))
 
+(add-to-list 'load-path "~/.emacs.d/local/pomodoro")
+(require 'pomodoro)
+
 (use-package dired
-  :ensure nil
   :commands (dired dired-jump)
   :bind (("C-x C-j" . dired-jump))
   :custom ((dired-listing-switches "-agho --group-directories-first"))
@@ -623,10 +640,10 @@
     (reverse-im-mode t))
 
 (use-package browse-url
-  :ensure nil
   :custom
-    (browse-url-browser-function 'browse-url-generic)
-    (browse-url-generic-program "qutebrowser"))
+  (browse-url-browser-function 'browse-url-default-windows-browser))
+    ;(browse-url-browser-function 'browse-url-generic)
+    ;(browse-url-generic-program "qutebrowser"))
 
 (use-package engine-mode
   :defer 3
@@ -639,8 +656,8 @@
       "https://github.com/search?ref=simplesearch&q=%s"
       :keybinding "g")
 
-    (defengine google-images
-      "http://www.google.com/images?hl=en&source=hp&biw=1440&bih=795&gbv=2&aq=f&aqi=&aql=&oq=&q=%s"
+    (defengine google
+      "https://www.google.com/search?q=%s"
       :keybinding "i")
 
     (defengine youtube
@@ -682,8 +699,8 @@
   (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "chrome" "Browser" 1 -0.05))
   (""
    (("d" engine/search-duckduckgo "Duckduckgo")
-    ("i" engine/search-google-images "Google images")
-    ("y" engine/search-youtubes "Youtube")
+    ("i" engine/search-google "Google")
+    ("y" engine/search-youtube "Youtube")
     ("g" engine/search-github "GitHub"))))
 
 (pretty-hydra-define hydra-treemacs
@@ -744,8 +761,8 @@
     ("n" (et/open-notes) "Open Note"))
    ""
     (("p" (et/open-projects) "Open Project")
-    ("s" (et/open-someday) "Open Someday")
-    ("t" (et/open-next-tasks) "Open Next task")
+    ;("s" (et/open-someday) "Open Someday")
+    ;("t" (et/open-next-tasks) "Open Next task")
     ("w" (et/open-waiting) "Open Waiting"))))
 
 (defun et/lsp-mode-setup ()
@@ -859,7 +876,6 @@
          ("\\.yaml$" . yaml-mode)))
 
 (use-package makefile-gmake-mode
-  :ensure nil
   :mode  ("Makefile.*" . makefile-gmake-mode))
 
 (use-package docker

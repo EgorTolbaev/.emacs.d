@@ -20,3 +20,7 @@ network-security.data
 .lsp-session-v1
 .org-id-locations
 org-roam.db
+.mc-lists.el
+multisession/
+tramp
+org-persist/

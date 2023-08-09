@@ -15,8 +15,9 @@
   - [[#парные-элементы][Парные элементы]]
   - [[#перенос-по-словам][Перенос по словам]]
   - [[#чистим-пробелы][Чистим пробелы]]
-  - [[#отключить-сохранений][Отключить сохранений]]
+  - [[#отключить-сохранение][Отключить сохранение]]
   - [[#auto-mode-alist][Auto mode alist]]
+- [[#multiple-cursors][multiple-cursors]]
   - [[#edit-this-configuration-file-shortcut][Edit This Configuration File Shortcut]]
 - [[#ui][UI]]
   - [[#theme][Theme]]
@@ -53,6 +54,7 @@
     - [[#quick-file-access][Quick file access]]
     - [[#auto-tangle-configuration-files][Auto-tangle Configuration Files]]
   - [[#markdown][Markdown]]
+  - [[#pomodoro][pomodoro]]
 - [[#file-management][File Management]]
   - [[#dired][Dired]]
     - [[#commands-4][Commands]]
@@ -114,7 +116,7 @@
 
   ;;; init.el --- Initialisation file for GNU Emacs
 
-  ;; Copyright © 2020-2022 Egor Tolbaev <egor05.09.97@gmail.com>
+  ;; Copyright © 2020-2023 Egor Tolbaev <egor05.09.97@gmail.com>
 
   ;; Author: Egor Tolbaev <egor05.09.97@gmail.com>
   ;; URL: https://github.com/EgorTolbaev/.emacs.d
@@ -151,7 +153,7 @@
 
 * Переменные ОС
 
-Некоторые части конфигурации отличаются в зависимости от системы, поэтому я определил функции для дальнейшего использовани.
+Некоторые части конфигурации отличаются в зависимости от системы, поэтому я определил функции для дальнейшего использования.
 
 #+begin_src emacs-lisp
 
@@ -205,6 +207,9 @@
 
 #+begin_src emacs-lisp
 
+  ;; disable because of elpa bug in emacs 27.1
+  (setq package-check-signature nil)
+
   (setq inhibit-startup-message t)
 
   ;; (setq ring-bell-function 'ignore)              ; Отключить звуковой сигнал
@@ -234,6 +239,7 @@
 		  eww-mode-hook
 		  calendar-mode-hook
 		  deft-mode-hook
+		  dired-mode-hook
 		  cfw:calendar-mode-hook
 		  cfw:details-mode-hook))
       (add-hook mode (lambda () (display-line-numbers-mode 0))))
@@ -282,7 +288,7 @@
 
 ** Перенос по словам
 
-Слова которые не помещаются по размеру фрейма переносится на другую сторку
+Слова которые не помещаются по размеру фрейма переносится на другую строку
 
 #+begin_src emacs-lisp
 
@@ -301,7 +307,7 @@
 
 #+end_src
 
-** Отключить сохранений
+** Отключить сохранение
 
 #+begin_src emacs-lisp
 
@@ -315,11 +321,23 @@
 
 #+begin_src emacs-lisp
 
-    (setq auto-mode-alist
-        (append
-         '(("\\.el$"  . emacs-lisp-mode)
-           ("\\.org$" . org-mode)
-           ("\\.tex$" . latex-mode))))
+  (setq auto-mode-alist
+      (append
+       '(("\\.el$"  . emacs-lisp-mode)
+	 ("\\.org$" . org-mode)
+	 ("\\.tex$" . latex-mode))))
+
+#+end_src
+
+* multiple-cursors
+
+Github: [[https://github.com/magnars/multiple-cursors.el][multiple-cursors]]
+
+#+begin_src emacs-lisp
+
+  (use-package multiple-cursors)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 
 #+end_src
 
@@ -415,7 +433,7 @@ GitHub: [[https://github.com/domtronn/all-the-icons.el][all-the-icons]]
 
 Устанавливаю прозрачность фрейма и разворачиваю окно по умолчанию.
 
-/Что бы это было красиво следите за свои рабочим столом и окнами по зади фрейма GNU Emacs/
+/Что бы это было красиво следите за свои рабочим столом и окнами позади фрейма GNU Emacs/
 
 #+begin_src emacs-lisp
 
@@ -476,7 +494,7 @@ GitHub: [[https://github.com/abo-abo/ace-window][ace-window]]
 
 GitHub: [[https://github.com/roman/golden-ratio.el][golden-ratio]]
 
-Удобный способ работать с окнами, при перключении =golden-ratio= изменяет размер окна с которым работаете.
+Удобный способ работать с окнами, при переключении =golden-ratio= изменяет размер окна с которым работаете.
 
 #+begin_src emacs-lisp
 
@@ -529,7 +547,7 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
 |-----------------------------------------+------------------+------------------------|
 | org-capture                             | =C-c c=          | создать заметку        |
 | org-agenda                              | =C-c a=          | открыть agenda         |
-| org-store-link                          | =C-c l=          | cоздать ссылку         |
+| org-store-link                          | =C-c l=          | создать ссылку         |
 | org-todo                                | =C-c C-t=        | изменить статус задачи |
 | org-set-tags-command                    | =C-c C-q=        | поставить тег          |
 | org-schedule                            | =C-c C-s=        | указать дату по плану  |
@@ -550,9 +568,7 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
 
 *inbox.org* - структуры у файла нет, это просто список все входящей информации, новые задачи, почта, статьи которые хочу прочитать и т.п;
 
-*projects.org* - файл содержит задачи для выполнения которых требуеться больше чем одно действие. В нем есть два заголовка, "Дом" и "Работа";
-
-*next_tasks.org* - так же как и projects.org содержит два заголовка, "Дом" и "Работа". По сути это просто список задач которые можно взять в работу;
+*projects.org* - файл содержит задачи для выполнения которых требуется больше чем одно действие. В нем есть два заголовка, "Дом" и "Работа";
 
 *agenda.org* - у файла следующая структура:
 
@@ -560,16 +576,15 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
 + Recurrent (Повторяющийся)
   + Scheduled (Запланированное)
   + Habits (Привычки)
-+ Past (Прошли)
 + Future (Будущее)
 
-Тут хронятся, дни рождения, привычки которые я хочу отслеживать, какие-то ежедневные задачи или рабочие встречи, а так же все что имеет конкретную запланированную дат;
+Тут хранятся, дни рождения, привычки которые я хочу отслеживать, какие-то ежедневные задачи или рабочие встречи, а так же все что имеет конкретную запланированную дат;
 
 *waiting.org* - хранит в себе список делегированных или чего то ожидающих задач;
 
 *journal.org* - журнал дня, в нем я отслеживаю задачи которыми занимался в конкретный день, затраченное время на задачу, а также могу сделать заметку на этот день.
 
-Структра:
+Структура:
 
 + Год
   + Месяц
@@ -578,17 +593,16 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
       + Задачи
 
 *notes.org* - просто заметки или заметки к конкретной задаче, встречи;
-*soeday.org* - несрочные задачи, в основном нерабочие, которые хотелось бы сделать, но не сейчас.
 
 **** Процесс
 
 С помощью org-capture добавляю задачу, письмо и т.п в inbox.org;
 При разборе inbox.org принимаю решения куда дальше это задача попадет в projects.org или next_tasks.org. Если задача попала в projects.org, то разбиваю ее на подзадачи, если в next_tasks.org задача просто ждет своего часа. Также на этом шаге добавляю теги к задаче если они нужны;
-Беру задачу в работу, переношу или делаю ссылку в journal.org. В journal.org в момент когда начинаю работу над задачей простовляю статус задачи и запускаю таймер, в конце дня, месяца и года строю таблицу затраченного времени.
+Беру задачу в работу, переношу или делаю ссылку в journal.org. В journal.org в момент когда начинаю работу над задачей проставляю статус задачи и запускаю таймер, в конце дня, месяца и года строю таблицу затраченного времени.
 
 *** Basic Config
 
-Этот раздел содержит базовую конфигурацию =org-mode=, а также конфигурацию для повестоки дня.
+Этот раздел содержит базовую конфигурацию =org-mode=, а также конфигурацию для повестки дня.
 
 #+begin_src emacs-lisp
 
@@ -620,9 +634,10 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
 	  '(("inbox.org" :maxlevel . 1)
 	    ("projects.org" :maxlevel . 1)
 	    ("journal.org" :maxlevel . 4)
-	    ("someday.org" :maxlevel . 1)
+	    ;("someday.org" :maxlevel . 1)
 	    ("next_tasks.org" :maxlevel . 1)
 	    ("waiting.org" :maxlevel . 1)
+	    ("archive.org" :maxlevel . 1)
 	    ("agenda.org" :maxlevel . 1)))
 
     ;; Save Org buffers after refiling!
@@ -705,7 +720,7 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
 
 =Org-protocol= позволяет делать захват статей или их частей пряма из браузера.
 
-Это позволяет при чтении чего-либо в браузере сохранить ссылку и выделеный текст прямо в =org= файл который Вы указали.
+Это позволяет при чтении чего-либо в браузере сохранить ссылку и выделенный текст прямо в =org= файл который Вы указали.
 
 Для самой простой настройки Вам нужно сделать следующее:
 
@@ -727,7 +742,7 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
          '&body=' + encodeURIComponent(window.getSelection())
 
    #+end_src
-4) Зарегестрировать =org-protocl= в своей системе:
+4) Зарегистрировать =org-protocl= в своей системе:
 
    - Windows
 
@@ -771,7 +786,7 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
     (set 'gtd_agenda_filel "c:/Users/user/Dropbox/GTD/agenda.org")
     (set 'gtd_notes_filel "c:/Users/user/Dropbox/GTD/notes.org")
     (set 'gtd_projects_filel "c:/Users/user/Dropbox/GTD/projects.org")
-    (set 'gtd_someday_filel "c:/Users/user/Dropbox/GTD/someday.org")
+					  ;(set 'gtd_someday_filel "c:/Users/user/Dropbox/GTD/someday.org")
     (set 'gtd_next_tasks_file "c:/Users/user/Dropbox/GTD/next_tasks.org")
     (set 'gtd_waiting_file "c:/Users/user/Dropbox/GTD/waiting.org"))
   (when (system-is-linux)
@@ -780,7 +795,7 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
     (set 'gtd_agenda_filel "~/Dropbox/GTD/agenda.org")
     (set 'gtd_notes_filel "~/Dropbox/GTD/notes.org")
     (set 'gtd_projects_filel "~/Dropbox/GTD/projects.org")
-    (set 'gtd_someday_filel "~/Dropbox/GTD/someday.org")
+					  ;(set 'gtd_someday_filel "~/Dropbox/GTD/someday.org")
     (set 'gtd_next_tasks_file "~/Dropbox/GTD/next_tasks.org")
     (set 'gtd_waiting_file "~/Dropbox/GTD/waiting.org"))
 
@@ -811,12 +826,18 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
 	  ("jd" "Tasks for the day" entry
 	   (file+olp+datetree gtd_journal_filel)
 	   "\n* Day \n* Meeting :meeting: \n* %<%Y-%m-%d %p> - Tasks for the day")
+	  ("jn" "Nex date" entry (file+function gtd_journal_filel
+						(lambda ()
+						  (org-datetree-find-date-create
+						   (org-date-to-gregorian (org-date-to-gregorian (time-add (org-today) 1))) t)
+						  (re-search-forward "^\\*.+ Day" nil t)))
+	   "\n* Day \n* Meeting :meeting: \n* %(org-insert-time-stamp (org-read-date nil t \"++1d\" nil (org-read-date nil t \"%:date\")) nil t) - Tasks for the day")
 	  ;; Заметки
 	  ("n" "Note")
 	  ("nn" "Note with link" entry  (file gtd_notes_filel)
 	   "* Note (%a)\n Entered on/ %U\n %?")
 	  ("nj" "Just a note" entry  (file gtd_notes_filel)
-	    "* Note %?\n  Entered on/ %U\n")
+	   "* Note %?\n  Entered on/ %U\n")
 	  ;; Захват задач из внешних источников (браузер)
 	  ("c" "org-protocol-capture" entry (file+olp gtd_inbox_file "Inbox")
 	   "* TODO [[%:link][%:description]]\n\n %i"
@@ -841,7 +862,7 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
 
 ***** Windows
 
-Чтобы установить org-roam на OS Windows, Вам нужно устоновить компилятор =C= [[https://www.msys2.org/][MSYS2]] и в его терминале ввести команду:
+Чтобы установить org-roam на OS Windows, Вам нужно установить компилятор =C= [[https://www.msys2.org/][MSYS2]] и в его терминале ввести команду:
 
 #+begin_src bash
 
@@ -870,7 +891,7 @@ GitHub: [[https://github.com/DarthFennec/highlight-indent-guides][highlight-inde
 | org-roam-node-find                  | =C-c n f=        | открыть/создать узел                     |
 | org-roam-node-insert                | =C-c n i=        | добавить ссылку на узел                  |
 | org-roam-buffer-toggle              | =C-c n l=        | посмотреть связи между узлами            |
-| completion-at-point                 | =C-M-i=          | автозавершение при вводе первых символов |
+| completion-at-point                 | =C-M-i=          | авто завершение при вводе первых символов |
 | org-id-get-create                   | -                | создать узел из заголовка                |
 | org-roam-alias-add                  | -                | добавить alias узлу                      |
 | org-roam-dailies-capture-today      | =C-c n d n=      | создать заметку на текущий день          |
@@ -1042,7 +1063,7 @@ GitHub: [[https://github.com/snosov1/toc-org][toc-org]]
 
 *** Block Templates
 
-Шаблоны позволяют вводить что-то вроде, =<el=, затем при нажатии =Tab= разворачиваеться шаблон.
+Шаблоны позволяют вводить что-то вроде, =<el=, затем при нажатии =Tab= разворачивается шаблон.
 
 #+begin_src emacs-lisp
 
@@ -1086,13 +1107,13 @@ GitHub: [[https://github.com/snosov1/toc-org][toc-org]]
     (interactive)
     (find-file gtd_projects_filel))
 
-  (defun et/open-someday ()
-    "Открыть файл Someday"
-    (interactive)
-    (find-file gtd_someday_filel))
+  ;(defun et/open-someday ()
+  ;  "Открыть файл Someday"
+  ;  (interactive)
+  ;  (find-file gtd_someday_filel))
 
   (defun et/open-next-tasks ()
-    "Открыть файл Someday"
+    "Открыть файл Nex tasks"
     (interactive)
     (find-file gtd_next_tasks_file))
 
@@ -1142,6 +1163,15 @@ GitHub: [[https://github.com/snosov1/toc-org][toc-org]]
 
 #+end_src
 
+** pomodoro
+
+#+begin_src emacs-lisp
+
+  (add-to-list 'load-path "~/.emacs.d/local/pomodoro")
+  (require 'pomodoro)
+
+#+end_src
+
 * File Management
 
 ** Dired
@@ -1172,7 +1202,7 @@ Dired - это встроенный файловый менеджер для GNU
 
 | command                      | key / ex command | description                                 |
 |------------------------------+------------------+---------------------------------------------|
-| dired-next-line              | =n=              | cледующая строка                            |
+| dired-next-line              | =n=              | следующая строка                            |
 | dired-previous-line          | =p=              | предыдущая строка                           |
 | dired-goto-file              | =j=              | перейти к файлу в буфере                    |
 | dired-find-file              | =RET=            | выберите файл или каталог                   |
@@ -1242,7 +1272,6 @@ Dired - это встроенный файловый менеджер для GNU
 #+begin_src emacs-lisp
 
   (use-package dired
-    :ensure nil
     :commands (dired dired-jump)
     :bind (("C-x C-j" . dired-jump))
     :custom ((dired-listing-switches "-agho --group-directories-first"))
@@ -1317,9 +1346,9 @@ Deft — это режим GNU Emacs для быстрого просмотра,
 |------------------------+------------------+---------------------------------|
 | swiper                 | =C-s=            | открыть поиск                   |
 | ivy-alt-done           | =TAB= or =C-l=   | выйти из буфера                 |
-| ivy-next-line          | =С-j= or =C-n=   | cледующая строка                |
+| ivy-next-line          | =С-j= or =C-n=   | следующая строка                |
 | ivy-previous-line      | =C-k= or =C-p=   | предыдущая строка               |
-| ivy-switch-buffer-kill | =C-d=            | выти из буфера reverse-i-search |
+| ivy-switch-buffer-kill | =C-d=            | выйти из буфера reverse-i-search |
 | counsel-switch-buffer  | =C-M-j=          | переключение буферов с превью   |
 |------------------------+------------------+---------------------------------|
 
@@ -1496,10 +1525,10 @@ GitHub: [[https://github.com/emacsmirror/reverse-im][reverse-im]]
 #+begin_src emacs-lisp
 
   (use-package browse-url
-    :ensure nil
     :custom
-      (browse-url-browser-function 'browse-url-generic)
-      (browse-url-generic-program "qutebrowser"))
+    (browse-url-browser-function 'browse-url-default-windows-browser))
+      ;(browse-url-browser-function 'browse-url-generic)
+      ;(browse-url-generic-program "qutebrowser"))
 
 #+end_src
 
@@ -1536,8 +1565,8 @@ Github: [[https://github.com/hrs/engine-mode/tree/e0910f141f2d37c28936c51c3c8bb8
         "https://github.com/search?ref=simplesearch&q=%s"
 	:keybinding "g")
 
-      (defengine google-images
-        "http://www.google.com/images?hl=en&source=hp&biw=1440&bih=795&gbv=2&aq=f&aqi=&aql=&oq=&q=%s"
+      (defengine google
+        "https://www.google.com/search?q=%s"
 	:keybinding "i")
 
       (defengine youtube
@@ -1548,11 +1577,14 @@ Github: [[https://github.com/hrs/engine-mode/tree/e0910f141f2d37c28936c51c3c8bb8
 
 #+end_src
 
+#+RESULTS:
+: t
+
 ** Hydra
 
 GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerrypnz/major-mode-hydra.el][major-mode-hydra]]
 
-=hydra= позволяет сделать меню с командами и всплывающем окне отображать их. Это удобно когда вам нужно группировать команды или просто не запоменать все хоткеии, а подсматривать в подсказку.
+=hydra= позволяет сделать меню с командами и всплывающем окне отображать их. Это удобно когда вам нужно группировать команды или просто не запоминать все хоткеии, а подсматривать в подсказку.
 
 *** Commands
 
@@ -1583,7 +1615,7 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
 |-----------------------------+----------------------+---------------------------------|
 | Org                         |                      |                                 |
 | hydra-org/body              | =C-c o=              | hydra org                       |
-| org-insert-link-global      | =C-c o g=            | созадать ссылку                 |
+| org-insert-link-global      | =C-c o g=            | создать ссылку                 |
 | org-store-link              | =C-c o l=            | store link                      |
 | org-capture                 | =C-c o c=            | создать заметку                 |
 | org-agenda                  | =C-c o a=            | открыть agenda                  |
@@ -1611,14 +1643,14 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
 |-----------------------------+----------------------+---------------------------------|
 | File GTD                    |                      |                                 |
 | hydra-file-gtd/body         | =C-c g=              | hydra File GTD                  |
-| et/open-inbox               | =C-c g i=            | открыть фийл Inbox              |
-| et/open-agenda              | =C-c g a=            | открыть фийл Agenda             |
-| et/open-journal             | =C-c g j=            | открыть фийл Journal            |
-| et/open-notes               | =C-c g n=            | открыть фийл Note               |
-| et/open-projects            | =C-c g p=            | открыть фийл Projects           |
-| et/open-someday             | =C-c g s=            | открыть фийл Someday            |
-| et/open-next-tasks          | =C-c g t=            | открыть фийл Next task          |
-| et/open-waiting             | =C-c g w=            | открыть фийл Waiting            |
+| et/open-inbox               | =C-c g i=            | открыть файл Inbox              |
+| et/open-agenda              | =C-c g a=            | открыть файл Agenda             |
+| et/open-journal             | =C-c g j=            | открыть файл Journal            |
+| et/open-notes               | =C-c g n=            | открыть файл Note               |
+| et/open-projects            | =C-c g p=            | открыть файл Projects           |
+| et/open-someday             | =C-c g s=            | открыть файл Someday            |
+| et/open-next-tasks          | =C-c g t=            | открыть файл Next task          |
+| et/open-waiting             | =C-c g w=            | открыть файл Waiting            |
 |-----------------------------+----------------------+---------------------------------|
 
 
@@ -1667,8 +1699,8 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
     (:hint nil :forein-keys warn :quit-key "q" :title (with-faicon "chrome" "Browser" 1 -0.05))
     (""
      (("d" engine/search-duckduckgo "Duckduckgo")
-      ("i" engine/search-google-images "Google images")
-      ("y" engine/search-youtubes "Youtube")
+      ("i" engine/search-google "Google")
+      ("y" engine/search-youtube "Youtube")
       ("g" engine/search-github "GitHub"))))
 
 #+end_src
@@ -1765,8 +1797,8 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
       ("n" (et/open-notes) "Open Note"))
      ""
       (("p" (et/open-projects) "Open Project")
-      ("s" (et/open-someday) "Open Someday")
-      ("t" (et/open-next-tasks) "Open Next task")
+      ;("s" (et/open-someday) "Open Someday")
+      ;("t" (et/open-next-tasks) "Open Next task")
       ("w" (et/open-waiting) "Open Waiting"))))
 
 #+end_src
@@ -1780,7 +1812,7 @@ GitHub: [[https://github.com/abo-abo/hydra][hydra]], [[https://github.com/jerryp
 
 GitHub: [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
 
-Я ипользую =lsp-mode=, чтобы сделать IDE-подобную функциональность. Прежде чем настроить =lsp-mode=, ознакомьтесь c [[https://emacs-lsp.github.io/lsp-mode/page/languages/][документацией для своего языка]].
+Я использую =lsp-mode=, чтобы сделать IDE-подобную функциональность. Прежде чем настроить =lsp-mode=, ознакомьтесь c [[https://emacs-lsp.github.io/lsp-mode/page/languages/][документацией для своего языка]].
 
 #+begin_src emacs-lisp
 
@@ -1877,7 +1909,7 @@ GitHub: [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
 |------------------------+------------------+-----------------------------------|
 | dap-breakpoint-toggle  | -                | поставить точку остановы          |
 | dap-breakpoint-delete  | -                | удалить точку остановы            |
-| dap-ui-breakpoint-list | -                | спосок всех точек остановы        |
+| dap-ui-breakpoint-list | -                | список всех точек остановы        |
 | dap-debug              | -                | запустить отладку                 |
 | dap-hydra              | -                | посмотреть как управлять отладкой |
 |------------------------+------------------+-----------------------------------|
@@ -1931,7 +1963,7 @@ GitHub: [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
 
 #+end_src
 
-Также вам может понадобиться debugger и среда тестированияя pytest
+Также вам может понадобиться debugger и среда тестирования pytest
 
 #+begin_src sh :tangle no
 
@@ -1940,7 +1972,7 @@ GitHub: [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]]
 
 #+end_src
 
-*Важная заметка!* если при использование OS Windows возникли проблемы, с нормальной работы Python при открытии файлов, попробутей сначало запустить среду Python внутри GNU Emacs при помощи =run-python=.
+*Важная заметка!* если при использование OS Windows возникли проблемы, с нормальной работы Python при открытии файлов, попробуйте с начало запустить среду Python внутри GNU Emacs при помощи =run-python=.
 
 #+begin_src emacs-lisp
 
@@ -2093,7 +2125,6 @@ GitHub: [[https://github.com/yoshiki/yaml-mode][yaml-mode]]
 #+begin_src emacs-lisp
 
   (use-package makefile-gmake-mode
-    :ensure nil
     :mode  ("Makefile.*" . makefile-gmake-mode))
 
 #+end_src
